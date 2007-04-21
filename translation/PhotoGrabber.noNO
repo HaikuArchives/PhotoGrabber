@@ -1,0 +1,95 @@
+# BeDigiCam - Norwegian bokmål translation
+# Translated by Frank Paul Silye, frank.silye@yellowtab.com
+# Last updated 02.05.2005
+
+############
+# MainWindow.cpp
+############
+
+"File"                                                                                          "Fil"
+"Extra"                                                                                         "Ekstra"
+"Download"                                                                                      "Last ned"
+"Delete"                                                                                                "Slett"
+"Generate HTML"                                                                         "Generer HTML"
+"Preferences"                                                                           "Innstillinger"
+"About PhotoGrabber"                                                                               "Om PhotoGrabber"
+"Quit"                                                                                          "Avslutt"
+"Status"                                                                                                "Status"
+"Remove files"                                                                                  "Fjern filer"
+"Are you sure you want to erase the selected files?"                    "Er du sikker på at du vil slette valgte filer?"
+"No"                                                                                                    "Nei"
+"Yes"                                                                                           "Ja"
+"Connected to: "                                                                                "Koblet til: "
+" disconnected"                                                                         " er koblet fra"
+"Downloading number NUMBER of the TOTAL selected files" "Laster ned nummer NUMBER av TOTAL valgte filer"
+"Generating HTML page..."                               "Genererer HTM side..."
+"HTML page has been generated."                 "HTML side har blitt generert."
+"Downloading items..."                                  "Laster ned objekter..."
+"All items have been downloaded."               "Alle objekter har blitt lastet ned."
+# version	0.4.2			
+"BDCP Actions"
+"Connect"
+"Disconnect"
+"more..."
+"In:"
+"Status"
+"Generating number NUMBER of the TOTAL selected files"
+"Select"
+
+
+############
+# AboutWindow.cpp
+############
+
+"PhotoGrabber version 0.4.2"                                                               "BeDiGiCam versjon 0.4.2"
+"By Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"                         "Av Jan-Rixt Van Hoye alias Jixt (jixt@bebug.be)"
+"PTP - USB Digital camera download utility."                                    "PTP - nedlastingsverktøy for digitale USB kameraer."
+
+#############
+# StatusWindow.cpp
+#############
+
+"PhotoGrabber download status"                                                     "PhotoGrabber nedlastingsstatus"
+
+#######
+# Item.cpp
+#######
+
+"Name: NAME"                                                                                    "Navn: NAME"
+"Height: PIXELS pixels."                                                                        "Høyde: PIXELS piksler."
+"Width: PIXELS pixels."                                                                 "Bredde: PIXELS pixler."
+"Size: BYTES bytes."                                                                    "Størrelse: BYTES bytes."
+"Date: DATE"                                                                                    "Fil: DATE"
+"No thumbnail"                                                                          "Ingen forhåndsvisning"
+
+#############
+# ConfigWindow.cpp
+#############
+
+"Camera Configuration"                                                                  "Kamera konfigurasjon"
+
+"Please select your type of camera. To know the type you can visit www.bebug.be/projects/jixt/."        "Vennligst velg din type kamera. For å finne ut hvilken type du må velge, se www.bebug.be/projects/jixt/."
+"Type:"                                                                                         "Type:"
+"Debug Configuration"                                                                   "Debug konfigurasjon"
+"Debug to terminal"                                                                     "Debug til terminal"
+"Debug to file"                                                                                 "Debug til fil"
+# version 0.4.2
+"PTP USB Camera"	
+"Type"
+"BDCP Camera"		
+"Plugin:"							
+
+#############
+# HTMLWindow.cpp
+#############
+
+"Options"
+"Title:"
+"Your Pictures"
+"Number of Columns:"
+"Background color:"
+"Picture border:"
+"Path:"
+"Select..."
+"Generate!"
+

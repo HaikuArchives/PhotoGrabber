@@ -1,0 +1,162 @@
+# Translated by Mikael Jansson http://mikael.jansson.be
+
+
+############
+# MainWindow.cpp
+############
+
+
+"File"													"Arkiv"
+
+"Extra"													"Mer"
+
+"Download"												"Ladda ner"
+
+"Delete"												"Ta bort"
+
+"Generate HTML"											"Generera HTML"
+
+"Preferences"											"Inställningar"
+
+"About PhotoGrabber"										"Om PhotoGrabber"
+
+"Quit"													"Avsluta"
+
+"Status"												"Status"
+
+"Remove files"											"Ta bort markerade filer"
+
+"Are you sure you want to erase the selected files?"	"Är du säker på att du vill ta bort de markerade filerna?"
+
+"No"													"Nej"
+
+"Yes"													"Ja"
+
+"Connected to: "										"Ansluten till: "
+
+" disconnected"											"frånkopplad"
+
+"Downloading number NUMBER of the TOTAL selected files"	"Laddar ner nummer NUMBER av totalt TOTAL markerade filer"
+
+"Generating HTML page..."								"Genererar HTML-sida..."
+
+"HTML page has been generated."							"HTML-sidan är genererad."
+
+"Downloading items..."									"Laddar ner objekt..."
+
+"All items have been downloaded."						"Alla objekt har laddats ner"
+
+# version	0.4.2			
+
+"BDCP Actions"
+
+"Connect"
+
+"Disconnect"
+
+"more..."
+
+"In:"
+
+"Status"
+
+"Generating number NUMBER of the TOTAL selected files"
+
+"Select"
+
+#############
+# AboutWindow.cpp
+#############
+
+
+"PhotoGrabber version 0.4.2"								"PhotoGrabber version 0.4.2"
+
+"By Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"			"Av Jan-Rixt Van Hoye alias Jixt (jixt@bebug.be)"
+
+"PTP - USB Digital camera download utility."			"Nerladdningsverktyg för PTP-USB-digitalkameror."
+
+
+#############
+# StatusWindow.cpp
+#############
+
+
+"PhotoGrabber download status"								"Status för PhotoGrabber:s nerladdning"
+
+
+#######
+# Item.cpp
+#######
+
+
+"Name: NAME"											"Namn: NAME"
+
+"Height: PIXELS pixels."								"Höjd: PIXELS bildpunkter"
+
+"Width: PIXELS pixels."									"Bredd: PIXELS bildpunkter"
+
+"Size: BYTES bytes."									"Storlek: BYTES byte"
+
+"Date: DATE"											"Datum: DATE"
+
+"No thumbnail"											"Ingen miniatyrbild"
+
+
+#############
+# ConfigWindow.cpp
+#############
+
+
+"Camera Configuration"									"Kamerainställningar"
+
+
+
+"Please select your type of camera. To know the type you can visit www.bebug.be/projects/jixt/."	"Var god välj din kameratyp. För att se en lista på sorters kameror, besök http://www.bebug.de/projects/jixt/."
+
+"Type:"													"Typ: "
+
+"Debug Configuration"									"Debuginställningar"
+
+"Debug to terminal"										"Visa debugmeddelanden i Terminal"
+
+"Debug to file"											"Spara debugmeddelanden i en fil"
+
+# version 0.4.2
+
+"PTP USB Camera"	
+
+"Type"
+
+"BDCP Camera"		
+
+"Plugin:"							
+
+
+#############
+# HTMLWindow.cpp
+#############
+
+"Options"
+
+"Title:"
+
+"Your Pictures"
+
+"Number of Columns:"
+
+"Background color:"
+
+"Picture border:"
+
+"Path:"
+
+"Select..."
+
+"Generate!"
+
+
+
+
+
+
+

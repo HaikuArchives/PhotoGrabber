@@ -1,0 +1,270 @@
+# Übersetzt von das.jott@team-maui.de
+
+
+
+
+
+
+############
+# MainWindow.cpp
+############
+
+
+
+
+
+
+"File"												"Datei"
+
+
+
+"Extra"												"Extra"
+
+
+
+"Download"											"Herunterladen"
+
+
+
+"Delete"												"Löschen"
+
+
+
+"Generate HTML"										"HTML erstellen"
+
+
+
+"Preferences"										"Einstellungen"
+
+
+
+"About PhotoGrabber"										"Über PhotoGrabber"
+
+
+
+"Quit"												"Beenden"
+
+
+
+"Status"												"Status"
+
+
+
+"Remove files"											"Dateien entfernen"
+
+
+
+"Are you sure you want to erase the selected files?"			"Ausgewählte Dateien wirklich löschen?"
+
+
+
+"No"													"Nein"
+
+
+
+"Yes"												"Ja"
+
+
+
+"Connected to: "										"Verbunden mit: "
+
+
+
+" disconnected"										" nicht verbunden"
+
+
+
+"Downloading number NUMBER of the TOTAL selected files"	"Lade Nummer NUMBER von TOTAL ausgewählten Dateien"
+
+
+
+"Generating HTML page..."				"Erstelle HTML-Seite..."
+
+
+
+"HTML page has been generated."			"HTML-Seite wurde erstellt."
+
+
+
+"Downloading items..."					"Lade Dateien herunter..."
+
+
+
+"All items have been downloaded."		"Dateien wurden heruntergeladen."
+
+# version	0.4.2			
+
+"BDCP Actions"
+
+"Connect"
+
+"Disconnect"
+
+"more..."
+
+"In:"
+
+"Status"
+
+"Generating number NUMBER of the TOTAL selected files"
+
+"Select"
+
+
+
+
+############
+# AboutWindow.cpp
+############
+
+
+
+
+
+
+"PhotoGrabber version 0.4.2"								"PhotoGrabber Version 0.4.2"
+
+
+
+"By Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"				"Von Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"
+
+
+
+"PTP - USB Digital camera download utility."					"PTP - Download-tool für digitale USB-Kameras."
+
+
+
+
+
+
+#############
+# StatusWindow.cpp
+#############
+
+
+
+
+
+
+"PhotoGrabber download status"							"PhotoGrabber download status"
+
+
+
+
+
+
+#######
+# Item.cpp
+#######
+
+
+
+
+
+
+"Name: NAME"											"Name: NAME"
+
+
+
+"Height: PIXELS pixels."									"Höhe: PIXELS pixels."
+
+
+
+"Width: PIXELS pixels."									"Breite: PIXELS pixels."
+
+
+
+"Size: BYTES bytes."									"Größe: BYTES bytes."
+
+
+
+"Date: DATE"											"Datum: DATE"
+
+
+
+"No thumbnail"										"Keine Vorschau"
+
+
+
+
+
+
+#############
+# ConfigWindow.cpp
+#############
+
+
+
+
+
+
+"Camera Configuration"									"Kamera Konfiguration"
+
+
+
+
+
+
+
+"Please select your type of camera. To know the type you can visit www.bebug.be/projects/jixt/."	"Bitte wählen Sie Ihre Kamera. Um den Typ zu erfahren, siehe www.bebug.be/projects/jixt/."
+
+
+
+"Type:"												"Typ:"
+
+
+
+"Debug Configuration"									"Debug Konfiguration"
+
+
+
+"Debug to terminal"									"Debug-Info in Terminal"
+
+
+
+"Debug to file"											"Debug-Info in Datei"
+
+
+# version 0.4.2
+
+"PTP USB Camera"	
+
+"Type"
+
+"BDCP Camera"		
+
+"Plugin:"
+
+
+#############
+# HTMLWindow.cpp
+#############
+
+"Options"
+
+"Title:"
+
+"Your Pictures"
+
+"Number of Columns:"
+
+"Background color:"
+
+"Picture border:"
+
+"Path:"
+
+"Select..."
+
+"Generate!"
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,160 @@
+# Vertaald door Jan-Rixt Van Hoye http://www.bebug.be
+
+
+############
+# MainWindow.cpp
+############
+
+
+"File"													
+
+"Extra"													
+
+"Download"												
+
+"Delete"												
+
+"Generate HTML"											
+
+"Preferences"											
+
+"About PhotoGrabber"										
+
+"Quit"													
+
+"Status"												
+
+"Remove files"											
+
+"Are you sure you want to erase the selected files?"	
+
+"No"													
+
+"Yes"													
+
+"Connected to: "										
+
+" disconnected"											
+
+"Downloading number NUMBER of the TOTAL selected files"	
+
+"Generating HTML page..."								
+
+"HTML page has been generated."							
+
+"Downloading items..."									
+
+"All items have been downloaded."	
+
+# version	0.4.2			
+
+"BDCP Actions"
+
+"Connect"
+
+"Disconnect"
+
+"more..."
+
+"In:"
+
+"Status"
+
+"Generating number NUMBER of the TOTAL selected files"
+
+"Select"
+
+############
+# AboutWindow.cpp
+############
+
+
+"PhotoGrabber version 0.4.2"								
+
+"By Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"			
+
+"PTP - USB Digital camera download utility."			
+
+
+#############
+# StatusWindow.cpp
+#############
+
+
+"PhotoGrabber download status"								
+
+
+#######
+# Item.cpp
+#######
+
+
+"Name: NAME"											
+
+"Height: PIXELS pixels."								
+
+"Width: PIXELS pixels."									
+
+"Size: BYTES bytes."									
+
+"Date: DATE"											
+
+"No thumbnail"											
+
+
+#############
+# ConfigWindow.cpp
+#############
+
+
+"Camera Configuration"									
+
+
+
+"Please select your type of camera. To know the type you can visit www.bebug.be/projects/jixt/."	
+
+"Type:"													
+
+"Debug Configuration"									
+
+"Debug to terminal"										
+
+"Debug to file"	
+
+# version 0.4.2
+
+"PTP USB Camera"	
+
+"Type"
+
+"BDCP Camera"		
+
+"Plugin:"							
+
+
+#############
+# HTMLWindow.cpp
+#############
+
+"Options"
+
+"Title:"
+
+"Your Pictures"
+
+"Number of Columns:"
+
+"Background color:"
+
+"Picture border:"
+
+"Path:"
+
+"Select..."
+
+"Generate!"
+
+
+
+
+

@@ -1,0 +1,99 @@
+# Tercümesi: TürkBUG Ekibi
+# alpaslan@turkbug.org
+
+############
+# MainWindow.cpp
+############
+
+"File"
+"Extra"	
+"Download"											"Resimleri indir"
+"Delete"												"Dijital Kamera'dan sil"
+"Genarate HTML"										"Resimler ile HTML Sayfası oluştur"
+"Preferences"											
+"About PhotoGrabber"										"PhotoGrabber hakkında"
+"Quit"												"Bitir"
+"Status"												"İşlem"
+"Remove files"											"Dosyaları sil"
+"Are you sure you want to erase the selected files?"			"Seçilen dosyaları silmeye eminmisiniz?"
+"No"													"Hayır"
+"Yes"												"Evet"
+"Connected to: "										"Bağlanılan Kamera: "
+" disconnected"										" Bağlantı yok!"
+"Downloading number NUMBER of the TOTAL selected files"	"TOTAL  mevcut öğe'den indirilen öğe: NUMBER  "
+"Generating HTML page..."								
+"HTML page has been generated."							
+"Downloading items..."									
+"All items have been downloaded."	
+# version	0.4.2			
+"BDCP Actions"
+"Connect"
+"Disconnect"
+"more..."
+"In:"
+"Status"
+"Generating number NUMBER of the TOTAL selected files"
+"Select"
+
+############
+# AboutWindow.cpp
+############
+
+"PhotoGrabber version 0.4.2"								"PhotoGrabber Versiyon 0.4.2"
+"By Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"				"Yazılım Gelişitirici: Jan-Rixt Van Hoye AKA Jixt (jixt@bebug.be)"
+"PTP - USB Digital camera download utility."					"PTP - Protokolü bazlı Dijital USB-Kamera Resim indirim aracı."
+
+#############
+# StatusWindow.cpp
+#############
+
+"PhotoGrabber download status"							"PhotoGrabber indirme işlem durumu:"
+
+#######
+# Item.cpp
+#######
+
+"Name: NAME"											"Adı: NAME"
+"Height: PIXELS pixels."									"Yüklekliği: PIXELS pixels."
+"Width: PIXELS pixels."									"Genişliği: PIXELS pixels."
+"Size: BYTES bytes."									"Größe: BYTES bytes."
+"Date: DATE"											"Tarihi: DATE"
+"No thumbnail"										"Öngörünümsüz"
+
+#############
+# ConfigWindow.cpp
+#############
+
+"Camera Configuration"									"Kamera Ayarları"
+
+"Please select your type of camera. To know the type you can visit www.bebug.be/projects/jixt/."	"Lütfen Kamera tipini seçiniz. Kameranızın tipi hakkında http://www.bebug.be/projects/jixt/ sayfasında ingilizce olarak ayrıntılı bilgi alabilmeniz mümkün."
+"Type:"												"Tip:"
+"Debug Configuration"									"Debug Ayarları"
+"Debug to terminal"									"Debug Bilgileri Terminal'e yönlendir"
+"Debug to file"											"Debug Bilgileri dosyaya yaz"
+# version 0.4.2
+"PTP USB Camera"	
+"Type"
+"BDCP Camera"		
+"Plugin:"							
+
+#############
+# HTMLWindow.cpp
+#############
+
+"Options"
+"Title:"
+"Your Pictures"
+"Number of Columns:"
+"Background color:"
+"Picture border:"
+"Path:"
+"Select..."
+"Generate!"
+
+
+
+
+
+
+

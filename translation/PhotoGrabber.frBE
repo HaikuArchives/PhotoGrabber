@@ -1,0 +1,89 @@
+###########
+# MainWindow.cpp
+###########
+
+"File"													"Fichier"
+"Extra"												"Extra"
+"Download"												"Télécharger"
+"Delete"												"Supprimer"
+"Generate HTML"											"Générer HTML"
+"Preferences"											"Préférences"
+"About PhotoGrabber"										"A propos de PhotoGrabber"
+"Quit"													"Quitter"
+"Status"												"Statut"
+"Remove files"											"Supprimer fichiers"
+"Are you sure you want to erase the selected files?"					"Êtes-vous sûr de vouloir supprimer les fichiers séléctionnés ?"
+"No"													"Non"
+"Yes"													"Oui"
+"Connected to: "											"Connecté à: "
+" disconnected"											"Déconnecté"
+"Downloading number NUMBER of the TOTAL selected files"				"Téléchargement du fichier  NUMBER sur les TOTAL fichiers séléctionnés"
+"Generating HTML page..."									"Génération de l'HTML"
+"HTML page has been generated."								"La page HTML a été généré"
+"Downloading items..."										"Téléchargement ..."
+"All items have been downloaded."								"Le téléchagement s'est terminé avec succès"
+# version	0.4.2			
+"BDCP Actions"
+"Connect"
+"Disconnect"
+"more..."
+"In:"
+"Status"
+"Generating number NUMBER of the TOTAL selected files"
+"Select"
+
+############
+# AboutWindow.cpp
+############
+
+"PhotoGrabber version 0.4.2"									"PhotoGrabber version 0.4.2"
+"By Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"						"Par Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"
+"PTP - USB Digital camera download utility."						"PTP - Récupérez les données d'appareil photo numérique USB."
+
+#############
+# StatusWindow.cpp
+#############
+
+"PhotoGrabber download status"									"Etat du téléchargement"
+
+#######
+# Item.cpp
+#######
+
+"Name: NAME"											"Nom: NAME"
+"Height: PIXELS pixels."										"Hauteur: PIXELS pixels"
+"Width: PIXELS pixels."										"Largeur: PIXELS pixels"
+"Size: BYTES bytes."										"Poids: BYTES kb"
+"Date: DATE"											"Date: DATE"
+"No thumbnail"											"Pas de vignette"
+
+#############
+# ConfigWindow.cpp
+#############
+
+"Camera Configuration"										"Configuration de l'appareil"
+"Please select your type of camera. To know the type you can visit www.bebug.be/projects/jixt/."	"Veuillez séléctionner votre type d'appareil. Pour connaitre votre type d'appareil, vous pouvez visiter www.bebug.be/projects/jixt/."
+"Type:"												"Type: "
+"Debug Configuration"										"Configuration de débugage"
+"Debug to terminal"										"Débug dans Terminal"
+"Debug to file"											"Débug dans un fichier"
+# version 0.4.2
+"PTP USB Camera"	
+"Type"
+"BDCP Camera"		
+"Plugin:"							
+
+
+#############
+# HTMLWindow.cpp
+#############
+
+"Options"
+"Title:"
+"Your Pictures"
+"Number of Columns:"
+"Background color:"
+"Picture border:"
+"Path:"
+"Select..."
+"Generate!"

@@ -1,0 +1,159 @@
+# Vertaald door Jan-Rixt Van Hoye http://www.bebug.be
+
+
+############
+# MainWindow.cpp
+############
+
+
+"File"												"Bestand"
+
+"Extra"											"Extra"
+
+"Download"												"Afhalen"
+
+"Delete"												"Verwijderen"
+
+"Generate HTML"											"HTML pagina aanmaken"
+
+"Preferences"											"Instellingen"
+
+"About PhotoGrabber"										"Over PhotoGrabber"
+
+"Quit"													"Afsluiten"
+
+"Status"												"Status"
+
+"Remove files"											"Bestanden verwijderen"
+
+"Are you sure you want to erase the selected files?"	"Ben je zeker dat je de geselecteerde bestanden wil verwijderen?"
+
+"No"													"Neen"
+
+"Yes"													"Ja"
+
+"Connected to: "										"Verbonden met: "
+
+" disconnected"											"Niet verbonden!"
+
+"Downloading number NUMBER of the TOTAL selected files"	"Bezig met nummer NUMBER van de TOTAL geselecteerde bestanden binnen te halen."
+
+"Generating HTML page..."				"HTML pagina aan het aanmaken..."
+
+"HTML page has been generated."		"De HTML pagina is aangemaakt."
+
+"Downloading items..."						"Bestanden aan het downloaden..."
+
+"All items have been downloaded."		"Alle bestanden zijn gedownload."
+
+# version	0.4.2			
+
+"BDCP Actions"						"BDCP Acties"
+
+"Connect"							"Verbinden"
+
+"Disconnect"						"Sluiten"
+
+"more..."							"meer..."
+
+"In:"								"In:"
+
+"Status"							"Status"
+
+"Generating number NUMBER of the TOTAL selected files"		"Bezig met nummer NUMBER van de TOTAL geselecteerde bestanden te genereren."
+
+"Select"							"Selecteer"
+
+#############
+# AboutWindow.cpp
+#############
+
+
+"PhotoGrabber version 0.4.2"								"PhotoGrabber versie 0.4.2"
+
+"By Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"			"Door Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"
+
+"PTP - USB Digital camera download utility."			"PTP - Digitale USB Camera."
+
+
+#############
+# StatusWindow.cpp
+#############
+
+
+"PhotoGrabber download status"								"PhotoGrabber download status"
+
+
+#######
+# Item.cpp
+#######
+
+
+"Name: NAME"											"Naam: NAME"
+
+"Height: PIXELS pixels."								"Hoogte: PIXELS pixels."
+
+"Width: PIXELS pixels."									"Breedte: PIXELS pixels."
+
+"Size: BYTES bytes."									"Grootte: BYTES bytes."
+
+"Date: DATE"											"Datum: DATE"
+
+"No thumbnail"											"Geen thumbnail"
+
+
+#############
+# ConfigWindow.cpp
+#############
+
+
+"Camera Configuration"									"Camera Configuratie"
+
+"Please select your type of camera. To know the type you can visit www.bebug.be/projects/jixt/."	"Kies hier uw type camera. Om te weten welk type het is kun je best surfen naar www.bebug.be/projects/jixt/."
+
+"Type:"													"Type:"
+
+"Debug Configuration"									"Debugging Configuratie"
+
+"Debug to terminal"										"Debug info naar de terminal"
+
+"Debug to file"											"Debug info naar een file"
+
+# version 0.4.2
+
+"PTP USB Camera"								"PTP USB Camera"
+
+"Type"										"Type"
+
+"BDCP Camera"									"BDCP Camera"
+
+"Plugin:"										"Plugin:"
+
+#############
+# HTMLWindow.cpp
+#############
+
+"Options"								"Opties"
+
+"Title:"								"Titel:"
+
+"Your Pictures"							"Jouw foto's"
+
+"Number of Columns:"					"Aantal kolommen:"
+
+"Background color:"						"Achtergrond kleur:"
+
+"Picture border:"							"Foto rand:"
+
+"Path:"								"Pad:"
+
+"Select..."								"Selecteer..."
+
+"Generate!"							"Genereer!"
+
+
+
+
+
+
+

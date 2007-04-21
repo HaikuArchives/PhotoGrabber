@@ -1,0 +1,156 @@
+# Translated by Daniel Alexandre Arsénio Teixeira http://www.iscomputeron.com
+
+
+############
+# MainWindow.cpp
+############
+
+
+"File"													"Ficheiro"
+
+"Extra"													"Extra"
+
+"Download"												"Transferência"
+
+"Delete"												"Apagar"
+
+"Generate HTML"											"Gerar HTML"
+
+"Preferences"											"Preferências"
+
+"About PhotoGrabber"										"Sobre o PhotoGrabber"
+
+"Quit"													"Sair"
+
+"Status"												"Status"
+
+"Remove files"											"Remover ficheiros"
+
+"Are you sure you want to erase the selected files?"	"Tem a certeza que pretende apagar os ficheiros seleccionados?"
+
+"No"													"Não"
+
+"Yes"													"Sim"
+
+"Connected to: "										"Ligado a:"
+
+" disconnected"											" desligado"
+
+"Downloading number NUMBER of the TOTAL selected files"	"A transferir NUMBER dum total de TOTAL ficheiros seleccionados"
+
+"Generating HTML page..."								"A gerar página HTML..."
+
+"HTML page has been generated."							"A página HTML foi gerada."
+
+"Downloading items..."									"A transferir os items..."
+
+"All items have been downloaded."						"Todos os items foram transferidos"
+
+# version	0.4.2			
+
+"BDCP Actions"
+
+"Connect"
+
+"Disconnect"
+
+"more..."
+
+"In:"
+
+"Status"
+
+"Generating number NUMBER of the TOTAL selected files"
+
+"Select"
+
+############
+# AboutWindow.cpp
+############
+
+
+"PhotoGrabber version 0.4.2"								"PhotoGrabber versão 0.4.2"
+
+"By Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"			"Por Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"
+
+"PTP - USB Digital camera download utility."			"PTP - Utilitário de transferências para Máquinas Digitais por USB"
+
+
+#############
+# StatusWindow.cpp
+#############
+
+
+"PhotoGrabber download status"								"Estado de transferência do PhotoGrabber"
+
+
+########
+# Item.cpp
+########
+
+
+"Name: NAME"											"Nome: NAME"
+
+"Height: PIXELS pixels."								"Altura: PIXELS pixeis"
+
+"Width: PIXELS pixels."									"Largura: PIXELS pixeis"
+
+"Size: BYTES bytes."									"Tamanho: BYTES bytes"
+
+"Date: DATE"											"Data: DATE"
+
+"No thumbnail"											"Sem pré-visualização"
+
+
+#############
+# ConfigWindow.cpp
+#############
+
+
+"Camera Configuration"									"Configuração da máquina"
+
+
+
+"Please select your type of camera. To know the type you can visit www.bebug.be/projects/jixt/."	"Por favor escolha o tipo da sua máquina. Para saber o tipo pode visitar www.bebug.be/projects/jixt/."
+
+"Type:"													"Tipo"
+
+"Debug Configuration"									"Configuração da depuração"
+
+"Debug to terminal"										"Depurar para terminal"
+
+"Debug to file"											"Depurar para ficheiro"
+
+# version 0.4.2
+
+"PTP USB Camera"	
+
+"Type"
+
+"BDCP Camera"		
+
+"Plugin:"							
+
+
+#############
+# HTMLWindow.cpp
+#############
+
+"Options"
+
+"Title:"
+
+"Your Pictures"
+
+"Number of Columns:"
+
+"Background color:"
+
+"Picture border:"
+
+"Path:"
+
+"Select..."
+
+"Generate!"
+

@@ -1,0 +1,93 @@
+# Vertaald door Jan-Rixt Van Hoye http://www.bebug.be
+# Japanese locale file for PhotoGrabber by Zeta Zone (www.zeta-zone.net)
+# Last revised: 5/2/05
+
+############
+# MainWindow.cpp
+############
+
+"File"							"ファイル"
+"Extra"							"動作"
+"Download"						"ダウンロード"
+"Delete"							"削除"
+"Generate HTML"					"サムネール ページ作成"
+"Preferences"					"PhotoGrabber の設定..."
+"About PhotoGrabber"				"PhotoGrabber について..."
+"Quit"							"終了"
+"Status"							"状態"
+"Remove files"					"ファイル削除"
+"Are you sure you want to erase the selected files?"	"選択されているファイルを削除しても良いですか？"
+"No"								"いいえ"
+"Yes"							"はい"
+"Connected to: "					"カメラ: "
+" disconnected"					"切断"
+"Downloading number NUMBER of the TOTAL selected files"	"選択されている TOTAL 件中、NUMBER 件目ダウンロード中"
+"Generating HTML page..."			"サムネール ページ作成中..."
+"HTML page has been generated."	"サムネール ページが作成されました。"
+"Downloading items..."			"データをダウンロード中..."
+"All items have been downloaded."	"ダウンロードが完了しました。"
+# version	0.4.2			
+"BDCP Actions"
+"Connect"
+"Disconnect"
+"more..."
+"In:"
+"Status"
+"Generating number NUMBER of the TOTAL selected files"
+"Select"
+
+#############
+# AboutWindow.cpp
+#############
+
+"PhotoGrabber version 0.4.2"							"PhotoGrabber version 0.4.2"
+"By Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"		"作者: Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"
+"PTP - USB Digital camera download utility."			"PTP - USB デジカメ ダウンロード ユーティリティ"
+
+#############
+# StatusWindow.cpp
+#############
+
+"PhotoGrabber download status"		"ダウンロード状態"
+
+#######
+# Item.cpp
+#######
+
+"Name: NAME"					"ファイル名: NAME"
+"Height: PIXELS pixels."			"高さ: PIXELS ピクセル"
+"Width: PIXELS pixels."				"幅: PIXELS ピクセル"
+"Size: BYTES bytes."				"サイズ: BYTES バイト"
+"Date: DATE"						"作成日: DATE"
+"No thumbnail"					"サムネール無し"
+
+#############
+# ConfigWindow.cpp
+#############
+
+"Camera Configuration"			"カメラの設定"
+"Please select your type of camera. To know the type you can visit www.bebug.be/projects/jixt/."	"カメラ タイプを選んでください。各タイプの詳細情報は www.bebug.be/projects/jixt/ にあります。"
+"Type:"							"タイプ: "
+"Debug Configuration"				"デバッグ設定"
+"Debug to terminal"				"デバッグ情報を Terminal で表示"
+"Debug to file"					"デバッグ情報をファイルに書き出す"
+# version 0.4.2
+"PTP USB Camera"	
+"Type"
+"BDCP Camera"		
+"Plugin:"							
+
+
+#############
+# HTMLWindow.cpp
+#############
+
+"Options"
+"Title:"
+"Your Pictures"
+"Number of Columns:"
+"Background color:"
+"Picture border:"
+"Path:"
+"Select..."
+"Generate!"
