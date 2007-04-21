@@ -16,7 +16,6 @@
 #include "debug.h"
 //
 // External variables
-//extern class BeDiGiCamApp *app;
 bool tbExpanded;
 #pragma export on
 extern "C" BWindow * instantiate_mainWindow(BLooper *core, int devtype);
