@@ -3,22 +3,20 @@
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
- 
+ //
+//		Local Includes
+#include "MSInterface.h"
+#include "global.h"
+#include "debug.h"
+
 //
 // 		Includes
 #include <Path.h>
 #include <FindDirectory.h>
 #include <View.h>
-#ifdef __ZETA__
+#ifdef _ZETA_OS_
 	#include <experimental/BitmapTools.h>
 #endif
-
-
-//
-//		Local Includes
-#include "MSInterface.h"
-#include "global.h"
-#include "debug.h"
 
 //
 // External variables
@@ -177,7 +175,7 @@ BBitmap* MSDInterface::getThumb(int index)
 	BRect rect(0,0,150,113);
 	thumb = new BBitmap(rect,B_RGB32);
 	//	Rescale the bitmap
-	#ifdef __ZETA__
+	#ifdef _ZETA_OS_
 		scale_bitmap(thumb,source);
 	#else
 		// Should be made fore Haiku

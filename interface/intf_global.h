@@ -9,8 +9,14 @@
 #ifndef WGLOBAL_H
 #define WGLOBAL_H
 
+// OS
+#define _HAIKU_OS_
 //includes
-
+#ifdef _ZETA_OS_
+	#include <locale/Locale.h>
+	#include <locale/Paramable.h>
+	#include <locale/Formatter.h>
+#endif
 // Global Messages
 
 #define	DEL_BUTTON 					'DELB'
@@ -18,9 +24,6 @@
 #define	DETAIL_CAM	 				'DCAM'
 #define REFRESH_MENUBAR				'REFM'
 
-// OS
 
-//#define __ZETA__
-#define __HAIKU__
 
 #endif

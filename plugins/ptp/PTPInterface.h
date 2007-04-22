@@ -9,7 +9,7 @@
 #define PTPINTF_H
 //
 // Include
-#ifdef __ZETA__
+#ifdef _ZETA_OS_
 	#include <usb/USBKit.h>
 #else
 	#include "USBKit.h"

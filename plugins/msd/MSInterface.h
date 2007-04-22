@@ -10,6 +10,12 @@
 #define MSDINTF_H
 
 //
+//		Local Includes
+#include "global.h"
+#include "MSDItem.h"
+#include "BitMapView.h"
+
+//
 //		Includes
 #include <image.h>
 #include <AppFileInfo.h>
@@ -30,17 +36,13 @@
 #include <Picture.h>
 #include <Bitmap.h>
 #include <CAM.h>
-#ifdef __ZETA__
+#ifdef _ZETA_OS_
 	#include <usb/USBKit.h>
 #else
 	#include "USBKit.h"
 #endif
 
-//
-//		Local Includes
-#include "global.h"
-#include "MSDItem.h"
-#include "BitMapView.h"
+
 
 //
 //		CameraInterface class

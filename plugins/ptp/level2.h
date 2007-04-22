@@ -7,6 +7,7 @@
 #include <Errors.h> // For Return Type
 #include <map>
 #include <Bitmap.h>
+#include <Looper.h>
 // user includes
 extern "C" {
 #include "ptp.h"

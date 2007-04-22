@@ -9,18 +9,9 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-// OS
-//#define __ZETA__
-#define __HAIKU__
-
 //includes
 #include <File.h>
 #include <NodeInfo.h>
-#ifdef __ZETA__
-	#include <locale/Locale.h>
-	#include <locale/Paramable.h>
-	#include <locale/Formatter.h>
-#endif
 
 
 // defenitions

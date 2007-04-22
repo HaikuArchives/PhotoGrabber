@@ -88,10 +88,9 @@ void	BeCam_StatusView::Draw(BRect rect)
 }
 //		
 //		Status Bar:: Constructor of the Window
-#ifdef __ZETA__
+#ifdef _ZETA_OS_
 BeCam_StatusWindow::BeCam_StatusWindow(float xPos,float yPos,uint32 maxpics, char *message, BeCam_MainWindow *mainWindow):BWindow(BRect(xPos, yPos,WINDOW_WIDTH_STATUS + xPos,WINDOW_HEIGHT_STATUS + yPos), _T("PhotoGrabber download status"), B_TITLED_WINDOW, B_WILL_DRAW | B_NOT_MINIMIZABLE | B_NOT_ZOOMABLE |B_NOT_RESIZABLE)
-#endif
-#ifdef __HAIKU__
+#else
 BeCam_StatusWindow::BeCam_StatusWindow(float xPos,float yPos,uint32 maxpics, char *message, BeCam_MainWindow *mainWindow):BWindow(BRect(xPos, yPos,WINDOW_WIDTH_STATUS + xPos,WINDOW_HEIGHT_STATUS + yPos), "PhotoGrabber download status", B_TITLED_WINDOW, B_WILL_DRAW | B_NOT_MINIMIZABLE | B_NOT_ZOOMABLE |B_NOT_RESIZABLE)
 #endif
 {

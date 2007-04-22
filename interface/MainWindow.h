@@ -7,9 +7,18 @@
 // File defenition
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
-//		Includes
+//
+// local Includes
 #include "intf_global.h"
+#include "Item.h"
+#include "MainView.h"
+#include "ListView.h"
+#include "StatusWindow.h"
+#include "AboutWindow.h"
+#include "ConfigWindow.h"
+#include "settings.h"
+//
+//		Includes
 #include <Window.h>
 #include <ScrollView.h>
 #include <Button.h>
@@ -21,7 +30,7 @@
 #include <FilePanel.h>
 #include <Alert.h>
 #include <PopUpMenu.h>
-#ifdef __ZETA__
+#ifdef _ZETA_OS_
 	#include <interface/IconMenu.h>
 	#include <experimental/ToolBar.h>	
 	#include <experimental/BitmapTool.h>
@@ -30,15 +39,7 @@
 #include <interface/Bitmap.h>
 #include <app/Looper.h>
 #include <Path.h>
-//
-// local Includes
-#include "Item.h"
-#include "MainView.h"
-#include "ListView.h"
-#include "StatusWindow.h"
-#include "AboutWindow.h"
-#include "ConfigWindow.h"
-#include "settings.h"
+
 
 //		PTP wrapper class
 class BeCam_MainWindow : public BWindow
@@ -65,10 +66,9 @@ class BeCam_MainWindow : public BWindow
 		void				removeSelectedItems();
 		void				loadButtonPictures();
 		void				addMenuBar();
-		#ifdef __ZETA__
+		#ifdef _ZETA_OS_
 			void				addToolBar();
-		#endif
-		#ifdef __HAIKU__
+		#else
 			void				addActionBar();
 		#endif
 		void				addStatusBar();
@@ -88,7 +88,7 @@ class BeCam_MainWindow : public BWindow
 		BMenu				*becam_extraMenu;
 		BScrollView			*becam_scrollview;
         BTextControl		*becam_winstatusbar;
-        #ifdef __ZETA__
+        #ifdef _ZETA_OS_
         	BToolBar			*becam_toolBar;
 			BTool				*becam_tbDownload;
 			BTool				*becam_tbRemove;

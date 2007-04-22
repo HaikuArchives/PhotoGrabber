@@ -14,12 +14,13 @@
 #include <vector>
 #include <map>
 #include <Looper.h>
-#ifdef __ZETA__
+#include "MSInterface.h"
+#ifdef _ZETA_OS_
 	#include <usb/USBKit.h>
 #else
 	#include "USBKit.h"
 #endif
-#include "MSInterface.h"
+
 
 const int32 MSG_UPDATEBAR			= 0x01012001;
 

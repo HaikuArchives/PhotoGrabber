@@ -9,7 +9,11 @@
 //	Local includes
 #include "Camera.h"
 #include "core_system.h"
-
+#ifdef _ZETA_OS_
+	#include <locale/Locale.h>
+	#include <locale/Paramable.h>
+	#include <locale/Formatter.h>
+#endif
 //
 //		External variables
 extern class BeDiGiCamApp *app;
@@ -17,7 +21,7 @@ extern class BeDiGiCamApp *app;
 // Camera::constructor
 Camera::Camera(char *libName, char *looperName) : BLooper(looperName)
 {
-	#ifdef __ZETA__
+	#ifdef _ZETA_OS_
 		CameraModel = _T("not available");
 		CameraManufacturer = _T("not available");
 		CameraVersion = _T("no version");

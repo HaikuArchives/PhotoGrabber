@@ -14,7 +14,7 @@
 #include <vector>
 #include <map>
 #include <Looper.h>
-#ifdef __ZETA__
+#ifdef _ZETA_OS_
 	#include <usb/USBKit.h>
 #else
 	#include "USBKit.h"

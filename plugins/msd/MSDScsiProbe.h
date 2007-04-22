@@ -8,6 +8,10 @@
 // File defenition
 #ifndef  MSDSCSIPROBE_H
 #define MSDSCSIPROBE_H
+
+//
+// Local Includes
+#include "global.h"
 //
 // Includes
 #include <stdio.h>
@@ -18,14 +22,12 @@
 #include <Path.h>
 #include <scsi.h>
 #include <CAM.h>
-#ifdef __ZETA__
+#ifdef _ZETA_OS_
 	#include <usb/USBKit.h>
 #else
 	#include "USBKit.h"
 #endif
-//
-// Local Includes
-#include "global.h"
+
 
 char *SCSIProbeMount(const char *device_path, BUSBDevice *usbdev);
 bool SCSIUnmount(char *usbDeviceName);

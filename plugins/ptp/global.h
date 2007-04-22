@@ -34,8 +34,7 @@
 
 // OS
 
-//#define __ZETA__
-#define __HAIKU__
+#define _HAIKU_OS_
 
 
 

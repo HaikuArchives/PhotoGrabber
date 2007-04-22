@@ -9,6 +9,9 @@
 #ifndef CORESYS_H
 #define CORESYS_H
 
+// OS
+#define _HAIKU_OS_
+
 //
 // Includes
 #include <Application.h>
