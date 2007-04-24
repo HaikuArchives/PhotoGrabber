@@ -271,7 +271,7 @@ bool CamInterface::takeItem()
 }
 //
 //		Interface: get Name
-char* CamInterface::getName(int index)
+char* CamInterface::getName(int /*index*/)
 {
 	char * itemName;
 	
