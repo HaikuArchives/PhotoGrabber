@@ -9,6 +9,7 @@
 #define PTPINTF_H
 //
 // Include
+#include "global.h"
 #ifdef _ZETA_OS_
 	#include <usb/USBKit.h>
 #else
@@ -17,7 +18,7 @@
 extern "C" {
 #include "ptp.h"
 }
-#include "global.h"
+
 
 int					PTP_findendpoint(int type, int &interface, int &endpoint);
 bool 				PTP_init_ptp_usb(PTPParams* params, BUSBDevice* dev);

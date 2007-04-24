@@ -14,6 +14,7 @@
 #include <vector>
 #include <map>
 #include <Looper.h>
+#include "PTPInterface.h"
 #ifdef _ZETA_OS_
 	#include <usb/USBKit.h>
 #else
@@ -23,7 +24,7 @@
 extern "C" {
 #include "ptp.h"
 }
-#include "PTPInterface.h"
+
 
 const int32 MSG_UPDATEBAR			= 0x01012001;
 
