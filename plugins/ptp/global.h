@@ -4,6 +4,9 @@
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
  
+// local includes
+#include "target_os.h"
+
 // include
 #include <File.h>
 #include <NodeInfo.h>
@@ -31,13 +34,4 @@
 // Type camera
 #define	TYPE_PAR		0
 #define TYPE_USB		1
-
-// OS
-
-#define _HAIKU_OS_
-
-
-
-
-
 

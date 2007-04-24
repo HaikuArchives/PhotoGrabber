@@ -9,8 +9,8 @@
 #ifndef WGLOBAL_H
 #define WGLOBAL_H
 
-// OS
-#define _HAIKU_OS_
+#include "target_os.h"
+
 //includes
 #ifdef _ZETA_OS_
 	#include <locale/Locale.h>
