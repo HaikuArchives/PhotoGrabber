@@ -30,6 +30,10 @@ BeDiGiCamApp::BeDiGiCamApp()
 //	BeDiGiCam::Destructor (cleaning up)
 BeDiGiCamApp::~BeDiGiCamApp()
 {
+	delete[] globalPath;
+	delete[] title;
+	delete[] bgcolor;
+	
 	//nothing yet
 }
 // 
