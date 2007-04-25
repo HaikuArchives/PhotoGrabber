@@ -70,8 +70,7 @@ CamInterface::CamInterface(char *libName)
 //
  CamInterface::~CamInterface()
 {
-//	if (addonId >= 0)
-//		unload_add_on (addonId);
+	unload_add_on (addonId);
 }
 //
 //	Interface::getSymbols
