@@ -21,6 +21,7 @@ BeDiGiCamApp::BeDiGiCamApp()
 		: BApplication(APP_SIG)
 {
 	//Initialization
+	camera = NULL;
 	globalPath = new char[512];
 	title =	new char[512];
 	bgcolor = new char[512];
@@ -33,8 +34,7 @@ BeDiGiCamApp::~BeDiGiCamApp()
 	delete[] globalPath;
 	delete[] title;
 	delete[] bgcolor;
-	
-	//nothing yet
+	delete camera;
 }
 // 
 // 	BeDiGiCam::The application is running, time to startup the rest
@@ -75,7 +75,7 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
 				break;
 			case CAM_CONNECT:
 			{
-				if(camera->OpenCamera())
+				if(camera && camera->OpenCamera())
 				{
 					BMessage reply(CAM_CONNECT_OK);
 					message->SendReply(&reply);
@@ -93,7 +93,8 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
 				break;
 			}
 			case CAM_DISCON:
-				camera->CloseCamera();
+				if (camera)
+					camera->CloseCamera();
 				break;
 			case ADD_ITEM:
 			case B_COPY_TARGET:
@@ -101,7 +102,8 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
 				break;
 			case DOWN_ITEM:
 			case REM_ITEM:
-				camera->PostMessage(message);
+				if (camera)
+					camera->PostMessage(message);
 				break;
 			case RELOAD_CONFIGURATION:
             {

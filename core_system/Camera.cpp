@@ -43,7 +43,7 @@ Camera::Camera(char *libName, char *looperName) : BLooper(looperName)
 // Camera::destructor
 Camera::~Camera()
 {
-	delete(camInterface);
+	delete camInterface;
 	camInterface = NULL;
 }
 //
