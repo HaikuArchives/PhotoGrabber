@@ -14,7 +14,7 @@
 
 int globalEndpoint;
 short verbose = 0;
-int USBBULK_BUFFER = 512;
+unsigned int USBBULK_BUFFER = 512;
 FILE *lfptpi;
 
  //		Find Endpoint
@@ -134,7 +134,7 @@ PTP_ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 
 			if(result > 0)
 			{
-				int i = 0;
+				unsigned int i = 0;
 				#ifdef DEBUG
 				lfptpi = fopen(LOGFILE,"a");
 				fprintf(lfptpi,"Transfer data : %d\n",(int)strlen((char *)buf));

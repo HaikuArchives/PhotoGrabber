@@ -97,7 +97,7 @@ void BeCam_PictureItem::DrawItem(BView *owner, BRect frame, bool complete)
 	owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight));
 	owner->DrawString(PictureName.String());
 	
-	char *orient[10]={"", "(Landscape)", "", "", "", "", "(Portrait)", "(Landscape)", "(Portrait)", ""};
+	//char *orient[10]={"", "(Landscape)", "", "", "", "", "(Portrait)", "(Landscape)", "(Portrait)", ""};
 
 	if((PictureOrientation==6) || (PictureOrientation==8))
 	{

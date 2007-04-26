@@ -17,9 +17,9 @@
 //
 // External variables
 bool tbExpanded;
-#pragma export on
+//#pragma export on
 extern "C" BWindow * instantiate_mainWindow(BLooper *core, int devtype);
-#pragma export reset
+//#pragma export reset
 FILE *lfmainw;
 //
 // Exported function
@@ -299,7 +299,7 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
 	//
 	if(becam_listview->CurrentSelection() >= 0)
 	{
-		BMessage *caminterface;
+		//BMessage *caminterface;
 		entry_ref refentry;
 		int count,index=0,selectedindex=0;
 		uint32 totalpics=0;
@@ -329,7 +329,7 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
 		BParamable buffer = _TPS("Downloading number NUMBER of the TOTAL selected files").Replace("NUMBER",BFormatter("%d",(uint32)0)).Replace("TOTAL",BFormatter("%d",totalpics));
 		sprintf(tmpBuffer,buffer.String());
 	#else
-		sprintf(tmpBuffer,"Downloading number %d of the %d selected files",(uint32)0,totalpics);
+		sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)0,totalpics);
 	#endif	
 		CreateStatusWindow(totalpics, tmpBuffer);
 		UpdateStatusWindow(0, tmpBuffer);
@@ -362,7 +362,7 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
 						buffer = _TPS("Downloading number NUMBER of the TOTAL selected files").Replace("NUMBER",BFormatter("%d",(uint32)selectedindex)).Replace("TOTAL",BFormatter("%d",totalpics));
 						sprintf(tmpBuffer,buffer.String());
 					#else
-						sprintf(tmpBuffer,"Downloading number %d of the %d selected files",(uint32)selectedindex,totalpics);
+						sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)selectedindex,totalpics);
 					#endif
 					UpdateStatusWindow(1,tmpBuffer);
 				}
@@ -450,14 +450,14 @@ void BeCam_MainWindow::removeSelectedItems()
 			}
 			#ifdef DEBUG
 			lfmainw = fopen(LOGFILE,"a");	
-			fprintf(lfmainw,"MAINWINDOW - %d items should be removed\n",totalpics);
+			fprintf(lfmainw,"MAINWINDOW - %ld items should be removed\n",totalpics);
 			fclose(lfmainw);
 			#endif
 		#ifdef _ZETA_OS_		
 			BParamable buffer = _TPS("Removing number NUMBER of the TOTAL selected files").Replace("NUMBER",BFormatter("%d",(uint32)0)).Replace("TOTAL",BFormatter("%d",totalpics));
 			sprintf(tmpBuffer,buffer.String());
 		#else	
-			sprintf(tmpBuffer,"Removing number %d of the %d selected files",(uint32)0,totalpics);
+			sprintf(tmpBuffer,"Removing number %ld of the %ld selected files",(uint32)0,totalpics);
 		#endif	
 			CreateStatusWindow(totalpics, tmpBuffer);
 			UpdateStatusWindow(0, tmpBuffer);
@@ -480,7 +480,7 @@ void BeCam_MainWindow::removeSelectedItems()
 						buffer = _TPS("Removing number NUMBER of the TOTAL selected files").Replace("NUMBER",BFormatter("%d",(uint32)selectedindex)).Replace("TOTAL",BFormatter("%d",totalpics));
 						sprintf(tmpBuffer,buffer.String());
 					#else	
-						sprintf(tmpBuffer,"Removing number %d of the %d selected files",(uint32)selectedindex,totalpics);
+						sprintf(tmpBuffer,"Removing number %ld of the %ld selected files",(uint32)selectedindex,totalpics);
 					#endif	
 						UpdateStatusWindow(1,tmpBuffer);
 						removeItem(selectedItem);
@@ -851,7 +851,7 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			reply.FindInt32("devtype",&devtype);
 			#ifdef DEBUG
 			lfmainw = fopen(LOGFILE,"a");	
-			fprintf(lfmainw,"MAINWINDOW - device type is: %d\n",devtype);
+			fprintf(lfmainw,"MAINWINDOW - device type is: %ld\n",devtype);
 			fclose(lfmainw);
 			#endif
 			if(devtype == TYPE_PAR)

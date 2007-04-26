@@ -273,9 +273,9 @@ void BeCam_ConfigWindow::OpenPluginConfig()
 	fprintf(lfconfigw,"CONFIGWINDOW - Begin open plugin\n");
 	fclose(lfconfigw);
 	#endif
-	BWindow	*configWindow;
+	//BWindow	*configWindow;
 	BRect rect = Frame();
-	int Xpos,Ypos;
+	float Xpos,Ypos;
 	Xpos = rect.left + ((rect.right - rect.left)/2);
 	Ypos = rect.top + ((rect.bottom - rect.top)/2);
 	BPoint lPoint(Xpos,Ypos);
