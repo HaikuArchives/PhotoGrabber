@@ -168,8 +168,8 @@ bool Camera::GetCameraInfo()
 //	Camera::Get the item bitmap
 bool Camera::DownloadItem(uint32 itemhandle, entry_ref *copyToDir)
 {
-	int size;
-	char	tmpBuffer[100];
+	//int size;
+	//char	tmpBuffer[100];
 	BPath saveDirectory;
 	// Save directory bepalen
 	if(copyToDir != NULL)
