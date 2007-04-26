@@ -3,7 +3,7 @@
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
-// 
+//
 //	Includes
 #include <stdio.h>
 //	Local includes

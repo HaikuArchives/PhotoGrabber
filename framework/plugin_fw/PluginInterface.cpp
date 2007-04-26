@@ -75,86 +75,86 @@ CamInterface::CamInterface(char *libName)
 //
 //	Interface::getSymbols
 //
-bool CamInterface::getSymbols(image_id addonId)
+bool CamInterface::getSymbols(image_id pAddonId)
 {
-	if (get_image_symbol(addonId, "get_BDCP_API_Revision", B_SYMBOL_TYPE_TEXT, (void **)&get_BDCP_API_Revision) == B_OK)
+	if (get_image_symbol(pAddonId, "get_BDCP_API_Revision", B_SYMBOL_TYPE_TEXT, (void **)&get_BDCP_API_Revision) == B_OK)
 	{
 		check_revision = true;
 	}
-	if (get_image_symbol(addonId, "getPluginVersion", B_SYMBOL_TYPE_TEXT, (void **)&getPluginVersion) == B_OK)
+	if (get_image_symbol(pAddonId, "getPluginVersion", B_SYMBOL_TYPE_TEXT, (void **)&getPluginVersion) == B_OK)
 	{
 		check_pluginVersion = true;
 	}
-	if (get_image_symbol(addonId, "getSupportedCameras", B_SYMBOL_TYPE_TEXT, (void **)&getSupportedCameras) == B_OK)
+	if (get_image_symbol(pAddonId, "getSupportedCameras", B_SYMBOL_TYPE_TEXT, (void **)&getSupportedCameras) == B_OK)
 	{
 		check_supcams = true;
 	}
-	if (get_image_symbol(addonId, "openCamera", B_SYMBOL_TYPE_TEXT, (void **)&openCamera) == B_OK)
+	if (get_image_symbol(pAddonId, "openCamera", B_SYMBOL_TYPE_TEXT, (void **)&openCamera) == B_OK)
 	{
 		check_openCamera = true;
 	}
-	if (get_image_symbol(addonId, "closeCamera", B_SYMBOL_TYPE_TEXT, (void **)&closeCamera) == B_OK)
+	if (get_image_symbol(pAddonId, "closeCamera", B_SYMBOL_TYPE_TEXT, (void **)&closeCamera) == B_OK)
 	{
 		check_closeCamera = true;
 	}
-	if (get_image_symbol(addonId, "getNumberofPics", B_SYMBOL_TYPE_TEXT, (void **)&getNumberofPics) == B_OK)
+	if (get_image_symbol(pAddonId, "getNumberofPics", B_SYMBOL_TYPE_TEXT, (void **)&getNumberofPics) == B_OK)
 	{
 		check_numberOfPictures = true;
 	}
-	if (get_image_symbol(addonId, "setCurrentPicture", B_SYMBOL_TYPE_TEXT, (void **)&setCurrentPicture) == B_OK)
+	if (get_image_symbol(pAddonId, "setCurrentPicture", B_SYMBOL_TYPE_TEXT, (void **)&setCurrentPicture) == B_OK)
 	{
 		check_currentPicture = true;
 	}
-	if (get_image_symbol(addonId, "downloadPicture", B_SYMBOL_TYPE_TEXT, (void **)&downloadPicture) == B_OK)
+	if (get_image_symbol(pAddonId, "downloadPicture", B_SYMBOL_TYPE_TEXT, (void **)&downloadPicture) == B_OK)
 	{
 		check_downloadPicture = true;
 	}
-	if (get_image_symbol(addonId, "deletePicture", B_SYMBOL_TYPE_TEXT, (void **)&deletePicture) == B_OK)
+	if (get_image_symbol(pAddonId, "deletePicture", B_SYMBOL_TYPE_TEXT, (void **)&deletePicture) == B_OK)
 	{
 		check_deletePicture = true;
 	}
-	if (get_image_symbol(addonId, "takePicture", B_SYMBOL_TYPE_TEXT, (void **)&takePicture) == B_OK)
+	if (get_image_symbol(pAddonId, "takePicture", B_SYMBOL_TYPE_TEXT, (void **)&takePicture) == B_OK)
 	{
 		check_takePicture = true;
 	}
-	if (get_image_symbol(addonId, "getImageName", B_SYMBOL_TYPE_TEXT, (void **)&getImageName) == B_OK)
+	if (get_image_symbol(pAddonId, "getImageName", B_SYMBOL_TYPE_TEXT, (void **)&getImageName) == B_OK)
 	{
 		check_imageName = true;
 	}
-	if (get_image_symbol(addonId, "getImageSize", B_SYMBOL_TYPE_TEXT, (void **)&getImageSize) == B_OK)
+	if (get_image_symbol(pAddonId, "getImageSize", B_SYMBOL_TYPE_TEXT, (void **)&getImageSize) == B_OK)
 	{
 		check_imageSize = true;
 	}
-	if (get_image_symbol(addonId, "getImageDate", B_SYMBOL_TYPE_TEXT, (void **)&getImageDate) == B_OK)
+	if (get_image_symbol(pAddonId, "getImageDate", B_SYMBOL_TYPE_TEXT, (void **)&getImageDate) == B_OK)
 	{
 		check_imageDate = true;
 	}
-	if (get_image_symbol(addonId, "configurePlugin", B_SYMBOL_TYPE_TEXT, (void **)&configurePlugin) == B_OK)
+	if (get_image_symbol(pAddonId, "configurePlugin", B_SYMBOL_TYPE_TEXT, (void **)&configurePlugin) == B_OK)
 	{
 		check_configurePlugin = true;
 	}
-	if (get_image_symbol(addonId, "setMessageTarget", B_SYMBOL_TYPE_TEXT, (void **)&setMessageTarget) == B_OK)
+	if (get_image_symbol(pAddonId, "setMessageTarget", B_SYMBOL_TYPE_TEXT, (void **)&setMessageTarget) == B_OK)
 	{
 		check_messageTarget = true;
 	}
-	if (get_image_symbol(addonId, "getLevel3FunctionNames", B_SYMBOL_TYPE_TEXT, (void **)&getLevel3FunctionNames) == B_OK)
+	if (get_image_symbol(pAddonId, "getLevel3FunctionNames", B_SYMBOL_TYPE_TEXT, (void **)&getLevel3FunctionNames) == B_OK)
 	{
 		check_level3Functions = true;
 	}
-	if (get_image_symbol(addonId, "getThumbnail", B_SYMBOL_TYPE_TEXT, (void **)&getThumbnail) == B_OK)
+	if (get_image_symbol(pAddonId, "getThumbnail", B_SYMBOL_TYPE_TEXT, (void **)&getThumbnail) == B_OK)
 	{
 		check_thumbnail = true;
 	}
 	//Level 2 BDCP3
-	if (get_image_symbol(addonId, "getImageHeight", B_SYMBOL_TYPE_TEXT, (void **)&getImageHeight) == B_OK)
+	if (get_image_symbol(pAddonId, "getImageHeight", B_SYMBOL_TYPE_TEXT, (void **)&getImageHeight) == B_OK)
 	{
 		check_imageHeight = true;
 	}
-	if (get_image_symbol(addonId, "getImageWidth", B_SYMBOL_TYPE_TEXT, (void **)&getImageWidth) == B_OK)
+	if (get_image_symbol(pAddonId, "getImageWidth", B_SYMBOL_TYPE_TEXT, (void **)&getImageWidth) == B_OK)
 	{
 		check_imageWidth = true;
 	}
-	if (get_image_symbol(addonId, "getDeviceType", B_SYMBOL_TYPE_TEXT, (void **)&getDeviceType) == B_OK)
+	if (get_image_symbol(pAddonId, "getDeviceType", B_SYMBOL_TYPE_TEXT, (void **)&getDeviceType) == B_OK)
 	{
 		check_deviceType = true;
 	}

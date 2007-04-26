@@ -225,7 +225,7 @@ bool BeDiGiCamApp::GetCameraStrings()
 	char *addonName;
 	BEntry appentry;
 	BPath path;
-	image_id addonId;
+	image_id lAddonId;
 	// get the path of the application
 	app_info info; 
   	app->GetAppInfo(&info); 
@@ -259,10 +259,10 @@ bool BeDiGiCamApp::GetCameraStrings()
     	{
       		addonName = new char[B_FILE_NAME_LENGTH];
       		entry.GetName(addonName);
-			addonId = load_add_on(path.Path());
+			lAddonId = load_add_on(path.Path());
 			if(addonId > 0)
 			{
-				unload_add_on(addonId);
+				unload_add_on(lAddonId);
 				interface = new CamInterface(addonName);
 				vector<string> plugincamstrings = interface->getCameraStrings();
 				vector<string>::iterator i = plugincamstrings.begin();
