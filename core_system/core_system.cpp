@@ -34,7 +34,8 @@ BeDiGiCamApp::~BeDiGiCamApp()
 	delete[] globalPath;
 	delete[] title;
 	delete[] bgcolor;
-	delete camera;
+	//Jixt: bug 15 - temporary fix
+	//delete camera;
 }
 // 
 // 	BeDiGiCam::The application is running, time to startup the rest
