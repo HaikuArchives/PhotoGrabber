@@ -15,6 +15,13 @@
 #include "core_global.h"
 #include "debug.h"
 //
+// ZETA locale
+#ifdef _ZETA_OS_
+#include <locale/Locale.h>
+#else
+#define _T (x) (x)
+#endif
+//
 // External variables
 bool tbExpanded;
 //#pragma export on
@@ -111,7 +118,7 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 	r.top = becam_listview->Frame().bottom + 10;
 	r.left = 5;
 	r.right= r.left + 250;
-	becam_downloadPopup = new BMenuField(r, "path", "Download Folder:", 
+	becam_downloadPopup = new BMenuField(r, "path", _T("Download Folder:"), 
 											becam_downloadMenu,
 											B_FOLLOW_BOTTOM,
 											B_WILL_DRAW | B_NAVIGABLE);
@@ -171,25 +178,25 @@ void BeCam_MainWindow::addMenuBar ()
 #else
 	// HAIKU:: Add File menu to the menu bar
 	becam_fileMenu = new BMenu("File");
-	becam_fileMenu->AddItem(new BMenuItem("About" , new BMessage(ABOUT)));
+	becam_fileMenu->AddItem(new BMenuItem(_T("About") , new BMessage(ABOUT)));
 	becam_fileMenu->AddSeparatorItem();
-	becam_fileMenu->AddItem(new BMenuItem("Preferences" , new BMessage(CONFIG),'P'));
+	becam_fileMenu->AddItem(new BMenuItem(_T("Preferences") , new BMessage(CONFIG),'P'));
 	becam_fileMenu->AddSeparatorItem();
-	becam_fileMenu->AddItem(new BMenuItem("Quit", new BMessage(QUIT), 'Q'));
+	becam_fileMenu->AddItem(new BMenuItem(_T("Quit"), new BMessage(QUIT), 'Q'));
 	becam_menubar->AddItem(becam_fileMenu);
 #endif
 	// Add Extra menu to the menu bar
-	becam_extraMenu = new BMenu("Extra");
-	becam_extraMenu->AddItem(new BMenuItem("Download" , new BMessage(DOWN_BUTTON), 'S'));
-	becam_extraMenu->AddItem(new BMenuItem("Delete" , new BMessage(DEL_BUTTON),'D'));
+	becam_extraMenu = new BMenu(_T("Extra"));
+	becam_extraMenu->AddItem(new BMenuItem(_T("Download") , new BMessage(DOWN_BUTTON), 'S'));
+	becam_extraMenu->AddItem(new BMenuItem(_T("Delete") , new BMessage(DEL_BUTTON),'D'));
 	becam_extraMenu->SetEnabled(false);
 	becam_menubar->AddItem(becam_extraMenu);
 	//	Add extra BDCP menu
 	BMenuItem *disconnect;
-	actionsMenu = new BMenu("Actions");
-	actionsMenu->AddItem(new BMenuItem("Connect" , new BMessage(CAM_CONNECT)));
-	actionsMenu->AddItem(new BMenuItem("Disconnect" , new BMessage(CAM_DISCON)));
-	disconnect = actionsMenu->FindItem("Disconnect");
+	actionsMenu = new BMenu(_T("Actions"));
+	actionsMenu->AddItem(new BMenuItem(_T("Connect") , new BMessage(CAM_CONNECT)));
+	actionsMenu->AddItem(new BMenuItem(_T("Disconnect") , new BMessage(CAM_DISCON)));
+	disconnect = actionsMenu->FindItem(_T("Disconnect"));
 	disconnect->SetEnabled(false);
 	becam_menubar->AddItem(actionsMenu);
 	if(devicetype == TYPE_USB)
@@ -232,13 +239,13 @@ void BeCam_MainWindow::addActionBar ()
 	r.top = becam_listview->Frame().bottom + 35;
 	r.bottom = r.top + 30;
 	// Create download button
-	becam_download = new BButton(r, "download", "Download",new BMessage(DOWN_BUTTON), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
+	becam_download = new BButton(r, "download", _T("Download"),new BMessage(DOWN_BUTTON), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
 	becam_download->SetEnabled(false);
 	becam_view->AddChild(becam_download);
 	r.left = r.right + 20;
 	r.right = r.left + 108;
 	// Create delete button
-	becam_delete = new BButton(r, "delete", "Delete",new BMessage(DEL_BUTTON), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
+	becam_delete = new BButton(r, "delete", _T("Delete"),new BMessage(DEL_BUTTON), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
 	becam_view->AddChild(becam_delete);
 	becam_delete->SetEnabled(false);
 	

@@ -21,9 +21,18 @@
 #include "configplugin.h"
 #include "MenuField.h"
 
+//
+// ZETA locale
+#ifdef _ZETA_OS_
+#include <locale/Locale.h>
+#else
+#define _T (x) (x)
+#endif
+//
+
 const rgb_color BKG_GREY		= { 216, 216, 216, 0 };
 
-configplugin::configplugin(BRect rect) :BWindow(rect, "Communication Properties", B_MODAL_WINDOW,	B_NOT_RESIZABLE | B_NOT_ZOOMABLE | B_WILL_DRAW)
+configplugin::configplugin(BRect rect) :BWindow(rect, _T("Communication Properties"), B_MODAL_WINDOW,	B_NOT_RESIZABLE | B_NOT_ZOOMABLE | B_WILL_DRAW)
 {
  	/*LoadSettingsFromFile();
  	BMenuItem *type1,*type2;
@@ -41,20 +50,20 @@ configplugin::configplugin(BRect rect) :BWindow(rect, "Communication Properties"
 	menu->AddItem(type2);
 		
 	
-	BMenuField* popup = new BMenuField(BRect(22, 40, 150, 180), "port", "Type:", menu);
-	popup->SetDivider(be_plain_font->StringWidth("Endpoint :") + 5);
+	BMenuField* popup = new BMenuField(BRect(22, 40, 150, 180), "port", _T("Type:"), menu);
+	popup->SetDivider(be_plain_font->StringWidth(_T("Endpoint :")) + 5);
 	
-	endpointview = new BView(BRect(0,0,500,500), "Communications View", B_FOLLOW_ALL_SIDES, B_WILL_DRAW);
+	endpointview = new BView(BRect(0,0,500,500), _T("Communications View"), B_FOLLOW_ALL_SIDES, B_WILL_DRAW);
 	endpointview->SetViewColor(BKG_GREY);
 	AddChild(endpointview);
 
 	BBox *box_L1S1 = new BBox(BRect(7, 8, 140, 232), "name", B_FOLLOW_LEFT | B_FOLLOW_TOP, B_FRAME_EVENTS | B_NAVIGABLE_JUMP | B_WILL_DRAW, B_FANCY_BORDER);
-	box_L1S1->SetLabel("Communications");
+	box_L1S1->SetLabel(_T("Communications"));
 	endpointview->AddChild(box_L1S1);
-	BStringView *stringView_L2S10 = new BStringView(BRect(22, 20, 92, 40), "name", "Endpoint:", B_FOLLOW_LEFT|B_FOLLOW_TOP, B_WILL_DRAW);
+	BStringView *stringView_L2S10 = new BStringView(BRect(22, 20, 92, 40), "name", _T("Endpoint:"), B_FOLLOW_LEFT|B_FOLLOW_TOP, B_WILL_DRAW);
 	box_L1S1->AddChild(stringView_L2S10);
 	box_L1S1->AddChild(popup);
-	BButton *button_L1S22 = new BButton(BRect(20, 190, 120, 215), "name", "OK", new BMessage(CANCELPORTWINDOW), B_FOLLOW_LEFT|B_FOLLOW_TOP, B_NAVIGABLE|B_WILL_DRAW);
+	BButton *button_L1S22 = new BButton(BRect(20, 190, 120, 215), "name", _T("OK"), new BMessage(CANCELPORTWINDOW), B_FOLLOW_LEFT|B_FOLLOW_TOP, B_NAVIGABLE|B_WILL_DRAW);
 	box_L1S1->AddChild(button_L1S22);*/
 }
 

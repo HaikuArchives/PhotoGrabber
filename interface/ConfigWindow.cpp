@@ -14,7 +14,14 @@
 #include "ConfigWindow.h"
 #include "intf_global.h"
 #include "debug.h"
-
+//
+// ZETA locale
+#ifdef _ZETA_OS_
+#include <locale/Locale.h>
+#else
+#define _T (x) (x)
+#endif
+//
 FILE *lfconfigw;
 //
 //		Configview :: Constructor
@@ -33,7 +40,7 @@ BeCam_ConfigView::~BeCam_ConfigView(void)
 
 //
 //		ConfigWindow :: Constructor
-BeCam_ConfigWindow::BeCam_ConfigWindow(float xPos,float yPos,BeCam_MainWindow *mainWindow) : BWindow(BRect(xPos,yPos,xPos + WINDOW_WIDTH_CONFIG,yPos + WINDOW_HEIGHT_CONFIG), "PhotoGrabber Configuration", B_TITLED_WINDOW, B_WILL_DRAW | B_NOT_MINIMIZABLE | B_NOT_ZOOMABLE | B_NOT_RESIZABLE)
+BeCam_ConfigWindow::BeCam_ConfigWindow(float xPos,float yPos,BeCam_MainWindow *mainWindow) : BWindow(BRect(xPos,yPos,xPos + WINDOW_WIDTH_CONFIG,yPos + WINDOW_HEIGHT_CONFIG), _T("PhotoGrabber Configuration"), B_TITLED_WINDOW, B_WILL_DRAW | B_NOT_MINIMIZABLE | B_NOT_ZOOMABLE | B_NOT_RESIZABLE)
 {
 	parent = mainWindow;
 	// Get the settings from the system core
@@ -56,7 +63,7 @@ BeCam_ConfigWindow::BeCam_ConfigWindow(float xPos,float yPos,BeCam_MainWindow *m
 								B_WILL_DRAW | B_NAVIGABLE,
 								B_FANCY_BORDER
 								);
-	becam_configbox->SetLabel("Camera Configuration");
+	becam_configbox->SetLabel(_T("Camera Configuration"));
 	// 		Create the popup menu
 	//LoadSettingsFromFile();
 	// 		Add the camera type label to the config groupbox
@@ -64,30 +71,30 @@ BeCam_ConfigWindow::BeCam_ConfigWindow(float xPos,float yPos,BeCam_MainWindow *m
 	becam_typelabel->SetWordWrap(true);
 	becam_typelabel->MakeSelectable(false);
 	becam_typelabel->MakeEditable(false);
-	becam_typelabel->SetText("Please select your type of camera.");
+	becam_typelabel->SetText(_T("Please select your type of camera."));
 	rgb_color bg_color=ui_color(B_PANEL_BACKGROUND_COLOR);
 	becam_typelabel->SetViewColor(bg_color);
 	becam_configbox->AddChild(becam_typelabel);
 	//	Create the plugin details textboxes
-	BStringView *becam_pluginNameLabel = new BStringView(BRect(r.left + 15, r.top + 70 , r.left + 95, r.top + 85),"pnamelabel","Plugin Name:",B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
+	BStringView *becam_pluginNameLabel = new BStringView(BRect(r.left + 15, r.top + 70 , r.left + 95, r.top + 85),"pnamelabel",_T("Plugin Name:"),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
 	becam_configbox->AddChild(becam_pluginNameLabel);
 	becam_pluginName = new BStringView(BRect(r.left + 105, r.top + 70 , r.right - 20 , r.top + 85),"pluginnamefield","n/a",B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
 	//becam_pluginName->SetEnabled(false);
 	becam_configbox->AddChild(becam_pluginName);
 	//
-	BStringView *becam_pluginSourceLabel = new BStringView(BRect(r.left + 15, r.top + 90 , r.left + 95, r.top + 105),"psourcelabel","Plugin Source:",B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
+	BStringView *becam_pluginSourceLabel = new BStringView(BRect(r.left + 15, r.top + 90 , r.left + 95, r.top + 105),"psourcelabel",_T("Plugin Source:"),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
 	becam_configbox->AddChild(becam_pluginSourceLabel);
 	becam_pluginSource = new BStringView(BRect(r.left + 105, r.top + 90, r.right - 20, r.top + 105),"pluginsourcefield","n/a",B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
 	//becam_pluginSource->SetEnabled(false);
 	becam_configbox->AddChild(becam_pluginSource);
 	//
-	BStringView *becam_pluginVersionLabel = new BStringView(BRect(r.left + 15, r.top + 110 , r.left + 95, r.top + 125),"pverslabel","Plugin Version:",B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
+	BStringView *becam_pluginVersionLabel = new BStringView(BRect(r.left + 15, r.top + 110 , r.left + 95, r.top + 125),"pverslabel",_T("Plugin Version:"),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
 	becam_configbox->AddChild(becam_pluginVersionLabel);
 	becam_pluginVersion = new BStringView(BRect(r.left + 105, r.top + 110 , r.right - 20, r.top + 125),"pluginversionfield","n/a",B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
 	//becam_pluginVersion->SetEnabled(false);
 	becam_configbox->AddChild(becam_pluginVersion);
 	// 		Add the config button the the config box
-	becam_pluginConfig = new BButton(BRect(r.left + 15, r.top + 130, r.left + 145, r.top + 145), "pluginconfbutton", "Plugin Configuration",new BMessage(CONF_BUT), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
+	becam_pluginConfig = new BButton(BRect(r.left + 15, r.top + 130, r.left + 145, r.top + 145), "pluginconfbutton", _T("Plugin Configuration"),new BMessage(CONF_BUT), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
 	//becam_pluginConfig->SetEnabled(false);
 	becam_configbox->AddChild(becam_pluginConfig);
 	//
@@ -104,24 +111,24 @@ BeCam_ConfigWindow::BeCam_ConfigWindow(float xPos,float yPos,BeCam_MainWindow *m
 								B_WILL_DRAW | B_NAVIGABLE,
 								B_FANCY_BORDER
 								);
-	becam_debugbox->SetLabel("Debug Configuration");
+	becam_debugbox->SetLabel(_T("Debug Configuration"));
 	//		Add the Debug to terminal to the debug groupbox
-	becam_checkTerminal = new BCheckBox(BRect(15, 30, 200, 50),"terminalcheck","Debug to terminal",new BMessage(CHECK_TERMINAL),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW|B_NAVIGABLE);
+	becam_checkTerminal = new BCheckBox(BRect(15, 30, 200, 50),"terminalcheck",_T("Debug to terminal"),new BMessage(CHECK_TERMINAL),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW|B_NAVIGABLE);
 	//if(app->debugTerminal)
 	if(pgsettings->debugTerminal)
     	becam_checkTerminal->SetValue(true);
 	becam_debugbox->AddChild(becam_checkTerminal);
 	//		Add the Debug to file to the debug groupbox	
-	becam_checkFile = new BCheckBox(BRect(15, 60, 200, 80),"filecheck","Debug to file",new BMessage(CHECK_FILE),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW|B_NAVIGABLE);
+	becam_checkFile = new BCheckBox(BRect(15, 60, 200, 80),"filecheck",_T("Debug to file"),new BMessage(CHECK_FILE),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW|B_NAVIGABLE);
 	//if(app->debugFile)
 	if(pgsettings->debugFile)
     	becam_checkFile->SetValue(true);
 	becam_debugbox->AddChild(becam_checkFile);
 	// 		Add the save button the the view
-	becam_savebutton = new BButton(BRect(15, r.bottom + 5 , 108, r.bottom + 30), "name", "Save",new BMessage(SAVE_CONFIGURATION), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
+	becam_savebutton = new BButton(BRect(15, r.bottom + 5 , 108, r.bottom + 30), "name", _T("Save"),new BMessage(SAVE_CONFIGURATION), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
 	becam_configView->AddChild(becam_savebutton);
 	// 		Add the cancel button the the view
-	becam_cancelbutton = new BButton(BRect(113, r.bottom + 5, 206, r.bottom + 30), "name", "Cancel",new BMessage(CANCEL), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
+	becam_cancelbutton = new BButton(BRect(113, r.bottom + 5, 206, r.bottom + 30), "name", _T("Cancel"),new BMessage(CANCEL), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
 	becam_configView->AddChild(becam_cancelbutton);
 	// 		Add the config groupbox to the view
 	becam_configView->AddChild(becam_configbox);
@@ -233,8 +240,8 @@ void BeCam_ConfigWindow::CreateCameraTypeMenu(BRect r)
 	}
 	
 	// 	Add the popup menu to the config groupbox
-	becam_cameraPopup = new BMenuField(BRect(15, r.top + 50, r.right - 20, r.top + 15), "plugin", "Plugin:", becam_cameraMenu);
-	becam_cameraPopup->SetDivider(be_plain_font->StringWidth("Plugin:") + 5);
+	becam_cameraPopup = new BMenuField(BRect(15, r.top + 50, r.right - 20, r.top + 15), "plugin", _T("Plugin:"), becam_cameraMenu);
+	becam_cameraPopup->SetDivider(be_plain_font->StringWidth(_T("Plugin:")) + 5);
 	becam_configbox->AddChild(becam_cameraPopup);
 }
 

@@ -6,7 +6,13 @@
 // 
 //		Local Includes
 #include "AboutWindow.h"
-
+//
+// ZETA locale
+#ifdef _ZETA_OS_
+#include <locale/Locale.h>
+#else
+#define _T (x) (x)
+#endif
 //
 //		External variables
 //extern class BeDiGiCamApp *app;
@@ -93,7 +99,7 @@ void	BeCam_AboutView::Draw(BRect rect)
 
 //
 //		AboutWindow :: Constructor
-BeCam_AboutWindow::BeCam_AboutWindow(float xPos,float yPos,BeCam_MainWindow *mainWindow) : BWindow(BRect(xPos,yPos,xPos + WINDOW_WIDTH_ABOUT,yPos + WINDOW_HEIGHT_ABOUT), "About PhotoGrabber", B_DOCUMENT_WINDOW, B_WILL_DRAW | B_NOT_MINIMIZABLE | B_NOT_ZOOMABLE | B_NOT_RESIZABLE)
+BeCam_AboutWindow::BeCam_AboutWindow(float xPos,float yPos,BeCam_MainWindow *mainWindow) : BWindow(BRect(xPos,yPos,xPos + WINDOW_WIDTH_ABOUT,yPos + WINDOW_HEIGHT_ABOUT), _T("About PhotoGrabber"), B_DOCUMENT_WINDOW, B_WILL_DRAW | B_NOT_MINIMIZABLE | B_NOT_ZOOMABLE | B_NOT_RESIZABLE)
 {
 	parent = mainWindow;
 	view = new BeCam_AboutView(xPos,yPos);
