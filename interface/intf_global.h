@@ -9,7 +9,6 @@
 #ifndef WGLOBAL_H
 #define WGLOBAL_H
 
-#include "target_os.h"
 
 //includes
 #ifdef _ZETA_OS_

@@ -24,7 +24,6 @@
 
 //
 // Local Includes
-#include "target_os.h"
 #include "PluginInterface.h"
 //#include "MainWindow.h"
 #include "Camera.h"

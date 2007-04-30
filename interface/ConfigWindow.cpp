@@ -19,7 +19,7 @@
 #ifdef _ZETA_OS_
 #include <locale/Locale.h>
 #else
-#define _T (x) (x)
+#define _T(x) (x)
 #endif
 //
 FILE *lfconfigw;

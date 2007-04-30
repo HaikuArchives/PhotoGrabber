@@ -9,6 +9,10 @@
 #include <View.h>
 #include <Screen.h>
 #include <app/Messenger.h>
+#ifdef _ZETA_OS_
+	#include <locale/Locale.h>
+	#include <locale/Paramable.h>
+#endif
 //
 // Local includes
 #include "MainWindow.h"
@@ -19,7 +23,7 @@
 #ifdef _ZETA_OS_
 #include <locale/Locale.h>
 #else
-#define _T (x) (x)
+#define _T(x) (x)
 #endif
 //
 // External variables
