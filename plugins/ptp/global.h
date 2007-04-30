@@ -5,6 +5,7 @@
  *****************************************************************/
  
 // local includes
+#include "target_os.h"
 
 // include
 #include <File.h>
