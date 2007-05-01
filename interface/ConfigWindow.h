@@ -29,6 +29,7 @@
 
 //
 //		Local includes
+#include "intf_global.h"
 #include "core_global.h"
 #include "settings.h"
 #include "MainWindow.h"

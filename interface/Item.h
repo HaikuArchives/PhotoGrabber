@@ -8,17 +8,12 @@
 #ifndef ITEM_H
 #define ITEM_H
 
- //		Includes
+//		Includes
 #include <ListView.h>
-/*#include <Bitmap.h>
-#include <SupportKit.h>
-#include <locale/Locale.h>
-#include <locale/Formatter.h>
-*/
 //
 //		Local Includes
+#include "intf_global.h"
 #include "core_global.h"
-//#include "CamItem.h"
 #include "ItemData.h"
 
  //		define classes
@@ -42,7 +37,6 @@ class BeCam_Item : public BListItem
 		uint32			GetOrientation();
 		
 	private:
-		//CameraItem			*cameraItem;
 		ItemData				*itemdata;
 };
 

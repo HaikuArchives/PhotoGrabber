@@ -249,9 +249,7 @@ bool BeDiGiCamApp::GetCameraStrings()
 	{
 		err = searchDir.GetNextEntry(&entry,true);
 		if( entry.InitCheck() != B_NO_ERROR )
-		{
       		break;
-    	}
     	if( entry.GetPath(&path) != B_NO_ERROR )
     	{
     		printf( "entry.GetPath failed\n" );

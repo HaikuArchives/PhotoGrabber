@@ -3,6 +3,7 @@
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
+
 //
 #ifndef STATWINDOW_H
 #define STATWINDOW_H
@@ -13,6 +14,7 @@
 #include <StatusBar.h>
 //
 // Local includes
+#include "intf_global.h"
 #include "MainWindow.h"
 
 //

@@ -14,22 +14,7 @@
 
 BeCam_Item::BeCam_Item(ItemData *data) : BListItem()
 {
-	//cameraItem = item;
 	itemdata = data;
-	/*if(name != "")
-		ItemName = name;
-	else
-		ItemName = "no name";
-	ItemThumbBitmap=bitmap;
-	ItemAttrs=attrs;
-	ItemSize=size;
-	if(date != "")
-		ItemDate=date;
-	else
-		ItemDate = "01/01/2001";
-	ItemXres=Xres;
-	ItemYres=Yres;
-	ItemStatus = ITEM_NOT_DOWNLOADED;*/
 }
 
 //
@@ -37,8 +22,7 @@ BeCam_Item::BeCam_Item(ItemData *data) : BListItem()
 
 BeCam_Item::BeCam_Item() : BListItem()
 {
-	/*ItemThumbBitmap = NULL;
-	ItemStatus = ITEM_NOT_DOWNLOADED;*/
+	// nothing yet
 }
 
 //
@@ -46,12 +30,7 @@ BeCam_Item::BeCam_Item() : BListItem()
 
 BeCam_Item::~BeCam_Item()
 {
-	/*if(ItemThumbBitmap)
-	{
-		delete(ItemThumbBitmap);
-	}*/
-	//if(cameraItem != NULL)
-	//	delete(cameraItem);
+	//nothing yet
 }
 
 //
@@ -60,7 +39,6 @@ BeCam_Item::~BeCam_Item()
 void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete) 
 {
 	rgb_color color;
-	//rgb_color k_select={0x6c, 0xA6, 0xCD, 0xff};
 	rgb_color k_select=ui_color(B_MENU_SELECTION_BACKGROUND_COLOR);
 	rgb_color kt_ena={0x00, 0x00, 0x00, 0xff};
 	rgb_color kt_dis={0x77, 0x00, 0x00, 0xff};
@@ -68,8 +46,10 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 	BRect	rect;
 	font_height height;
 	float	fheight;
-	//char	tmps[40];
-	//BParamable tmpString = NULL;
+#ifdef _ZETA_OS_
+	char	tmps[40];
+	BParamable tmpString = NULL;
+#endif	
 	char tmpString[256];
 	owner->GetFontHeight(&height);
 	fheight=(height.ascent+height.descent);
@@ -115,51 +95,69 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 		rect.bottom=119;
 	}
 
-	//tmpString = _TPS("Name: NAME").Replace("NAME",GetName());
+#ifdef _ZETA_OS_	
+	tmpString = _TPS("Name: NAME").Replace("NAME",GetName());
+#else	
 	sprintf(tmpString,"Name: %s",GetName());
+#endif	
 	owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight));
-	//owner->DrawString(tmpString.String());
+#ifdef _ZETA_OS_	
+	owner->DrawString(tmpString.String());
+#else	
 	owner->DrawString(tmpString);
-
+#endif
 	if((GetOrientation()==6) || (GetOrientation()==8))
 	{
-		//tmpString = _TPS("Height: PIXELS pixels.").Replace("PIXELS",BFormatter("%ld",itemdata->ItemYres));
+	#ifdef _ZETA_OS_	
+		tmpString = _TPS("Height: PIXELS pixels.").Replace("PIXELS",BFormatter("%ld",itemdata->ItemYres));	
+		owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*3));
+		owner->DrawString(tmpString.String());
+		tmpString = _TPS("Width: PIXELS pixels.").Replace("PIXELS",BFormatter("%ld",itemdata->ItemXres));
+		owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*4));
+		owner->DrawString(tmpString.String());
+	#else	
 		sprintf(tmpString,"Height: %ld pixels.",itemdata->ItemYres);
 		owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*3));
-		//owner->DrawString(tmpString.String());
 		owner->DrawString(tmpString);
-		//tmpString = _TPS("Width: PIXELS pixels.").Replace("PIXELS",BFormatter("%ld",itemdata->ItemXres));
 		sprintf(tmpString,"Width: %ld pixels.",itemdata->ItemXres);
 		owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*4));
-		//owner->DrawString(tmpString.String());
 		owner->DrawString(tmpString);
+	#endif	
 		
 	}
 	else
 	{
-		//tmpString = _TPS("Height: PIXELS pixels.").Replace("PIXELS",BFormatter("%ld",itemdata->ItemYres));
+	#ifdef _ZETA_OS_
+		tmpString = _TPS("Height: PIXELS pixels.").Replace("PIXELS",BFormatter("%ld",itemdata->ItemYres));
+		owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*3));
+		owner->DrawString(tmpString.String());
+		tmpString = _TPS("Width: PIXELS pixels.").Replace("PIXELS",BFormatter("%ld",itemdata->ItemXres));
+		owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*4));
+		owner->DrawString(tmpString.String());
+	#else
 		sprintf(tmpString,"Height: %ld pixels.",itemdata->ItemYres);
 		owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*3));
-		//owner->DrawString(tmpString.String());
 		owner->DrawString(tmpString);
-		//tmpString = _TPS("Width: PIXELS pixels.").Replace("PIXELS",BFormatter("%ld",itemdata->ItemXres));
 		sprintf(tmpString,"Width: %ld pixels.",itemdata->ItemXres);		
 		owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*4));
-		//owner->DrawString(tmpString.String());
 		owner->DrawString(tmpString);
+	#endif
 	}
-	//tmpString = _TPS("Size: BYTES bytes.").Replace("BYTES",BFormatter("%ld",GetSize()));
+#ifdef _ZETA_OS_
+	tmpString = _TPS("Size: BYTES bytes.").Replace("BYTES",BFormatter("%ld",GetSize()));
+	owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*5));
+	owner->DrawString(tmpString.String());
+	tmpString = _TPS("Date: DATE").Replace("DATE",GetDate());
+	owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*6));
+	owner->DrawString(tmpString.String());
+#else
 	sprintf(tmpString,"Size: %ld bytes.",GetSize());
 	owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*5));
-	//owner->DrawString(tmpString.String());
 	owner->DrawString(tmpString);
-
-	//tmpString = _TPS("Date: DATE").Replace("DATE",GetDate());
 	sprintf(tmpString,"Date: %s",GetDate());
 	owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*6));
-	//owner->DrawString(tmpString.String());
 	owner->DrawString(tmpString);
-
+#endif
 	owner->MovePenTo(frame.left+4, frame.top+4);
 	if(GetThumbBitmap())
 	{
@@ -168,8 +166,11 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 	else
 	{
 		owner->MovePenTo(frame.left+10+40, frame.top+(60+(fheight/2)));
-		//owner->DrawString(_T("No thumbnail"));
+	#ifdef _ZETA_OS_	
+		owner->DrawString(_T("No thumbnail"));
+	#else	
 		owner->DrawString("No thumbnail");
+	#endif
 	}
 
 }

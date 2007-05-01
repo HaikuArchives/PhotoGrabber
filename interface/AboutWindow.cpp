@@ -6,16 +6,6 @@
 // 
 //		Local Includes
 #include "AboutWindow.h"
-//
-// ZETA locale
-#ifdef _ZETA_OS_
-#include <locale/Locale.h>
-#else
-#define _T(x) (x)
-#endif
-//
-//		External variables
-//extern class BeDiGiCamApp *app;
 
 //
 //		Aboutview :: Constructor

@@ -41,6 +41,7 @@ CamInterface::CamInterface(char *libName)
 	check_imageWidth = false;
 	check_imageHeight = false;
 	check_deviceType = false;
+	check_supcams = false;
 	//
 	BEntry appentry;
 	BPath path;

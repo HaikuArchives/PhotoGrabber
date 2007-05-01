@@ -3,28 +3,20 @@
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
+
 // 
 //		Includes
 #include <stdio.h>
 #include <View.h>
 #include <Screen.h>
 #include <app/Messenger.h>
-#ifdef _ZETA_OS_
-	#include <locale/Locale.h>
-	#include <locale/Paramable.h>
-#endif
 //
 // Local includes
 #include "MainWindow.h"
 #include "core_global.h"
 #include "debug.h"
 //
-// ZETA locale
-#ifdef _ZETA_OS_
-#include <locale/Locale.h>
-#else
-#define _T(x) (x)
-#endif
+
 //
 // External variables
 bool tbExpanded;
@@ -136,7 +128,7 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 	fclose(lfmainw);
 	#endif
 
-#ifdef _HAIKU_OS_	
+#ifndef _ZETA_OS_	
 	addActionBar();
 #endif	
 	
@@ -317,12 +309,11 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
 		char	tmpBuffer[100];
 		BeCam_Item *LocaleItem;
 		BMessage *cam_message;
-	#ifdef _ZETA_OS_
 		becam_winstatusbar->SetText(_T("Downloading items..."));
+	#ifdef _ZETA_OS_
 		becam_tbDownload->SetEnabled(false);
 		becam_tbRemove->SetEnabled(false);
 	#else	
-		becam_winstatusbar->SetText("Downloading items...");
 		becam_download->SetEnabled(false);
 		becam_delete->SetEnabled(false);
 	#endif	
@@ -390,19 +381,11 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
 	#endif		
 		becam_extraMenu->SetEnabled(true);
 		becam_downloadPopup->SetEnabled(true);
-	#ifdef _ZETA_OS_	
 		becam_winstatusbar->SetText(_T("All items have been downloaded."));
-	#else	
-		becam_winstatusbar->SetText("All items have been downloaded.");
-	#endif
 	}
 	else
 	{
-		#ifdef _ZETA_OS_
-			BAlert *myAlert = new BAlert(_T("Download"), _T("Please select some files."),_T("Ok"), NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
-		#else
-			BAlert *myAlert = new BAlert("Download", "Please select some files.","Ok", NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
-		#endif
+		BAlert *myAlert = new BAlert(_T("Download"), _T("Please select some files."),_T("Ok"), NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
 		myAlert->SetShortcut(0, B_ENTER);
 		myAlert->Go();
 	}
@@ -424,23 +407,18 @@ void BeCam_MainWindow::removeSelectedItems()
 		char	tmpBuffer[100];
 		BMessage *cam_message;
 		//
-	#ifdef _ZETA_OS_
-		becam_winstatusbar->SetText(_T("Removing items..."));		
+		becam_winstatusbar->SetText(_T("Removing items..."));
+	#ifdef _ZETA_OS_		
 		becam_tbDownload->SetEnabled(false);
 		becam_tbRemove->SetEnabled(false);
 	#else	
-		becam_winstatusbar->SetText("Removing items...");
 		becam_download->SetEnabled(false);
 		becam_delete->SetEnabled(false);
 	#endif	
 		becam_extraMenu->SetEnabled(false);
 		becam_downloadPopup->SetEnabled(false);
 		// Ask the user if he/she is sure to remove the files.
-	#ifdef _ZETA_OS_	
 		BAlert *myAlert = new BAlert(_T("Remove files"), _T("Are you sure you want to erase the selected files?"),_T("No"), _T("Yes"),NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
-	#else	
-		BAlert *myAlert = new BAlert("Remove files", "Are you sure you want to erase the selected files?","No", "Yes",NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
-	#endif	
 		myAlert->SetShortcut(0, B_ESCAPE);
 		uint32 button_index = myAlert->Go();
 		if(button_index == 1)
@@ -513,21 +491,13 @@ void BeCam_MainWindow::removeSelectedItems()
 			becam_delete->SetEnabled(true);
 		#endif	
 			becam_extraMenu->SetEnabled(true);
-			becam_downloadPopup->SetEnabled(true);
-		#ifdef _ZETA_OS_	
+			becam_downloadPopup->SetEnabled(true);	
 			becam_winstatusbar->SetText(_T("All items have been removed."));
-		#else	
-			becam_winstatusbar->SetText("All items have been removed.");
-		#endif
 		}
 	}
 	else
-	{
-	#ifdef _ZETA_OS_	
-		BAlert *myAlert = new BAlert(_T("Remove"), _T("Please select some files."),_T("Ok"), NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
-	#else	
-		BAlert *myAlert = new BAlert("Remove", "Please select some files.","Ok", NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
-	#endif	
+	{	
+		BAlert *myAlert = new BAlert(_T("Remove"), _T("Please select some files."),_T("Ok"), NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);	
 		myAlert->SetShortcut(0, B_ENTER);
 		myAlert->Go();
 	}
@@ -674,13 +644,12 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			break;
 		case CAM_CONNECTED:
 			product = message->FindString("product");
-		#ifdef _ZETA_OS_	
 			strcpy(statusmessage,_T("Connected to: "));
+		#ifdef _ZETA_OS_
 			becam_tbDownload->SetEnabled(true);
 			becam_tbRemove->SetEnabled(true);
 			becam_tbDetails->SetEnabled(true);
 		#else	
-			strcpy(statusmessage,"Connected to: ");
 			becam_download->SetEnabled(true);
 			becam_delete->SetEnabled(true);
 		#endif	
@@ -693,13 +662,12 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 		case CAM_DISCONNECTED:
 			product = message->FindString("product");
 			strcpy(statusmessage,product);
-		#ifdef _ZETA_OS_	
 			strcat(statusmessage,_T(" disconnected"));
+		#ifdef _ZETA_OS_
 			becam_tbDownload->SetEnabled(false);
 			becam_tbRemove->SetEnabled(false);
 			becam_tbDetails->SetEnabled(false);
 		#else	
-			strcat(statusmessage," disconnected");
 			becam_download->SetEnabled(false);
 			becam_delete->SetEnabled(false);
 		#endif	
@@ -728,26 +696,14 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			if(reply.what == CAM_CONNECT_OK)
 			{
 				systemcore->PostMessage(message);
-			#ifdef _ZETA_OS_	
-				connect = actionsMenu->FindItem(_T("Connect"));
-			#else	
-				connect = actionsMenu->FindItem("Connect");
-			#endif	
+				connect = actionsMenu->FindItem(_T("Connect"));	
 				connect->SetEnabled(false);
-			#ifdef _ZETA_OS_	
-				disconnect = actionsMenu->FindItem(_T("Disconnect"));
-			#else	
-				disconnect = actionsMenu->FindItem("Disconnect");
-			#endif	
+				disconnect = actionsMenu->FindItem(_T("Disconnect"));	
 				disconnect->SetEnabled(true);
 			}
 			else
-			{
-			#ifdef _ZETA_OS_	
+			{	
 				BAlert *myAlert = new BAlert(_T("Connect"), _T("Could not connect to the camera"),_T("Ok"), NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
-			#else	
-				BAlert *myAlert = new BAlert("Connect", "Could not connect to the camera","Ok", NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
-			#endif	
 				myAlert->SetShortcut(0, B_ENTER);
 				myAlert->Go();
 			}	
@@ -756,18 +712,10 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 		case CAM_DISCON:
 		{	
 			BMenuItem *connect,*disconnect;
-			systemcore->PostMessage(message);
-		#ifdef _ZETA_OS_	
+			systemcore->PostMessage(message);	
 			connect = actionsMenu->FindItem(_T("Connect"));
-		#else	
-			connect = actionsMenu->FindItem("Connect");
-		#endif	
-			connect->SetEnabled(true);
-		#ifdef _ZETA_OS_	
+			connect->SetEnabled(true);	
 			disconnect = actionsMenu->FindItem(_T("Disconnect"));
-		#else	
-			disconnect = actionsMenu->FindItem("Disconnect");
-		#endif	
 			disconnect->SetEnabled(false);
 			break;
 		}
@@ -775,11 +723,7 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			downloadSelectedItems();
 			break;
 		case SELECT_PATHMENU:
-		#ifdef _ZETA_OS_	
-			becam_selectdirpanel->SetButtonLabel(B_DEFAULT_BUTTON,_T("Select"));
-		#else	
-			becam_selectdirpanel->SetButtonLabel(B_DEFAULT_BUTTON,"Select");
-		#endif	
+			becam_selectdirpanel->SetButtonLabel(B_DEFAULT_BUTTON,_T("Select"));	
 			becam_selectdirpanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
 			becam_selectdirpanel->Show();
 			break;
@@ -843,11 +787,7 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			defaultPath = new BMenuItem(pgsettings->defaultDownloadPath, NULL);
 			defaultPath->SetMarked(true);
 			becam_downloadMenu->AddItem(defaultPath);
-		#ifdef _ZETA_OS_
-			morePath = new BMenuItem(_T("Select new folder..."), new BMessage(SELECT_PATHMENU));
-		#else	
-			morePath = new BMenuItem("Select new folder...", new BMessage(SELECT_PATHMENU));
-		#endif	
+			morePath = new BMenuItem(_T("Select new folder..."), new BMessage(SELECT_PATHMENU));	
 			becam_downloadMenu->AddItem(morePath);
             break;
 		}

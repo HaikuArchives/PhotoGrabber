@@ -3,7 +3,7 @@
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
-
+ 
 //
 // File defenition
 #ifndef WGLOBAL_H
@@ -16,6 +16,8 @@
 	#include <locale/Locale.h>
 	#include <locale/Paramable.h>
 	#include <locale/Formatter.h>
+#else
+	#define _T(x) (x)
 #endif
 // Global Messages
 

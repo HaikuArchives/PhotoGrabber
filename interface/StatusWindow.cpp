@@ -3,6 +3,7 @@
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
+ 
 // 
 //		Includes
 #include <stdio.h>
@@ -10,7 +11,6 @@
 //
 //		Status Bar:: Local includes
 #include "StatusWindow.h"
-#include "intf_global.h"
 //
 //		Status Bar::QuitRequested
 bool BeCam_StatusWindow::QuitRequested()
@@ -88,11 +88,7 @@ void	BeCam_StatusView::Draw(BRect rect)
 }
 //		
 //		Status Bar:: Constructor of the Window
-#ifdef _ZETA_OS_
 BeCam_StatusWindow::BeCam_StatusWindow(float xPos,float yPos,uint32 maxpics, char *message, BeCam_MainWindow *mainWindow):BWindow(BRect(xPos, yPos,WINDOW_WIDTH_STATUS + xPos,WINDOW_HEIGHT_STATUS + yPos), _T("PhotoGrabber download status"), B_TITLED_WINDOW, B_WILL_DRAW | B_NOT_MINIMIZABLE | B_NOT_ZOOMABLE |B_NOT_RESIZABLE)
-#else
-BeCam_StatusWindow::BeCam_StatusWindow(float xPos,float yPos,uint32 maxpics, char *message, BeCam_MainWindow *mainWindow):BWindow(BRect(xPos, yPos,WINDOW_WIDTH_STATUS + xPos,WINDOW_HEIGHT_STATUS + yPos), "PhotoGrabber download status", B_TITLED_WINDOW, B_WILL_DRAW | B_NOT_MINIMIZABLE | B_NOT_ZOOMABLE |B_NOT_RESIZABLE)
-#endif
 {
 	parent = mainWindow;
 	view=new BeCam_StatusView(Bounds(),xPos, yPos, maxpics, message);

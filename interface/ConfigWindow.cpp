@@ -12,15 +12,7 @@
 
 //		Local Includes
 #include "ConfigWindow.h"
-#include "intf_global.h"
 #include "debug.h"
-//
-// ZETA locale
-#ifdef _ZETA_OS_
-#include <locale/Locale.h>
-#else
-#define _T(x) (x)
-#endif
 //
 FILE *lfconfigw;
 //

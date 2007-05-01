@@ -22,9 +22,6 @@
 
 FILE *lflistv;
 //
-// 	External variables
-//extern class BeDiGiCamApp *app;
-//
 //
 #define kDRAG_SLOP		4
 

@@ -17,6 +17,7 @@
 #include "AboutWindow.h"
 #include "ConfigWindow.h"
 #include "settings.h"
+#include "debug.h"
 //
 //		Includes
 #include <Window.h>
