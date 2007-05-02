@@ -8,7 +8,7 @@
 ## Application Specific Settings --------------------------------------------- 
 
 # specify the name of the binary 
-NAME := PhotoGrabber
+NAME := libPGInterface
 
 # specify the type of binary 
 #       APP:    Application 
@@ -18,7 +18,7 @@ NAME := PhotoGrabber
 #       DRIVER: Kernel Driver 
 #		MODULE: Kernel Module
 #		DECOR:	A window decorator project
-TYPE := APP
+TYPE := SHARED
 
 #       add support for new Pe and Eddie features 
 #       to fill in generic makefile 
@@ -36,18 +36,21 @@ TYPE := APP
 #       in folder names do not work well with this makefile. 
 #		If you leave this blank, then all *.c *.cpp *.S *.s *.asm files
 #		in the top level local directory are automatically included.
-SRCS := framework/extension_fw/ExtensionInterface.cpp			\
-		framework/plugin_fw/PluginInterface.cpp			\
-		core_system/core_system.cpp			\
-		core_system/Camera.cpp			\
-		interface/preferences.cpp			\
-		interface/prefsaver.cpp
+SRCS := AboutWindow.cpp			\
+		ConfigWindow.cpp			\
+		Item.cpp			\
+		ListView.cpp			\
+		MainView.cpp			\
+		MainWindow.cpp			\
+		PictureItem.cpp			\
+		preferences.cpp			\
+		prefsaver.cpp			\
+		StatusWindow.cpp
 
 
 #       specify the resource files to use 
 #       full path or a relative path to the resource file can be used. 
-RSRCS := core_system/PhotoGrabber.rsrc
-
+RSRCS := 
 
 #       Specify your RDEF files, if any. 
 RDEFS := 
@@ -67,15 +70,12 @@ RDEFS :=
 #               naming scheme you need to specify the path to the library 
 #               and it's name 
 #               library: my_lib.a entry: my_lib.a or path/my_lib.a 
-LIBS :=  stdc++.r4	be
-
-ifeq ($(wildcard /boot/beos/system/lib/libzeta.so), )
-# Is a BeOS build
-else
-# Zeta build
-LIBS += zeta translation
-endif
-		
+LIBS :=  stdc++.r4			\
+		experimental			\
+		be			\
+		zeta			\
+		tracker			\
+		translation
 
 #       specify additional paths to directories following the standard 
 #       libXXX.so or libXXX.a naming scheme.  You can specify full paths 
@@ -93,7 +93,7 @@ SYSTEM_INCLUDE_PATHS :=
 #       additional paths to look for local headers 
 #       thes use the form: #include "header.h" 
 #       source file directories are automatically included 
-LOCAL_INCLUDE_PATHS := "framework/extension_fw/" "framework/plugin_fw/" "core_system/" "interface/" "interface/obj.x86/"
+LOCAL_INCLUDE_PATHS := "../core_system"
 
 #       specify the level of optimization that you desire 
 #       NONE, SOME, FULL 
@@ -104,13 +104,7 @@ OPTIMIZE := FULL
 #       to use.  For example, setting DEFINES to "DEBUG=1" will cause the 
 #       compiler option "-DDEBUG=1" to be used.  Setting DEFINES to "DEBUG" 
 #       would pass "-DDEBUG" on the compiler's command line. 
-
-ifeq ($(wildcard /boot/beos/system/lib/libzeta.so), )
-# BeOS
-else
-#Zeta
-    DEFINES += _ZETA_OS_
-endif
+DEFINES := 
 
 #       specify special warning levels 
 #       if unspecified default warnings will be used 
@@ -155,7 +149,7 @@ APP_VERSION :=
 DRIVER_PATH := 
 
 #       Specify if you want the object files to be somewhere besides the default location. 
-OBJ_DIR := interface/_objects
+OBJ_DIR := ../_objects
 
 #       Specify a non default placement for the target 
 TARGET_DIR := .

@@ -49,8 +49,9 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 #ifdef _ZETA_OS_
 	char	tmps[40];
 	BParamable tmpString = NULL;
-#endif	
+#else	
 	char tmpString[256];
+#endif
 	owner->GetFontHeight(&height);
 	fheight=(height.ascent+height.descent);
 
