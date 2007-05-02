@@ -64,6 +64,10 @@
 
 "Select"							"Selecteer"
 
+"Please select some files."				"Gelieve enkele items te selecteren."
+
+"Download files"						"Download bestanden"
+
 #############
 # AboutWindow.cpp
 #############
@@ -109,7 +113,7 @@
 
 "Camera Configuration"									"Camera Configuratie"
 
-"Please select your type of camera. To know the type you can visit www.bebug.be/projects/jixt/."	"Kies hier uw type camera. Om te weten welk type het is kun je best surfen naar www.bebug.be/projects/jixt/."
+// "Please select your type of camera. To know the type you can visit www.bebug.be/projects/jixt/."	"Kies hier uw type camera. Om te weten welk type het is kun je best surfen naar www.bebug.be/projects/jixt/."
 
 "Type:"													"Type:"
 
@@ -117,7 +121,7 @@
 
 "Debug to terminal"										"Debug info naar de terminal"
 
-"Debug to file"											"Debug info naar een file"
+"Debug to file"											"Debug info naar een bestand"
 
 # version 0.4.2
 
@@ -128,6 +132,10 @@
 "BDCP Camera"									"BDCP Camera"
 
 "Plugin:"										"Plugin:"
+
+"Extra Configuration"								"Extra configuratie"
+
+"Download movies"								"Download video's"
 
 #############
 # HTMLWindow.cpp
@@ -151,9 +159,20 @@
 
 "Generate!"							"Genereer!"
 
+"Download Folder:"						"Download map:"
 
 
+## version 2.0
+## ConfigWindow
+"Please select your type of camera."					"Selecteer het type van je camera."
+"PhotoGrabber Configuration"			"PhotoGrabber Configuratie"
+"Plugin Name:"							"Plugin naam:"
+"Plugin Source:"						"Plugin bron:"
+"Plugin Version:"						"Plugin Versie:"
+"Plugin Configuration"					"Plugin Configuratie"
 
-
-
-
+## ConfigPlugin
+"Type:"									"Type:"
+"Communications"						"Communicatie"
+"Endpoint:"								"Eindpunt:"
+"OK"									"Ok"
