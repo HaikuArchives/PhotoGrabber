@@ -41,7 +41,7 @@
 #define USB_CLASS_PTP	6
 #define USB_CLASS_MASS	8
 
-#define APP_SIG           			 "application/x-vnd.BeDiGiCam"
+#define APP_SIG           			 "application/x-vnd.Jixt.PhotoGrabber"
 
 // *** log-file path ***
 
