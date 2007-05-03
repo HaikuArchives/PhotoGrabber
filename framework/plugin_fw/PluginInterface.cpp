@@ -182,8 +182,10 @@ vector<string>	CamInterface::getCameraStrings()
 //		Interface: openCamera
 bool CamInterface::open()
 {
-	status_t err;
-	err = (*openCamera)();
+	status_t err = B_ERROR;
+	if (check_openCamera == true)
+		err = (*openCamera)();
+	
 	if (err < B_OK)
 	{
 		camConnected = false;
