@@ -91,3 +91,22 @@
 "Path:"
 "Select..."
 "Generate!"
+
+## version 2.0
+## AboutWindow
+"About PhotoGrabber"
+
+## ConfigWindow
+"Please select your type of camera."
+"PhotoGrabber Configuration"
+"Plugin Name:"
+"Plugin Source:"
+"Plugin Version:"
+"Plugin Configuration"
+"Actions"
+
+## ConfigPlugin
+"Type:"
+"Communications"
+"Endpoint:"
+"OK"

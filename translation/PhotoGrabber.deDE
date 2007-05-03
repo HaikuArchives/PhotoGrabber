@@ -259,10 +259,24 @@
 "Generate!"
 
 
+## version 2.0
+## AboutWindow
+"About PhotoGrabber"					"Über PhotoGrabber"
 
+## ConfigWindow
+"Please select your type of camera."	"Kameratyp auswählen"
+"PhotoGrabber Configuration"			"PhotoGrabber Einstellungen"
+"Plugin Name:"							"Plugin Name:"
+"Plugin Source:"						"Plugin Quelle:"
+"Plugin Version:"						"Plugin Version:"
+"Plugin Configuration"					"Plugin Einstellungen"
+"Actions"								"Aktionen"
 
-
-
+## ConfigPlugin
+"Type:"									"Typ:"
+"Communications"						"Kommunikationen"
+"Endpoint:"								"Endpunkt:"
+"OK"									"Ok"
 
 
 
