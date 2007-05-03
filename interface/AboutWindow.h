@@ -16,6 +16,8 @@
 #include <Bitmap.h>
 #include <TranslationUtils.h>
 #include <TranslatorRoster.h>
+#include <TabView.h>
+#include <TextView.h>
 
 //
 //		Local includes
@@ -25,7 +27,18 @@
 //
 // 	External variables
 extern unsigned char my_bitmap[30000];
+//
+//	View of the About tab
+class AboutTabView : public BView
+{
+	public:
+					AboutTabView(BRect r);
+					~AboutTabView(void);
+	virtual void	Draw(BRect rect);
 
+private:
+		BBitmap		*me_bitmap;
+};
 //
 //		About View class
 class BeCam_AboutView : public BView
@@ -33,10 +46,14 @@ class BeCam_AboutView : public BView
 	public:
 					BeCam_AboutView(float xPos,float yPos);
 					~BeCam_AboutView(void);
-	virtual void	Draw(BRect rect);
 
 private:
-	BBitmap		*me_bitmap;
+		BTabView		*tabView;
+		BTab			*aboutTab;
+		AboutTabView 	*aboutView;
+		BTab			*creditsTab;
+		BView 			*creditsView;
+		BTextView		*creditsTextView;
 };
 
 //
@@ -54,8 +71,8 @@ class BeCam_AboutWindow : public BWindow
 };
 
 #define ABOUT_WINDOW				1
-#define WINDOW_HEIGHT_ABOUT			220
-#define	WINDOW_WIDTH_ABOUT			480
+#define WINDOW_HEIGHT_ABOUT			245
+#define	WINDOW_WIDTH_ABOUT			485
 
 #endif
 

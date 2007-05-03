@@ -6,85 +6,102 @@
 // 
 //		Local Includes
 #include "AboutWindow.h"
+//
+//		Aboutview :: Constructor
+AboutTabView::AboutTabView(BRect r):BView(r, "abouttabview", B_FOLLOW_ALL_SIDES, B_WILL_DRAW)
+{
+	rgb_color bg_color=ui_color(B_PANEL_BACKGROUND_COLOR);
+	SetViewColor(bg_color);
+	BTranslatorRoster *roster = BTranslatorRoster::Default();
+	me_bitmap= BTranslationUtils::GetBitmap("about", roster);
+}
 
+//
+//		AboutView::~BeCam_AboutView()
+AboutTabView::~AboutTabView(void)
+{
+	if(me_bitmap)
+		delete me_bitmap;	
+}
+
+//
+//		AboutView :: Draw
+void	AboutTabView::Draw(BRect rect)
+{	
+	MovePenTo(2,2);
+	DrawBitmap(me_bitmap);
+}
 //
 //		Aboutview :: Constructor
 BeCam_AboutView::BeCam_AboutView(float xPos, float yPos):BView(BRect(0,0,WINDOW_WIDTH_ABOUT- 50 + xPos,WINDOW_HEIGHT_ABOUT - 100 + yPos), "aboutview", B_FOLLOW_LEFT_RIGHT, B_WILL_DRAW)
 {
 	rgb_color bg_color=ui_color(B_PANEL_BACKGROUND_COLOR);
 	SetViewColor(bg_color);
-	
-	BTranslatorRoster *roster = BTranslatorRoster::Default();
-	me_bitmap= BTranslationUtils::GetBitmap("about", roster);
-	//if((me_bitmap=new BBitmap(BRect(0.0, 0.0, 99.0, 99.0), B_RGB32)))
-	//{
-		//me_bitmap->SetBits((const void *)my_bitmap, (long int)sizeof(my_bitmap), 0, B_RGB32);
-	//}
+	BRect r;
+	r = Bounds();
+	r.InsetBy(2,2);
+	tabView = new BTabView(r,"tab_view");
+	tabView->SetViewColor(bg_color);
+	r = tabView->Bounds();
+	r.bottom -=tabView->TabHeight();
+	aboutTab = new BTab();
+	aboutView = new AboutTabView(r);
+	tabView->AddTab(aboutView,aboutTab);
+	aboutTab->SetLabel("About");
+	creditsTab = new BTab();
+	creditsView = new BView(r, "creditstabview", B_FOLLOW_ALL_SIDES, B_WILL_DRAW);
+	creditsView->SetViewColor(bg_color);
+	//
+	creditsTextView = new BTextView(r, "credits", r.OffsetToCopy(0, 0).InsetByCopy(5, 5), B_FOLLOW_ALL); 
+    creditsTextView->SetFlags(creditsTextView->Flags() | B_FRAME_EVENTS ); 
+    creditsTextView->SetStylable(true); 
+    creditsTextView->MakeEditable(false); 
+    creditsTextView->SetWordWrap(true);
+    BScrollView *creditsScroller = new BScrollView("creditsScroller", creditsTextView, B_FOLLOW_ALL, B_WILL_DRAW | B_FRAME_EVENTS, false, true, B_PLAIN_BORDER); 
+    creditsView->AddChild(creditsScroller);
+    //
+    rgb_color darkgrey = { 100, 100, 100, 255 }; 
+    rgb_color pgGreen = { 42, 131, 36, 255 }; 
+    rgb_color pgOrange = { 255, 69, 0, 255 }; 
+    //rgb_color pgYellow = { 255, 176, 0, 255 }; 
+    //rgb_color linkBlue = { 80, 80, 200, 255 }; 
+	//
+	BFont font(be_bold_font); 
+    font.SetSize(font.Size() + 4); 
+    creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgGreen); 
+    creditsTextView->Insert("PhotoGrabber\n");
+    creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange); 
+    creditsTextView->Insert("Team Lead:\n"); 
+    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
+	creditsTextView->Insert( 
+                "Jan-Rixt Van Hoye\n" 
+                "Luc Schrijvers\n"
+                "Ramshanker V\n" 
+                "Tim de Jong\n" 
+                "\n");
+    creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange); 
+    creditsTextView->Insert("Developers:\n"); 
+    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
+    creditsTextView->Insert( 
+                "Luc Schrijvers\n"
+                "Ramshanker V\n" 
+                "Tim de Jong\n" 
+                "\n");
+    creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange);
+    creditsTextView->Insert("Special Thanks To:\n");
+    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
+    creditsTextView->Insert("Bernd Korz\n");  
+	//
+	tabView->AddTab(creditsView,creditsTab);
+	creditsTab->SetLabel("Credits");
+	AddChild(tabView);
 }
 
 //
 //		AboutView::~BeCam_AboutView()
 BeCam_AboutView::~BeCam_AboutView(void)
 {
-	if(me_bitmap)
-	{
-		delete me_bitmap;
-	}
-}
-
-//
-//		AboutView :: Draw
-void	BeCam_AboutView::Draw(BRect rect)
-{
-	//int32 		cnt;
-	//rgb_color	black_color={0, 0, 0, 0xff};
-	//rgb_color	white_color={255, 255, 255, 0xff};
-	//rgb_color	bg_color=ui_color(B_PANEL_BACKGROUND_COLOR);
-
-
-	//SetHighColor(black_color);
-	//SetLowColor(bg_color);
-	
-	//MovePenTo(10, 43);
-	//SetFontSize(25);
-	//DrawString(_T(VERSIONNAME));
-	//MovePenTo(300, 43);
-	//DrawString(VERSIONNUMBER);
-	
-	//MovePenTo(10, 63);	
-	//SetFontSize(12);
-	//DrawString(_T(AUTHOR));
-	
-	//MovePenTo(10, 88);
-	//SetFontSize(10);
-	//DrawString(_T(DESCRIPTION));
-	
-	MovePenTo(0,0);
-	DrawBitmap(me_bitmap);
-
-
-	//		Draw film top edge
-	//SetHighColor(black_color);
-	//FillRect(BRect(105, 5, 395, 13));
-
-	//		Draw film edge
-	//SetHighColor(white_color);
-	//for(cnt=0; cnt<22; cnt++)
-	//{
-	//	FillRect(BRect(111+(cnt*14), 7, 111+(cnt*14)+4, 11));
-	//}
-
-
-	//		Draw film bottom edge
-	//SetHighColor(black_color);
-	//FillRect(BRect(105, 96, 395, 104));
-	
-	//		Draw film edge
-	//SetHighColor(white_color);
-	//for(cnt=0; cnt<22; cnt++)
-	//{
-	//	FillRect(BRect(111+(cnt*14), 98, 111+(cnt*14)+4, 102));
-	//}
+	delete tabView;
 }
 
 //
