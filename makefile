@@ -67,13 +67,13 @@ RDEFS :=
 #               naming scheme you need to specify the path to the library 
 #               and it's name 
 #               library: my_lib.a entry: my_lib.a or path/my_lib.a 
-LIBS :=  stdc++.r4 be 
+LIBS :=  stdc++.r4 be translation root
 
 ifeq ($(wildcard /boot/beos/system/lib/libzeta.so), )
 # Is a BeOS build
 else
 # Zeta build
-LIBS += zeta translation
+LIBS += zeta
 endif
 		
 
