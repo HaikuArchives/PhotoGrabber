@@ -71,8 +71,8 @@ class BeCam_AboutWindow : public BWindow
 };
 
 #define ABOUT_WINDOW				1
-#define WINDOW_HEIGHT_ABOUT			245
-#define	WINDOW_WIDTH_ABOUT			485
+#define WINDOW_HEIGHT_ABOUT			249
+#define	WINDOW_WIDTH_ABOUT			487
 
 #endif
 

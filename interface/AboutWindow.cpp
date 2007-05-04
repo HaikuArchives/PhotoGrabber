@@ -47,11 +47,12 @@ BeCam_AboutView::BeCam_AboutView(float xPos, float yPos):BView(BRect(0,0,WINDOW_
 	aboutTab = new BTab();
 	aboutView = new AboutTabView(r);
 	tabView->AddTab(aboutView,aboutTab);
-	aboutTab->SetLabel("About");
+	aboutTab->SetLabel(_T("About"));
 	creditsTab = new BTab();
 	creditsView = new BView(r, "creditstabview", B_FOLLOW_ALL_SIDES, B_WILL_DRAW);
 	creditsView->SetViewColor(bg_color);
 	//
+	r.right -= B_V_SCROLL_BAR_WIDTH;
 	creditsTextView = new BTextView(r, "credits", r.OffsetToCopy(0, 0).InsetByCopy(5, 5), B_FOLLOW_ALL); 
     creditsTextView->SetFlags(creditsTextView->Flags() | B_FRAME_EVENTS ); 
     creditsTextView->SetStylable(true); 
@@ -71,29 +72,29 @@ BeCam_AboutView::BeCam_AboutView(float xPos, float yPos):BView(BRect(0,0,WINDOW_
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgGreen); 
     creditsTextView->Insert("PhotoGrabber\n");
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange); 
-    creditsTextView->Insert("Team Lead:\n"); 
+    creditsTextView->Insert(_T("Team Lead:\n")); 
     creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
 	creditsTextView->Insert( 
                 "Jan-Rixt Van Hoye\n" 
                 "Luc Schrijvers\n"
                 "Ramshanker V\n" 
-                "Tim de Jong\n" 
-                "\n");
+                "Tim de Jong\n");
+//                "\n");
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange); 
-    creditsTextView->Insert("Developers:\n"); 
+    creditsTextView->Insert(_T("Developers:\n")); 
     creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
     creditsTextView->Insert( 
                 "Luc Schrijvers\n"
                 "Ramshanker V\n" 
-                "Tim de Jong\n" 
-                "\n");
+                "Tim de Jong\n");
+//                "\n");
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange);
-    creditsTextView->Insert("Special Thanks To:\n");
+    creditsTextView->Insert(_T("Special Thanks To:\n"));
     creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
     creditsTextView->Insert("Bernd Korz\n");  
 	//
 	tabView->AddTab(creditsView,creditsTab);
-	creditsTab->SetLabel("Credits");
+	creditsTab->SetLabel(_T("Credits"));
 	AddChild(tabView);
 }
 
@@ -106,7 +107,7 @@ BeCam_AboutView::~BeCam_AboutView(void)
 
 //
 //		AboutWindow :: Constructor
-BeCam_AboutWindow::BeCam_AboutWindow(float xPos,float yPos,BeCam_MainWindow *mainWindow) : BWindow(BRect(xPos,yPos,xPos + WINDOW_WIDTH_ABOUT,yPos + WINDOW_HEIGHT_ABOUT), _T("About PhotoGrabber"), B_DOCUMENT_WINDOW, B_WILL_DRAW | B_NOT_MINIMIZABLE | B_NOT_ZOOMABLE | B_NOT_RESIZABLE)
+BeCam_AboutWindow::BeCam_AboutWindow(float xPos,float yPos,BeCam_MainWindow *mainWindow) : BWindow(BRect(xPos,yPos,xPos + WINDOW_WIDTH_ABOUT,yPos + WINDOW_HEIGHT_ABOUT), _T("About PhotoGrabber"), B_TITLED_WINDOW, B_WILL_DRAW | B_NOT_MINIMIZABLE | B_NOT_ZOOMABLE | B_NOT_RESIZABLE)
 {
 	parent = mainWindow;
 	view = new BeCam_AboutView(xPos,yPos);
