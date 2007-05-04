@@ -94,6 +94,11 @@
 ## version 2.0
 ## AboutWindow
 "About PhotoGrabber"
+"About"								
+"Team Lead:\n"							
+"Developers:\n"							
+"Special Thanks To:\n"						
+"Credits"								
 
 ## ConfigWindow
 "Please select your type of camera."

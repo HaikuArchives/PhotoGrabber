@@ -75,15 +75,16 @@ BeCam_AboutView::BeCam_AboutView(float xPos, float yPos):BView(BRect(0,0,WINDOW_
     creditsTextView->Insert(_T("Team Lead:\n")); 
     creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
 	creditsTextView->Insert( 
-                "Jan-Rixt Van Hoye\n" 
-                "Luc Schrijvers\n"
-                "Ramshanker V\n" 
-                "Tim de Jong\n");
+                "Jan-Rixt Van Hoye\n"); 
+//                "Luc Schrijvers\n"
+//                "Ramshanker V\n" 
+//                "Tim de Jong\n");
 //                "\n");
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange); 
     creditsTextView->Insert(_T("Developers:\n")); 
     creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
     creditsTextView->Insert( 
+                "Jan-Rixt Van Hoye\n"
                 "Luc Schrijvers\n"
                 "Ramshanker V\n" 
                 "Tim de Jong\n");
@@ -91,7 +92,9 @@ BeCam_AboutView::BeCam_AboutView(float xPos, float yPos):BView(BRect(0,0,WINDOW_
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange);
     creditsTextView->Insert(_T("Special Thanks To:\n"));
     creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
-    creditsTextView->Insert("Bernd Korz\n");  
+    creditsTextView->Insert(
+    			"Bernd Korz\n"
+    			"Francois Revol");  
 	//
 	tabView->AddTab(creditsView,creditsTab);
 	creditsTab->SetLabel(_T("Credits"));

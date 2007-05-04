@@ -163,6 +163,14 @@
 
 
 ## version 2.0
+## AboutWindow
+"About PhotoGrabber"					"Over PhotoGrabber"
+"About"									"Over"
+"Team Lead:\n"							"Team lead:\n"
+"Developers:\n"							"Ontwikkelaars:\n"
+"Special Thanks To:\n"					"Speciale dank aan:\n"
+"Credits"								"Kredieten"
+
 ## ConfigWindow
 "Please select your type of camera."					"Selecteer het type van je camera."
 "PhotoGrabber Configuration"			"PhotoGrabber Configuratie"
@@ -170,6 +178,7 @@
 "Plugin Source:"						"Plugin bron:"
 "Plugin Version:"						"Plugin Versie:"
 "Plugin Configuration"					"Plugin Configuratie"
+"Actions"								"Akties"
 
 ## ConfigPlugin
 "Type:"									"Type:"
