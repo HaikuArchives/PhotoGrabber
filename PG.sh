@@ -9,7 +9,7 @@ make clean
 cd ../ptp
 make clean
 cd ../..
-rm -r build
+# rm -r build
 
 # building the files
 make
@@ -46,3 +46,11 @@ mv ./plugins/ptp/obj.x86/libbdcp_ptp ./build/PhotoGrabber/plugins/
 
 cp ./translation/* ./build/PhotoGrabber/Language/Dictionaries/
 
+make clean
+cd interface
+make clean
+cd ../plugins/msd
+make clean
+cd ../ptp
+make clean
+cd ../..
