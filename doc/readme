@@ -6,7 +6,7 @@ This is the first readme file for PhotoGrabber, whitch in a short term is intend
 
 PhotoGrabber can be compiled in differant ways, and for multiple surroundings like ZETA, R5 and Haiku.
 
-* GCC versions!! Use the regular gcc (2.9-beos-991026) to compile PhotoGrabber for R5, and the gcc (2.95.3) to compile the ZETA and Haiku version (ps compile the Haiku version in R5 as the makefiles check wich surrounding is used and will be calling for some ZETA specific headers).
+* GCC versions!! Use the regular gcc (2.9-beos-991026) to compile PhotoGrabber for R5, and the gcc (2.95.3) to compile the ZETA and Haiku version (ps compile the Haiku version in R5 as the makefiles check whitch surrounding is used in the makefile and will be calling for some ZETA specific headers).
 
 * The PG.sh file is just a short script that will compile the whole Programm and it's parts, like PhotoGrabber, the GUI surrounding and the plugins (if you write you're own plugin you can add this to the file yourself). After the build is complete (with no errors) it creates a folder "build" and in there you can find the folder "PhotoGrabber" and all the componants. Don't mind the "Language" folder in R5 or Haiku, this will be ignored in both OS's (it will only be used with the ZETA locale kit). This file can be used in R5 or in ZETA.
 
@@ -26,4 +26,3 @@ This is just a short summory ... Jixt you need to fill in the blanks here. ;)
 1.* version: BeCam grew from a cli app to a gui app and was able to use all default plugins R5 supported for cameras. Due to the usb-stack in ZETA BeCam grew out to become BeDiGiCam and after that PhotoGrabber, and was from then part of the OS (sources where still owned by Jixt over the whole period). PhotoGrabber started to use the locale kit in ZETA and is sinds then translated into 14 differant languages.
 
 2.* version: PhotoGrabber goes opensource! Jixt was already busy to rewrite PhotoGrabber making it into a multiple parts (core_system, the GUI, and the plugins), with this step it's easier for other developers to write their own plugins, add-ons for the application. After he was done with the main parts he desided to opensource the project and attracted a small crew to help out with the developping.
-
