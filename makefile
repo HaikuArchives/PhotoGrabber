@@ -36,10 +36,10 @@ TYPE := APP
 #       in folder names do not work well with this makefile. 
 #		If you leave this blank, then all *.c *.cpp *.S *.s *.asm files
 #		in the top level local directory are automatically included.
-SRCS := framework/extension_fw/ExtensionInterface.cpp			\
-		framework/plugin_fw/PluginInterface.cpp			\
-		core_system/core_system.cpp			\
+SRCS := core_system/core_system.cpp			\
 		core_system/Camera.cpp			\
+		framework/plugin_fw/PluginInterface.cpp			\
+		framework/extension_fw/ExtensionInterface.cpp			\
 		interface/preferences.cpp			\
 		interface/prefsaver.cpp
 
@@ -155,6 +155,7 @@ APP_VERSION :=
 DRIVER_PATH := 
 
 #       Specify if you want the object files to be somewhere besides the default location. 
+
 OBJ_DIR := interface/_objects
 
 #       Specify a non default placement for the target 
