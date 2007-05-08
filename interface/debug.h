@@ -2,7 +2,7 @@
 #define _DEBUG_H_
 
 // defenitions
-#define	DEBUG
+//#define	DEBUG
 // log-file
 #define INTF_LOGFILE "/boot/var/log/interface.log"
 #endif
