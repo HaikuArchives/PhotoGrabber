@@ -25,7 +25,7 @@
 #define	DOWN_BUTTON 				'DOWN'
 #define	DETAIL_CAM	 				'DCAM'
 #define REFRESH_MENUBAR				'REFM'
-
+#define OPN_STATUS					'OSTA'
 
 
 #endif

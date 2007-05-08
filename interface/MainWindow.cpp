@@ -14,7 +14,6 @@
 // Local includes
 #include "MainWindow.h"
 #include "core_global.h"
-#include "debug.h"
 //
 
 //
@@ -195,6 +194,12 @@ void BeCam_MainWindow::addMenuBar ()
 	disconnect = actionsMenu->FindItem(_T("Disconnect"));
 	disconnect->SetEnabled(false);
 	becam_menubar->AddItem(actionsMenu);
+	// Add the test menu
+#ifdef DEBUG	
+	BMenu *debuggingMenu = new BMenu(_T("Debugging"));
+	debuggingMenu->AddItem(new BMenuItem(_T("Open Statuswindow") , new BMessage(OPN_STATUS)));
+	becam_menubar->AddItem(debuggingMenu);
+#endif	
 	if(devicetype == TYPE_USB)
 		actionsMenu->SetEnabled(false);
 }
@@ -730,6 +735,18 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 		case DEL_BUTTON:
 			removeSelectedItems();
 			break;
+		case OPN_STATUS:
+		{	
+			char	tmpBuffer[100];
+		#ifdef _ZETA_OS_	
+			BParamable buffer = _TPS("Downloading number NUMBER of the TOTAL selected files").Replace("NUMBER",BFormatter("%d",(uint32)0)).Replace("TOTAL",BFormatter("%d",(uint32)0));
+			sprintf(tmpBuffer,buffer.String());
+		#else
+			sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)0,(uint32)0);
+		#endif	
+			CreateStatusWindow(0, tmpBuffer);
+			break;
+		}
 		case OPEN_FILE_PANEL:
 		{
 			entry_ref dir;

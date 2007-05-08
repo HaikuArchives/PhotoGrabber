@@ -16,6 +16,7 @@
 // Local includes
 #include "intf_global.h"
 #include "MainWindow.h"
+#include "Animation.h"
 
 //
 //		Status Window:: View
@@ -27,10 +28,12 @@ public:
 	void			reset(uint32 totalbytes);
 	void			updateStatus(uint32 delta, char *message);
 	virtual void	Draw(BRect rect);
+	Animation		*statusanimation;
 
 private:
 	char			msg[100];
-	BStatusBar		*statusbar;
+	BStatusBar		*statusbar;	
+	void 			CreateAnimation();
 };
 //
 //		Status Window:: Status window Class
@@ -41,17 +44,16 @@ public:
 
 	virtual bool			QuitRequested();
 	virtual void			MessageReceived(BMessage* message);
-
 	void					reset(uint32 max);
 	void					updateStatus(uint32 delta, char *message);
 		
 private:
 	class BeCam_StatusView	*view;
-	class BeCam_MainWindow        *parent;
+	class BeCam_MainWindow  *parent;
 };
 
 #define STATUS_WINDOW				2
-#define WINDOW_HEIGHT_STATUS		75
+#define WINDOW_HEIGHT_STATUS		175
 #define	WINDOW_WIDTH_STATUS			350
 
 #endif

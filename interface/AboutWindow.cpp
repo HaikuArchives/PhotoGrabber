@@ -54,11 +54,11 @@ BeCam_AboutView::BeCam_AboutView(float xPos, float yPos):BView(BRect(0,0,WINDOW_
 	//
 	r.right -= B_V_SCROLL_BAR_WIDTH;
 	creditsTextView = new BTextView(r, "credits", r.OffsetToCopy(0, 0).InsetByCopy(5, 5), B_FOLLOW_ALL); 
-    creditsTextView->SetFlags(creditsTextView->Flags() | B_FRAME_EVENTS ); 
+    creditsTextView->SetFlags(creditsTextView->Flags() | B_FRAME_EVENTS );
     creditsTextView->SetStylable(true); 
     creditsTextView->MakeEditable(false); 
     creditsTextView->SetWordWrap(true);
-    BScrollView *creditsScroller = new BScrollView("creditsScroller", creditsTextView, B_FOLLOW_ALL, B_WILL_DRAW | B_FRAME_EVENTS, false, true, B_PLAIN_BORDER); 
+    BScrollView *creditsScroller = new BScrollView("creditsScroller", creditsTextView, B_FOLLOW_ALL, B_WILL_DRAW | B_FRAME_EVENTS, false, true, B_FANCY_BORDER); 
     creditsView->AddChild(creditsScroller);
     //
     rgb_color darkgrey = { 100, 100, 100, 255 }; 
@@ -72,29 +72,23 @@ BeCam_AboutView::BeCam_AboutView(float xPos, float yPos):BView(BRect(0,0,WINDOW_
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgGreen); 
     creditsTextView->Insert("PhotoGrabber\n");
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange); 
-    creditsTextView->Insert(_T("Team Lead:\n")); 
+    creditsTextView->Insert(_T("\tTeam Lead:\n")); 
     creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
-	creditsTextView->Insert( 
-                "Jan-Rixt Van Hoye\n"); 
-//                "Luc Schrijvers\n"
-//                "Ramshanker V\n" 
-//                "Tim de Jong\n");
-//                "\n");
+	creditsTextView->Insert( "\t\tJan-Rixt Van Hoye\n"); 
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange); 
-    creditsTextView->Insert(_T("Developers:\n")); 
+    creditsTextView->Insert(_T("\tDevelopers:\n")); 
     creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
     creditsTextView->Insert( 
-                "Jan-Rixt Van Hoye\n"
-                "Luc Schrijvers\n"
-                "Ramshanker V\n" 
-                "Tim de Jong\n");
-//                "\n");
+                "\t\tJan-Rixt Van Hoye\n"
+                "\t\tLuc Schrijvers\n"
+                "\t\tRamshanker V\n" 
+                "\t\tTim de Jong\n");
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange);
-    creditsTextView->Insert(_T("Special Thanks To:\n"));
+    creditsTextView->Insert(_T("\tSpecial Thanks To:\n"));
     creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
     creditsTextView->Insert(
-    			"Bernd Korz\n"
-    			"Francois Revol");  
+    			"\t\tBernd Korz\n"
+    			"\t\tFrancois Revol\n");  
 	//
 	tabView->AddTab(creditsView,creditsTab);
 	creditsTab->SetLabel(_T("Credits"));
