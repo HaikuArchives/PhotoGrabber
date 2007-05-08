@@ -3,7 +3,7 @@
 
 ## Fill in this file to specify the project being created, and the referenced 
 ## makefile-engine will do all of the hard work for you.
-
+ 
 
 ## Application Specific Settings --------------------------------------------- 
 
@@ -70,12 +70,15 @@ RDEFS :=
 #               naming scheme you need to specify the path to the library 
 #               and it's name 
 #               library: my_lib.a entry: my_lib.a or path/my_lib.a 
-LIBS :=  stdc++.r4			\
-		experimental			\
-		be			\
-		zeta			\
-		tracker			\
-		translation
+
+LIBS :=  stdc++.r4	be tracker translation
+
+ifeq ($(wildcard /boot/beos/system/lib/libzeta.so), )
+# Is a BeOS build
+else
+# Zeta build
+LIBS += zeta experimental 
+endif
 
 #       specify additional paths to directories following the standard 
 #       libXXX.so or libXXX.a naming scheme.  You can specify full paths 
@@ -104,7 +107,13 @@ OPTIMIZE := FULL
 #       to use.  For example, setting DEFINES to "DEBUG=1" will cause the 
 #       compiler option "-DDEBUG=1" to be used.  Setting DEFINES to "DEBUG" 
 #       would pass "-DDEBUG" on the compiler's command line. 
-DEFINES := 
+
+ifeq ($(wildcard /boot/beos/system/lib/libzeta.so), )
+# BeOS
+else
+#Zeta
+    DEFINES += _ZETA_OS_
+endif
 
 #       specify special warning levels 
 #       if unspecified default warnings will be used 

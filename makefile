@@ -36,18 +36,17 @@ TYPE := APP
 #       in folder names do not work well with this makefile. 
 #		If you leave this blank, then all *.c *.cpp *.S *.s *.asm files
 #		in the top level local directory are automatically included.
-SRCS := framework/extension_fw/ExtensionInterface.cpp			\
-		framework/plugin_fw/PluginInterface.cpp			\
-		core_system/core_system.cpp			\
+SRCS := core_system/core_system.cpp			\
 		core_system/Camera.cpp			\
+		framework/plugin_fw/PluginInterface.cpp			\
+		framework/extension_fw/ExtensionInterface.cpp			\
 		interface/preferences.cpp			\
 		interface/prefsaver.cpp
 
 
 #       specify the resource files to use 
 #       full path or a relative path to the resource file can be used. 
-RSRCS := core_system/PhotoGrabber.rsrc			\
-		core_system/DataAction.rsrc
+RSRCS := core_system/PhotoGrabber.rsrc
 
 
 #       Specify your RDEF files, if any. 
@@ -68,10 +67,15 @@ RDEFS :=
 #               naming scheme you need to specify the path to the library 
 #               and it's name 
 #               library: my_lib.a entry: my_lib.a or path/my_lib.a 
-LIBS :=  stdc++.r4			\
-		be			\
-		zeta			\
-		translation
+LIBS :=  stdc++.r4 be translation root
+
+ifeq ($(wildcard /boot/beos/system/lib/libzeta.so), )
+# Is a BeOS build
+else
+# Zeta build
+LIBS += zeta
+endif
+		
 
 #       specify additional paths to directories following the standard 
 #       libXXX.so or libXXX.a naming scheme.  You can specify full paths 
@@ -100,7 +104,13 @@ OPTIMIZE := FULL
 #       to use.  For example, setting DEFINES to "DEBUG=1" will cause the 
 #       compiler option "-DDEBUG=1" to be used.  Setting DEFINES to "DEBUG" 
 #       would pass "-DDEBUG" on the compiler's command line. 
-DEFINES := 
+
+ifeq ($(wildcard /boot/beos/system/lib/libzeta.so), )
+# BeOS
+else
+#Zeta
+    DEFINES += _ZETA_OS_
+endif
 
 #       specify special warning levels 
 #       if unspecified default warnings will be used 
@@ -145,6 +155,7 @@ APP_VERSION :=
 DRIVER_PATH := 
 
 #       Specify if you want the object files to be somewhere besides the default location. 
+
 OBJ_DIR := interface/_objects
 
 #       Specify a non default placement for the target 

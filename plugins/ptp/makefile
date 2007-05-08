@@ -67,13 +67,15 @@ RDEFS :=
 #               naming scheme you need to specify the path to the library 
 #               and it's name 
 #               library: my_lib.a entry: my_lib.a or path/my_lib.a 
-LIBS :=  stdc++.r4			\
-		experimental			\
-		be			\
-		zeta			\
-		translation			\
-		usb			\
-		libptp2.a
+
+LIBS :=  stdc++.r4	be libptp2.a translation USBKit.a
+
+ifeq ($(wildcard /boot/beos/system/lib/libzeta.so), )
+# Is a BeOS build
+else
+# Zeta build
+LIBS += zeta  experimental usb
+endif
 
 #       specify additional paths to directories following the standard 
 #       libXXX.so or libXXX.a naming scheme.  You can specify full paths 
@@ -91,7 +93,7 @@ SYSTEM_INCLUDE_PATHS :=
 #       additional paths to look for local headers 
 #       thes use the form: #include "header.h" 
 #       source file directories are automatically included 
-LOCAL_INCLUDE_PATHS := "../../core_system"
+LOCAL_INCLUDE_PATHS := "../../core_system" "../../ptp"
 
 #       specify the level of optimization that you desire 
 #       NONE, SOME, FULL 
@@ -102,7 +104,13 @@ OPTIMIZE := FULL
 #       to use.  For example, setting DEFINES to "DEBUG=1" will cause the 
 #       compiler option "-DDEBUG=1" to be used.  Setting DEFINES to "DEBUG" 
 #       would pass "-DDEBUG" on the compiler's command line. 
-DEFINES := "_ZETA_OS_"
+
+ifeq ($(wildcard /boot/beos/system/lib/libzeta.so), )
+# BeOS
+else
+#Zeta
+    DEFINES += _ZETA_OS_
+endif
 
 #       specify special warning levels 
 #       if unspecified default warnings will be used 
