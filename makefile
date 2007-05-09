@@ -46,7 +46,8 @@ SRCS := core_system/core_system.cpp			\
 
 #       specify the resource files to use 
 #       full path or a relative path to the resource file can be used. 
-RSRCS := core_system/PhotoGrabber.rsrc
+RSRCS := core_system/PhotoGrabber.rsrc    \
+		 core_system/DataAction.rsrc
 
 
 #       Specify your RDEF files, if any. 

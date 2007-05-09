@@ -45,6 +45,7 @@ mv ./plugins/msd/obj.x86/libbdcp_msd ./build/PhotoGrabber/plugins/
 mv ./plugins/ptp/obj.x86/libbdcp_ptp ./build/PhotoGrabber/plugins/
 
 cp ./translation/* ./build/PhotoGrabber/Language/Dictionaries/
+cp ./doc/readme ./build/PhotoGrabber/
 
 make clean
 cd interface

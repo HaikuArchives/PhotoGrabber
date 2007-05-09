@@ -45,7 +45,8 @@ SRCS := AboutWindow.cpp			\
 		PictureItem.cpp			\
 		preferences.cpp			\
 		prefsaver.cpp			\
-		StatusWindow.cpp
+		StatusWindow.cpp		\
+		Animation.cpp
 
 
 #       specify the resource files to use 
