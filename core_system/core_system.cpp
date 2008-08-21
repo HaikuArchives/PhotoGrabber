@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -240,11 +240,8 @@ bool BeDiGiCamApp::GetCameraStrings()
 	//clear the lists
 	supportedCams.clear();
 	pluginSupportedCams.clear();
-	while(true)
+	while((err = searchDir.GetNextEntry(&entry,true)) == B_OK)
 	{
-		err = searchDir.GetNextEntry(&entry,true);
-		if(err < 0)
-			break;
 		if( entry.InitCheck() != B_NO_ERROR )
       		break;
     	if( entry.GetPath(&path) != B_NO_ERROR )

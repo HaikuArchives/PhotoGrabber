@@ -1,28 +1,33 @@
-# buildfile for PhotoGrabber
+## *****************************************************************
+## * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+## * All rights reserved.										   *
+## * Distributed under the terms of the MIT License.               *
+## *****************************************************************
 
-# cleaning the build system
+## Buildfile for PhotoGrabber
+
+# Cleaning the build system
 make clean
 cd interface
 make clean
-cd ../plugins/msd
-make clean
-cd ../ptp
+#cd ../plugins/msd
+#make clean
+cd ../plugins/ptp
 make clean
 cd ../..
-# rm -r build
+rm -r build
 
-# building the files
+# Building the files
 make
 cd interface
 make
-cd ../plugins/msd
-make
-cd ../ptp
+#cd ../plugins/msd
+#make
+cd ../plugins/ptp
 make
 cd ../..
 
-
-# creating target dirs
+# Creating target dirs
 mkdir build
 mkdir ./build/PhotoGrabber
 mkdir ./build/PhotoGrabber/interface
@@ -30,28 +35,13 @@ mkdir ./build/PhotoGrabber/plugins
 mkdir ./build/PhotoGrabber/Language
 mkdir ./build/PhotoGrabber/Language/Dictionaries
 
-
-# moving bins over
-# ZETA
-mv PhotoGrabber ./build/PhotoGrabber/
-mv ./interface/libPGInterface ./build/PhotoGrabber/interface/
-mv ./plugins/msd/libbdcp_msd ./build/PhotoGrabber/plugins/
-mv ./plugins/ptp/libbdcp_ptp ./build/PhotoGrabber/plugins/
-
-# BeOS/Haiku
+# Moving bins over
 mv ./obj.x86/PhotoGrabber ./build/PhotoGrabber/
 mv ./interface/obj.x86/libPGInterface ./build/PhotoGrabber/interface/
-mv ./plugins/msd/obj.x86/libbdcp_msd ./build/PhotoGrabber/plugins/
+#mv ./plugins/msd/obj.x86/libbdcp_msd ./build/PhotoGrabber/plugins/
 mv ./plugins/ptp/obj.x86/libbdcp_ptp ./build/PhotoGrabber/plugins/
 
+# Copy the translation files and documentation
 cp ./translation/* ./build/PhotoGrabber/Language/Dictionaries/
 cp ./doc/readme ./build/PhotoGrabber/
 
-make clean
-cd interface
-make clean
-cd ../plugins/msd
-make clean
-cd ../ptp
-make clean
-cd ../..

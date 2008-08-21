@@ -1,11 +1,11 @@
-## ****************************************** ## 
-## Zeta Generic Makefile v3.0-internal		  ## 
+## *****************************************************************
+## * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+## * All rights reserved.										   *
+## * Distributed under the terms of the MIT License.               *
+## *****************************************************************
 
-## Fill in this file to specify the project being created, and the referenced 
-## makefile-engine will do all of the hard work for you.
 
-
-## Application Specific Settings --------------------------------------------- 
+## Application Specific Settings
 
 # specify the name of the binary 
 NAME := PhotoGrabber
@@ -69,15 +69,7 @@ RDEFS :=
 #               and it's name 
 #               library: my_lib.a entry: my_lib.a or path/my_lib.a 
 LIBS :=  stdc++.r4 be translation root
-
-ifeq ($(wildcard /boot/beos/system/lib/libzeta.so), )
-# Is a BeOS build
-else
-# Zeta build
-LIBS += zeta
-endif
 		
-
 #       specify additional paths to directories following the standard 
 #       libXXX.so or libXXX.a naming scheme.  You can specify full paths 
 #       or paths relative to the makefile.  The paths included may not 
@@ -105,13 +97,7 @@ OPTIMIZE := FULL
 #       to use.  For example, setting DEFINES to "DEBUG=1" will cause the 
 #       compiler option "-DDEBUG=1" to be used.  Setting DEFINES to "DEBUG" 
 #       would pass "-DDEBUG" on the compiler's command line. 
-
-ifeq ($(wildcard /boot/beos/system/lib/libzeta.so), )
-# BeOS
-else
-#Zeta
-    DEFINES += _ZETA_OS_
-endif
+DEFINES :=
 
 #       specify special warning levels 
 #       if unspecified default warnings will be used 
@@ -192,7 +178,7 @@ DODEPS :=
 
 #	Set this variable if you have an svg text file you wish to use as 
 #   your target's icon.
-SVG_ICON := 
+SVG_ICON := ./extra/cam.svg
 
 #	If you have some fancy custom build steps to do, specify them here
 EXTRA_BUILD_STEPS := 
@@ -201,53 +187,6 @@ EXTRA_BUILD_STEPS :=
 #	If you have some other files that should trigger a re-link, such as libs in the same
 #	project that may get rebuilt, specify the full path to them here.
 EXTRA_DEPS := 
-
-
-################################################################################################## 
-# 
-##                                  Z E T A  S p e c i f i c 
-# 
-################################################################################################## 
-
-#		Source lib dependencies:
-#		Specify the libs we have the sources to here that this project depends on and it will
-#		be built if it is out of date. Not as cool and automatic as scons, but hey, it works
-#		for the most part: example: SRC_LIBS_SHARED := be zeta tracker
-SRC_LIBS_SHARED := 
-
-SRC_LIBS_STATIC := 
-
-#       Specify the path to the Screenshot file. If this is not specified, then the SCREENSHOT default 
-#       will be $(PWD)/$(NAME).png 
-#       If this application is not to have a screenshot, use NONE 
-SCREENSHOT := 
-
-#       Specify the category that this zeta component belongs in 
-ZETA_CATEGORY := 
-
-#       The .zip package that this file will be included in. If this is left blank, then 
-#       $(NAME).zip will be used. 
-#       This feature is meant for having multiple items included in the a single .zip package 
-PACKAGE := 
-
-#       If this target is a component of another target. That is, if this is part of a package 
-#       but not the 'main' part. Typically the main app will have the screenshot, and set 
-#       the relevant attributes. If this is set to 'true' then this makefile will not attempt to set 
-#       attributes or a screenshot or a description. 
-IS_COMPONENT := 
-
-#       If this is a mandatory component, set this to 'false'. The default is true. 
-#       Optional components will be zipped up with thier attribs and everything. 
-#       Non-Optional (mandatory) components will just be copied to the directory structure and 
-#       added to the manifest for copying during install 
-OPTIONAL := 
-
-#       Specify the names of the Language files here. (ie: AboutWindow.de AboutWindow.en) 
-LANG_FILES := 
-
-#       If your language files are in a different directory, specify the relative directory here. 
-#       ie: Language/Dictionaries 
-LANG_FILES_DIR := 
 
 
 include /boot/develop/etc/makefile-engine
