@@ -234,20 +234,17 @@ bool BeDiGiCamApp::GetCameraStrings()
     appentry.GetPath(&path);
 	path.GetParent(&path);
 	path.Append("plugins/");
-	//path.Append(libName);
-	//addonId = load_add_on(path.Path());
-	//
- 	//find_directory(B_USER_LIB_DIRECTORY, &path, true, NULL);
-	//path.Append("BDCP_Plugins");
 	BDirectory searchDir(path.Path());
 	BEntry entry;
 	status_t err = B_OK;
 	//clear the lists
 	supportedCams.clear();
 	pluginSupportedCams.clear();
-	while(err != B_ERROR)
+	while(true)
 	{
 		err = searchDir.GetNextEntry(&entry,true);
+		if(err < 0)
+			break;
 		if( entry.InitCheck() != B_NO_ERROR )
       		break;
     	if( entry.GetPath(&path) != B_NO_ERROR )
