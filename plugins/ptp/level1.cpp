@@ -105,10 +105,10 @@ void getPluginVersion(version_info &ver)
 {
 	ver.major = 2;
 	ver.middle = 0;
-	ver.minor = 0;
+	ver.minor = 1;
 	ver.variety = 0;
 	ver.internal = 0;
-	sprintf(ver.short_info,"Jan-Rixt Van Hoye 2007");
+	sprintf(ver.short_info,"Jan-Rixt Van Hoye 2008");
 	sprintf(ver.long_info,"BDCP PTP Cameras Plugin");
 }
 

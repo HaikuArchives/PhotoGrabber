@@ -9,8 +9,8 @@
 #define PTPINTF_H
 //
 // Include
+#include <USBKit.h>
 #include "global.h"
-#include "USBKit.h"
 extern "C" {
 #include "ptp.h"
 }

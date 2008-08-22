@@ -15,7 +15,7 @@
 #include <map>
 #include <Looper.h>
 #include "PTPInterface.h"
-#include "USBKit.h"
+#include <USBKit.h>
 //	Local Includes
 extern "C" {
 #include "ptp.h"
