@@ -11,19 +11,17 @@
 make clean
 cd interface
 make clean
-#cd ../plugins/msd
-#make clean
 cd ../plugins/ptp
 make clean
 cd ../..
 rm -r build
 
-# Building the files
+# Build the core
 make
+# Build the interface
 cd interface
 make
-#cd ../plugins/msd
-#make
+# Build the ptp plugin
 cd ../plugins/ptp
 make
 cd ../..
@@ -33,16 +31,11 @@ mkdir build
 mkdir ./build/PhotoGrabber
 mkdir ./build/PhotoGrabber/interface
 mkdir ./build/PhotoGrabber/plugins
-mkdir ./build/PhotoGrabber/Language
-mkdir ./build/PhotoGrabber/Language/Dictionaries
 
-# Moving bins over
-mv ./obj.x86/PhotoGrabber ./build/PhotoGrabber/
-mv ./interface/obj.x86/libPGInterface ./build/PhotoGrabber/interface/
-#mv ./plugins/msd/obj.x86/libbdcp_msd ./build/PhotoGrabber/plugins/
-mv ./plugins/ptp/obj.x86/libbdcp_ptp ./build/PhotoGrabber/plugins/
 
-# Copy the translation files and documentation
-cp ./translation/* ./build/PhotoGrabber/Language/Dictionaries/
-cp ./doc/readme ./build/PhotoGrabber/
+# Copy the binaries to the build directory
+cp ./obj.x86/PhotoGrabber ./build/PhotoGrabber/
+cp ./interface/obj.x86/libPGInterface ./build/PhotoGrabber/interface/
+cp ./plugins/ptp/obj.x86/libbdcp_ptp ./build/PhotoGrabber/plugins/
+
 
