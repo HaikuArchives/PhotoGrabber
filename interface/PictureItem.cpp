@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2005,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -97,8 +97,6 @@ void BeCam_PictureItem::DrawItem(BView *owner, BRect frame, bool complete)
 	owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight));
 	owner->DrawString(PictureName.String());
 	
-	//char *orient[10]={"", "(Landscape)", "", "", "", "", "(Portrait)", "(Landscape)", "(Portrait)", ""};
-
 	if((PictureOrientation==6) || (PictureOrientation==8))
 	{
 		sprintf(tmps, "%ld*%ld pixels %ld bytes.", PictureYres, PictureXres, PictureSize);
@@ -109,10 +107,6 @@ void BeCam_PictureItem::DrawItem(BView *owner, BRect frame, bool complete)
 	}
 	owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*2));
 	owner->DrawString(tmps);
-
-	//sprintf(tmps, "%s %s", pic_Flash?"(Flash)":"(No flash)", orient[pic_Orientation<10?pic_Orientation:0]);
-	//owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*3));
-	//owner->DrawString(tmps);
 
 	sprintf(tmps, "%s", asctime(gmtime((const time_t *)&PictureDate)));
 	tmps[strlen(tmps)-1]=0;

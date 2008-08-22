@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -47,7 +47,7 @@
 
 #define LOGFILE 					"/boot/var/tmp/BeCam.log"
 #define VERSIONNAME					"PhotoGrabber version"
-#define VERSIONNUMBER				"2.0"
+#define VERSIONNUMBER				"2.1"
 #define AUTHOR						"By Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"
 #define DESCRIPTION					"Digital camera download utility."
 
@@ -102,9 +102,6 @@
 #define disconnected				1
 
 // Type of camera
-//#define CAM_PTP						"ptop"
-//#define CAM_BDCP					"bdcp"
-//#define CAM_MASS					"mass"
 #define	TYPE_PAR					0
 #define TYPE_USB					1
 

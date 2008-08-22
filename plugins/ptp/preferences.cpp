@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -13,7 +13,6 @@ void LoadSettingsFromFile(void)
 	char tempbuf[10];
 	if (prefs.GetString("eptype", tempbuf, 10))
 	{
-		//printf("PTP - %s\n", tempbuf);
 		if(!strcmp(tempbuf,"type2"))
 			globalEndpoint = 2;
 		else

@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -10,11 +10,7 @@
 //
 // Include
 #include "global.h"
-#ifdef _ZETA_OS_
-	#include <usb/USBKit.h>
-#else
-	#include "USBKit.h"
-#endif
+#include "USBKit.h"
 extern "C" {
 #include "ptp.h"
 }

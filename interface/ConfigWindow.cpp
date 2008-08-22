@@ -1,5 +1,5 @@
 /*****************************************************************
-* Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
 * All rights reserved.											 *
 * Distributed under the terms of the MIT License.                *
  *****************************************************************/
@@ -268,11 +268,10 @@ void BeCam_ConfigWindow::GetPluginDetails(char * cameraname = NULL)
 void BeCam_ConfigWindow::OpenPluginConfig()
 {
 	#ifdef DEBUG
-	lfconfigw = fopen(LOGFILE,"a");	
-	fprintf(lfconfigw,"CONFIGWINDOW - Begin open plugin\n");
-	fclose(lfconfigw);
+		lfconfigw = fopen(LOGFILE,"a");	
+		fprintf(lfconfigw,"CONFIGWINDOW - Begin open plugin\n");
+		fclose(lfconfigw);
 	#endif
-	//BWindow	*configWindow;
 	BRect rect = Frame();
 	float Xpos,Ypos;
 	Xpos = rect.left + ((rect.right - rect.left)/2);
@@ -288,8 +287,8 @@ void BeCam_ConfigWindow::OpenPluginConfig()
 	
 	}
 	#ifdef DEBUG
-	lfconfigw = fopen(LOGFILE,"a");	
-	fprintf(lfconfigw,"CONFIGWINDOW - End open plugin\n");
-	fclose(lfconfigw);
+		lfconfigw = fopen(LOGFILE,"a");	
+		fprintf(lfconfigw,"CONFIGWINDOW - End open plugin\n");
+		fclose(lfconfigw);
 	#endif		
 }

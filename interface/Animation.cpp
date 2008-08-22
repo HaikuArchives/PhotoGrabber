@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	PhotoGrabber-team					 *
+ * Copyright (c) 2004-2008,	PhotoGrabber-team					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************
@@ -68,12 +68,7 @@ void Animation::StartAnimation()
 	Show();
 	fAnimationPos = 0;
 	fMsg = BMessenger(this);
-#ifdef _ZETA_OS_
-		
-	fMsg.SendDelayedMessage( BMessage(skDelayMessage), 30000 );			
-#else
 	fMsgRun = new BMessageRunner(fMsg,new BMessage(skDelayMessage),150000);
-#endif
 }
 //
 //	Animation :: AnimationStep
@@ -89,9 +84,6 @@ void Animation::AnimationStep()
 		}
 		// invalidate only the rectangle where we move the transfer icon
 		Invalidate();
-	#ifdef _ZETA_OS_	
-		fMsg.SendDelayedMessage( BMessage( skDelayMessage ), 150000 );	
-	#endif
 	}	
 }
 //
@@ -116,10 +108,7 @@ void Animation::AttachedToWindow()
 	fclose(lfanimation);
 	#endif
 	BView::AttachedToWindow();
-	SetViewColor( ui_color( B_PANEL_BACKGROUND_COLOR ) );
-#ifdef _ZETA_OS_	
-	SetDoubleBuffering( B_UPDATE_INVALIDATED );
-#endif	
+	SetViewColor( ui_color( B_PANEL_BACKGROUND_COLOR ) );	
 	bool done = false;
 	#ifdef DEBUG
 	lfanimation = fopen(INTF_LOGFILE,"a");	
@@ -160,23 +149,19 @@ void Animation::AttachedToWindow()
 void Animation::Draw(BRect _frame)
 {
 	BView::Draw(_frame);
-	// DEBUGGING
-	//BRect r = fAnimationFrames[fAnimationPos]->Bounds();
-	//BBitmap *offscreen = new BBitmap(r,B_RGB_32_BIT,TRUE);
-	//BView *offview = new BView(r,"off",B_FOLLOW_ALL,B_WILL_DRAW);
-	//offview->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-	//offscreen->AddChild(offview);
-	//offscreen->Lock();
-	//r = offview->Bounds();
-	//offview->DrawBitmap(fAnimationFrames[fAnimationPos],fDrawPos);
-	//offview->Sync();
-	//offscreen->Unlock();
-	///
+	#ifdef DEBUG
+		BRect r = fAnimationFrames[fAnimationPos]->Bounds();
+		BBitmap *offscreen = new BBitmap(r,B_RGB_32_BIT,TRUE);
+		BView *offview = new BView(r,"off",B_FOLLOW_ALL,B_WILL_DRAW);
+		offview->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+		offscreen->AddChild(offview);
+		offscreen->Lock();
+		r = offview->Bounds();
+		offview->DrawBitmap(fAnimationFrames[fAnimationPos],fDrawPos);
+		offview->Sync();
+		offscreen->Unlock();
+	#endif
 	SetDrawingMode( B_OP_ALPHA );
-	DrawBitmap( fAnimationFrames[fAnimationPos]/*offscreen*/, fDrawPos );
-	SetDrawingMode( B_OP_COPY );
-	///
-	
-	//delete(offscreen);
-	//				
+	DrawBitmap( fAnimationFrames[fAnimationPos], fDrawPos );
+	SetDrawingMode( B_OP_COPY );				
 }

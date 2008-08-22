@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -46,9 +46,9 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 				: BWindow(r,"PhotoGrabber",B_DOCUMENT_WINDOW, B_WILL_DRAW | B_NOT_H_RESIZABLE)
 {
 	#ifdef DEBUG
-	lfmainw = fopen(LOGFILE,"a");	
-	fprintf(lfmainw,"MAINWINDOW - Create window\n");
-	fclose(lfmainw);
+		lfmainw = fopen(LOGFILE,"a");	
+		fprintf(lfmainw,"MAINWINDOW - Create window\n");
+		fclose(lfmainw);
 	#endif
 	devicetype = devtype;
 	systemcore = syscore;
@@ -61,25 +61,18 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 	// Add the Menubar
 	r = Bounds();
 	#ifdef DEBUG
-	lfmainw = fopen(LOGFILE,"a");	
-	fprintf(lfmainw,"MAINWINDOW - Create menubar\n");
-	fclose(lfmainw);
+		lfmainw = fopen(LOGFILE,"a");	
+		fprintf(lfmainw,"MAINWINDOW - Create menubar\n");
+		fclose(lfmainw);
 	#endif
 	addMenuBar();
-#ifdef _ZETA_OS_
-	addToolBar();
-#endif
-	// Add the MainView
-#ifdef _ZETA_OS_	
-	r.top = becam_toolBar->Frame().bottom + 1;
-#else	
-	r.top = becam_menubar->Frame().bottom + 1;
-#endif	
+	// Add the MainView	
+	r.top = becam_menubar->Frame().bottom + 1;	
 	becam_view = new BeCam_MainView(r,"BeDiGiCamView");
 	#ifdef DEBUG
-	lfmainw = fopen(LOGFILE,"a");	
-	fprintf(lfmainw,"MAINWINDOW - Set the controls\n");
-	fclose(lfmainw);
+		lfmainw = fopen(LOGFILE,"a");	
+		fprintf(lfmainw,"MAINWINDOW - Set the controls\n");
+		fclose(lfmainw);
 	#endif
 	//set controls
 	rgb_color bg_color=ui_color(B_PANEL_BACKGROUND_COLOR);
@@ -103,9 +96,9 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 									);
     becam_view->AddChild(becam_scrollview);
     #ifdef DEBUG
-	lfmainw = fopen(LOGFILE,"a");	
-	fprintf(lfmainw,"MAINWINDOW - Create popupmenu\n");
-	fclose(lfmainw);
+		lfmainw = fopen(LOGFILE,"a");	
+		fprintf(lfmainw,"MAINWINDOW - Create popupmenu\n");
+		fclose(lfmainw);
 	#endif
     // 	Popup menu to choose your path
  	becam_downloadMenu = new BPopUpMenu("downloadMenu");
@@ -122,26 +115,22 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 	becam_view->AddChild(becam_downloadPopup);
 	//
 	#ifdef DEBUG
-	lfmainw = fopen(LOGFILE,"a");	
-	fprintf(lfmainw,"MAINWINDOW - Add action buttons\n");
-	fclose(lfmainw);
-	#endif
-
-#ifndef _ZETA_OS_	
-	addActionBar();
-#endif	
-	
+		lfmainw = fopen(LOGFILE,"a");	
+		fprintf(lfmainw,"MAINWINDOW - Add action buttons\n");
+		fclose(lfmainw);
+	#endif	
+	addActionBar();	
 	#ifdef DEBUG
-	lfmainw = fopen(LOGFILE,"a");	
-	fprintf(lfmainw,"MAINWINDOW - Action buttons added\n");
-	fprintf(lfmainw,"MAINWINDOW - Add the statusbar\n");
-	fclose(lfmainw);
+		lfmainw = fopen(LOGFILE,"a");	
+		fprintf(lfmainw,"MAINWINDOW - Action buttons added\n");
+		fprintf(lfmainw,"MAINWINDOW - Add the statusbar\n");
+		fclose(lfmainw);
 	#endif
 	addStatusBar();
 	#ifdef DEBUG
-	lfmainw = fopen(LOGFILE,"a");	
-	fprintf(lfmainw,"MAINWINDOW - Statusbar added\n");
-	fclose(lfmainw);
+		lfmainw = fopen(LOGFILE,"a");	
+		fprintf(lfmainw,"MAINWINDOW - Statusbar added\n");
+		fclose(lfmainw);
 	#endif
 	// add view to window
 	AddChild(becam_view);
@@ -150,9 +139,9 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 	//Set the focus to the listview
 	becam_listview->MakeFocus(true);
 	#ifdef DEBUG
-	lfmainw = fopen(LOGFILE,"a");	
-	fprintf(lfmainw,"MAINWINDOW - Window created\n");
-	fclose(lfmainw);
+		lfmainw = fopen(LOGFILE,"a");	
+		fprintf(lfmainw,"MAINWINDOW - Window created\n");
+		fclose(lfmainw);
 	#endif
 }
 //
@@ -161,17 +150,7 @@ void BeCam_MainWindow::addMenuBar ()
 {
 	becam_menubar = new BMenuBar(Bounds(), "menu_bar");
 	AddChild(becam_menubar);
-#ifdef _ZETA_OS_	
-	// ZETA:: Add Icon menu to be compatible with all zeta applications
-	becam_iconMenu = new BMenu(_T("IconMenu"));
-	becam_iconMenu->AddItem(new BMenuItem(_T("About") , new BMessage(ABOUT)));
-	becam_iconMenu->AddSeparatorItem();
-	becam_iconMenu->AddItem(new BMenuItem(_T("Preferences") , new BMessage(CONFIG),'P'));
-	becam_iconMenu->AddSeparatorItem();
-	becam_iconMenu->AddItem(new BMenuItem(_T("Quit"), new BMessage(QUIT), 'Q'));
-	becam_menubar->AddItem( new BIconMenu (becam_iconMenu));
-#else
-	// HAIKU:: Add File menu to the menu bar
+	// Add File menu to the menu bar
 	becam_fileMenu = new BMenu("File");
 	becam_fileMenu->AddItem(new BMenuItem(_T("About") , new BMessage(ABOUT)));
 	becam_fileMenu->AddSeparatorItem();
@@ -179,7 +158,6 @@ void BeCam_MainWindow::addMenuBar ()
 	becam_fileMenu->AddSeparatorItem();
 	becam_fileMenu->AddItem(new BMenuItem(_T("Quit"), new BMessage(QUIT), 'Q'));
 	becam_menubar->AddItem(becam_fileMenu);
-#endif
 	// Add Extra menu to the menu bar
 	becam_extraMenu = new BMenu(_T("Extra"));
 	becam_extraMenu->AddItem(new BMenuItem(_T("Download") , new BMessage(DOWN_BUTTON), 'S'));
@@ -195,41 +173,15 @@ void BeCam_MainWindow::addMenuBar ()
 	disconnect->SetEnabled(false);
 	becam_menubar->AddItem(actionsMenu);
 	// Add the test menu
-#ifdef DEBUG	
-	BMenu *debuggingMenu = new BMenu(_T("Debugging"));
-	debuggingMenu->AddItem(new BMenuItem(_T("Open Statuswindow") , new BMessage(OPN_STATUS)));
-	becam_menubar->AddItem(debuggingMenu);
-#endif	
+	#ifdef DEBUG	
+		BMenu *debuggingMenu = new BMenu(_T("Debugging"));
+		debuggingMenu->AddItem(new BMenuItem(_T("Open Statuswindow") , new BMessage(OPN_STATUS)));
+		becam_menubar->AddItem(debuggingMenu);
+	#endif	
 	if(devicetype == TYPE_USB)
 		actionsMenu->SetEnabled(false);
 }
-#ifdef _ZETA_OS_
-//
-// MainWindow:: Create the toolbar
-void BeCam_MainWindow::addToolBar ()
-{
-	// Add toolbar to this window
-	float size = 24;
-	BBitmap* downloadBmp = new BBitmap (GetTrackerIcon (BEntry ("/boot/beos/etc/icons/svg/navigation_down.svg"), size));
-	BBitmap* deleteBmp = new BBitmap (GetTrackerIcon (BEntry ("/boot/beos/etc/icons/svg/trash-empty.svg"), size));
-	BBitmap* detailsBmp = new BBitmap (GetTrackerIcon (BEntry ("/boot/beos/etc/icons/svg/camera.svg"), size));
-	becam_tbDownload = new BBitmapTool ("download", downloadBmp, _T ("Download"), new BMessage (DOWN_BUTTON), true);
-	becam_tbRemove = new BBitmapTool ("delete", deleteBmp, _T ("Delete"), new BMessage (DEL_BUTTON), true);
-	becam_tbDetails = new BBitmapTool ("details", detailsBmp, _T ("Camera details"), new BMessage (DETAIL_CAM), true);
-	becam_toolBar = new BToolBar (BRect (0, becam_menubar->Frame().bottom, Bounds().Width(), 0), "MainWindow:toolbar",
-					B_HORIZONTAL, BS_PLAIN_BORDER, B_FOLLOW_LEFT_RIGHT | B_FOLLOW_TOP, B_WILL_DRAW);
-	becam_tbDownload->SetEnabled(false);
-	becam_tbRemove->SetEnabled(false);
-	becam_tbDetails->SetEnabled(false);
-	becam_toolBar->AddTool (becam_tbDownload);
-	becam_toolBar->AddTool (becam_tbRemove);
-	//becam_toolBar->AddTool (becam_tbDetails);
-	becam_toolBar->SetStyleForTools (BS_NO_BUTTON);
-	becam_toolBar->ResizeToPreferred();
-	tbExpanded = true;
-	AddChild (becam_toolBar);
-}
-#else
+
 //
 // MainWindow:: Create the Action Bar with the action controls
 void BeCam_MainWindow::addActionBar ()
@@ -251,7 +203,6 @@ void BeCam_MainWindow::addActionBar ()
 	becam_delete->SetEnabled(false);
 	
 }
-#endif
 
 //
 // MainWindow:: Create the statusbar
@@ -259,11 +210,7 @@ void BeCam_MainWindow::addStatusBar ()
 {
 	// statusbar toevoegen
 	BRect r = Bounds();
-#ifdef _ZETA_OS_	
-	r.top = becam_downloadPopup->Frame().bottom + 5;
-#else
 	r.top = becam_download->Frame().bottom + 5; 
-#endif	
 	becam_winstatusbar = new BTextControl(
 									r, 
 									"winstat",
@@ -307,7 +254,6 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
 	//
 	if(becam_listview->CurrentSelection() >= 0)
 	{
-		//BMessage *caminterface;
 		entry_ref refentry;
 		int count,index=0,selectedindex=0;
 		uint32 totalpics=0;
@@ -315,13 +261,8 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
 		BeCam_Item *LocaleItem;
 		BMessage *cam_message;
 		becam_winstatusbar->SetText(_T("Downloading items..."));
-	#ifdef _ZETA_OS_
-		becam_tbDownload->SetEnabled(false);
-		becam_tbRemove->SetEnabled(false);
-	#else	
 		becam_download->SetEnabled(false);
 		becam_delete->SetEnabled(false);
-	#endif	
 		becam_extraMenu->SetEnabled(false);
 		becam_downloadPopup->SetEnabled(false);
 		//
@@ -332,12 +273,7 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
 			if(becam_listview->IsItemSelected(index))
 				totalpics++;	
 		}
-	#ifdef _ZETA_OS_	
-		BParamable buffer = _TPS("Downloading number NUMBER of the TOTAL selected files").Replace("NUMBER",BFormatter("%d",(uint32)0)).Replace("TOTAL",BFormatter("%d",totalpics));
-		sprintf(tmpBuffer,buffer.String());
-	#else
 		sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)0,totalpics);
-	#endif	
 		CreateStatusWindow(totalpics, tmpBuffer);
 		UpdateStatusWindow(0, tmpBuffer);
 		//
@@ -365,25 +301,15 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
 				messenger.SendMessage(cam_message,&reply);
 				if(reply.what == DOWN_ITEM_OK)
 				{
-					#ifdef _ZETA_OS_
-						buffer = _TPS("Downloading number NUMBER of the TOTAL selected files").Replace("NUMBER",BFormatter("%d",(uint32)selectedindex)).Replace("TOTAL",BFormatter("%d",totalpics));
-						sprintf(tmpBuffer,buffer.String());
-					#else
-						sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)selectedindex,totalpics);
-					#endif
+					sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)selectedindex,totalpics);
 					UpdateStatusWindow(1,tmpBuffer);
 				}
 				delete(cam_message);
 			}
 		}
 		CloseStatusWindow();
-	#ifdef _ZETA_OS_	
-		becam_tbDownload->SetEnabled(true);
-		becam_tbRemove->SetEnabled(true);
-	#else
 		becam_download->SetEnabled(true);
 		becam_delete->SetEnabled(true);
-	#endif		
 		becam_extraMenu->SetEnabled(true);
 		becam_downloadPopup->SetEnabled(true);
 		becam_winstatusbar->SetText(_T("All items have been downloaded."));
@@ -401,9 +327,9 @@ void BeCam_MainWindow::removeSelectedItems()
 {
 	//
 	#ifdef DEBUG
-	lfmainw = fopen(LOGFILE,"a");	
-	fprintf(lfmainw,"MAINWINDOW - Begin remove Items\n");
-	fclose(lfmainw);
+		lfmainw = fopen(LOGFILE,"a");	
+		fprintf(lfmainw,"MAINWINDOW - Begin remove Items\n");
+		fclose(lfmainw);
 	#endif
 	if(becam_listview->CurrentSelection() >= 0)
 	{
@@ -413,13 +339,8 @@ void BeCam_MainWindow::removeSelectedItems()
 		BMessage *cam_message;
 		//
 		becam_winstatusbar->SetText(_T("Removing items..."));
-	#ifdef _ZETA_OS_		
-		becam_tbDownload->SetEnabled(false);
-		becam_tbRemove->SetEnabled(false);
-	#else	
 		becam_download->SetEnabled(false);
 		becam_delete->SetEnabled(false);
-	#endif	
 		becam_extraMenu->SetEnabled(false);
 		becam_downloadPopup->SetEnabled(false);
 		// Ask the user if he/she is sure to remove the files.
@@ -435,24 +356,19 @@ void BeCam_MainWindow::removeSelectedItems()
 				if(becam_listview->IsItemSelected(index))
 				{
 					#ifdef DEBUG
-					lfmainw = fopen(LOGFILE,"a");	
-					fprintf(lfmainw,"MAINWINDOW - File %d should be removed\n",index);
-					fclose(lfmainw);
+						lfmainw = fopen(LOGFILE,"a");	
+						fprintf(lfmainw,"MAINWINDOW - File %d should be removed\n",index);
+						fclose(lfmainw);
 					#endif
 					totalpics++;
 				}	
 			}
 			#ifdef DEBUG
-			lfmainw = fopen(LOGFILE,"a");	
-			fprintf(lfmainw,"MAINWINDOW - %ld items should be removed\n",totalpics);
-			fclose(lfmainw);
+				lfmainw = fopen(LOGFILE,"a");	
+				fprintf(lfmainw,"MAINWINDOW - %ld items should be removed\n",totalpics);
+				fclose(lfmainw);
 			#endif
-		#ifdef _ZETA_OS_		
-			BParamable buffer = _TPS("Removing number NUMBER of the TOTAL selected files").Replace("NUMBER",BFormatter("%d",(uint32)0)).Replace("TOTAL",BFormatter("%d",totalpics));
-			sprintf(tmpBuffer,buffer.String());
-		#else	
 			sprintf(tmpBuffer,"Removing number %ld of the %ld selected files",(uint32)0,totalpics);
-		#endif	
 			CreateStatusWindow(totalpics, tmpBuffer);
 			UpdateStatusWindow(0, tmpBuffer);
 			index = 0;
@@ -470,12 +386,7 @@ void BeCam_MainWindow::removeSelectedItems()
 					messenger.SendMessage(cam_message,&reply);
 					if(reply.what == REM_ITEM_OK)
 					{
-					#ifdef _ZETA_OS_	
-						buffer = _TPS("Removing number NUMBER of the TOTAL selected files").Replace("NUMBER",BFormatter("%d",(uint32)selectedindex)).Replace("TOTAL",BFormatter("%d",totalpics));
-						sprintf(tmpBuffer,buffer.String());
-					#else	
 						sprintf(tmpBuffer,"Removing number %ld of the %ld selected files",(uint32)selectedindex,totalpics);
-					#endif	
 						UpdateStatusWindow(1,tmpBuffer);
 						removeItem(selectedItem);
 						delete(selectedItem);
@@ -488,13 +399,8 @@ void BeCam_MainWindow::removeSelectedItems()
 					index++;
 			}
 			CloseStatusWindow();
-		#ifdef _ZETA_OS_	
-			becam_tbDownload->SetEnabled(true);
-			becam_tbRemove->SetEnabled(true);
-		#else
 			becam_download->SetEnabled(true);
 			becam_delete->SetEnabled(true);
-		#endif	
 			becam_extraMenu->SetEnabled(true);
 			becam_downloadPopup->SetEnabled(true);	
 			becam_winstatusbar->SetText(_T("All items have been removed."));
@@ -507,9 +413,9 @@ void BeCam_MainWindow::removeSelectedItems()
 		myAlert->Go();
 	}
 	#ifdef DEBUG
-	lfmainw = fopen(LOGFILE,"a");	
-	fprintf(lfmainw,"MAINWINDOW - End remove Items\n");
-	fclose(lfmainw);
+		lfmainw = fopen(LOGFILE,"a");	
+		fprintf(lfmainw,"MAINWINDOW - End remove Items\n");
+		fclose(lfmainw);
 	#endif
 			
 }
@@ -650,14 +556,8 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 		case CAM_CONNECTED:
 			product = message->FindString("product");
 			strcpy(statusmessage,_T("Connected to: "));
-		#ifdef _ZETA_OS_
-			becam_tbDownload->SetEnabled(true);
-			becam_tbRemove->SetEnabled(true);
-			becam_tbDetails->SetEnabled(true);
-		#else	
 			becam_download->SetEnabled(true);
 			becam_delete->SetEnabled(true);
-		#endif	
 			strcat(statusmessage,product);
 			becam_winstatusbar->SetText(statusmessage);
 			becam_connected = true;
@@ -668,14 +568,8 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			product = message->FindString("product");
 			strcpy(statusmessage,product);
 			strcat(statusmessage,_T(" disconnected"));
-		#ifdef _ZETA_OS_
-			becam_tbDownload->SetEnabled(false);
-			becam_tbRemove->SetEnabled(false);
-			becam_tbDetails->SetEnabled(false);
-		#else	
 			becam_download->SetEnabled(false);
 			becam_delete->SetEnabled(false);
-		#endif	
 			becam_winstatusbar->SetText(statusmessage);
 			becam_connected = false;	
 			becam_downloadPopup->SetEnabled(false);
@@ -738,12 +632,7 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 		case OPN_STATUS:
 		{	
 			char	tmpBuffer[100];
-		#ifdef _ZETA_OS_	
-			BParamable buffer = _TPS("Downloading number NUMBER of the TOTAL selected files").Replace("NUMBER",BFormatter("%d",(uint32)0)).Replace("TOTAL",BFormatter("%d",(uint32)0));
-			sprintf(tmpBuffer,buffer.String());
-		#else
 			sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)0,(uint32)0);
-		#endif	
 			CreateStatusWindow(0, tmpBuffer);
 			break;
 		}
@@ -760,8 +649,8 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 				strncpy(pgsettings->defaultDownloadPath,path.Path(),B_FILE_NAME_LENGTH);
 				BMessage *appmessage = new BMessage(SAVE_CONFIGURATION);
 				systemcore->PostMessage(appmessage);
-				appmessage = new BMessage(RELOAD_CONFIGURATION);
-				systemcore->PostMessage(appmessage);
+				//appmessage = new BMessage(RELOAD_CONFIGURATION);
+				//systemcore->PostMessage(appmessage);
 				delete(appmessage);
 			}
 			break; 
@@ -782,16 +671,6 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			downloadSelectedItems(&copyToDirDrag);	
 			break;
 		}
-	#ifdef _ZETA_OS_
-		case B_TOOLBAR_COLLAPSED:
-		case B_TOOLBAR_EXPANDED:
-		{
-			becam_view->MoveTo (becam_view->Frame().left, becam_toolBar->Frame().bottom);
-			becam_view->ResizeTo (becam_view->Frame().Width(), Bounds().Height() - becam_toolBar->Frame().Height()- becam_menubar->Frame().Height());
-			tbExpanded = !tbExpanded;
-			break;
-		}
-	#endif
 		case GET_CONFIGURATION:
 		{
              // Get the settings from the system core
@@ -806,6 +685,15 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			becam_downloadMenu->AddItem(defaultPath);
 			morePath = new BMenuItem(_T("Select new folder..."), new BMessage(SELECT_PATHMENU));	
 			becam_downloadMenu->AddItem(morePath);
+			BRect r = becam_downloadPopup->Frame();
+			becam_view->RemoveChild(becam_downloadPopup);
+			becam_downloadPopup = new BMenuField(r, "path", _T("Download Folder:"), 
+											becam_downloadMenu,
+											B_FOLLOW_BOTTOM,
+											B_WILL_DRAW | B_NAVIGABLE);
+			becam_downloadPopup->SetDivider(be_plain_font->StringWidth("Download Folder:") + 5);
+			becam_downloadPopup->SetEnabled(false);
+			becam_view->AddChild(becam_downloadPopup);
             break;
 		}
 		case RELOAD_CONFIGURATION:

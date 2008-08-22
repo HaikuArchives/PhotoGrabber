@@ -66,7 +66,7 @@ class Camera  : public BLooper
 		// Functions
 		bool			GetCameraInfo();
 		bool			SaveCameraItem(char *data, long int size, const char filename[255]);
-		BBitmap*		GetItemThumbnail(uint32 index);
+		/*BBitmap*		GetItemThumbnail(uint32 index);*/
 		int				logCamError(int ErrorMes);
 
 };

@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -60,7 +60,6 @@ BeCam_StatusView::BeCam_StatusView(BRect r,float xPos, float yPos, uint32 maxpic
 	r.top = 110;
 	r.bottom = 126;
 	r.right = 340;
-	//BRect(5,30,340,46);
 	statusbar = new BStatusBar(r,"becam_status_bar");
 	AddChild(statusbar);
 	statusbar->SetBarHeight(10);

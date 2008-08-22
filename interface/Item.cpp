@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -46,12 +46,7 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 	BRect	rect;
 	font_height height;
 	float	fheight;
-#ifdef _ZETA_OS_
-	char	tmps[40];
-	BParamable tmpString = NULL;
-#else	
 	char tmpString[256];
-#endif
 	owner->GetFontHeight(&height);
 	fheight=(height.ascent+height.descent);
 
@@ -94,71 +89,34 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 		rect.right=159;
 		rect.top=0;
 		rect.bottom=119;
-	}
-
-#ifdef _ZETA_OS_	
-	tmpString = _TPS("Name: NAME").Replace("NAME",GetName());
-#else	
-	sprintf(tmpString,"Name: %s",GetName());
-#endif	
+	}	
+	sprintf(tmpString,"Name: %s",GetName());	
 	owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight));
-#ifdef _ZETA_OS_	
-	owner->DrawString(tmpString.String());
-#else	
 	owner->DrawString(tmpString);
-#endif
 	if((GetOrientation()==6) || (GetOrientation()==8))
-	{
-	#ifdef _ZETA_OS_	
-		tmpString = _TPS("Height: PIXELS pixels.").Replace("PIXELS",BFormatter("%ld",itemdata->ItemYres));	
-		owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*3));
-		owner->DrawString(tmpString.String());
-		tmpString = _TPS("Width: PIXELS pixels.").Replace("PIXELS",BFormatter("%ld",itemdata->ItemXres));
-		owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*4));
-		owner->DrawString(tmpString.String());
-	#else	
+	{	
 		sprintf(tmpString,"Height: %ld pixels.",itemdata->ItemYres);
 		owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*3));
 		owner->DrawString(tmpString);
 		sprintf(tmpString,"Width: %ld pixels.",itemdata->ItemXres);
 		owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*4));
-		owner->DrawString(tmpString);
-	#endif	
-		
+		owner->DrawString(tmpString);	
 	}
 	else
 	{
-	#ifdef _ZETA_OS_
-		tmpString = _TPS("Height: PIXELS pixels.").Replace("PIXELS",BFormatter("%ld",itemdata->ItemYres));
-		owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*3));
-		owner->DrawString(tmpString.String());
-		tmpString = _TPS("Width: PIXELS pixels.").Replace("PIXELS",BFormatter("%ld",itemdata->ItemXres));
-		owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*4));
-		owner->DrawString(tmpString.String());
-	#else
 		sprintf(tmpString,"Height: %ld pixels.",itemdata->ItemYres);
 		owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*3));
 		owner->DrawString(tmpString);
 		sprintf(tmpString,"Width: %ld pixels.",itemdata->ItemXres);		
 		owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*4));
 		owner->DrawString(tmpString);
-	#endif
 	}
-#ifdef _ZETA_OS_
-	tmpString = _TPS("Size: BYTES bytes.").Replace("BYTES",BFormatter("%ld",GetSize()));
-	owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*5));
-	owner->DrawString(tmpString.String());
-	tmpString = _TPS("Date: DATE").Replace("DATE",GetDate());
-	owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*6));
-	owner->DrawString(tmpString.String());
-#else
 	sprintf(tmpString,"Size: %ld bytes.",GetSize());
 	owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*5));
 	owner->DrawString(tmpString);
 	sprintf(tmpString,"Date: %s",GetDate());
 	owner->MovePenTo(frame.left+rect.right+10, frame.top+(fheight*6));
 	owner->DrawString(tmpString);
-#endif
 	owner->MovePenTo(frame.left+4, frame.top+4);
 	if(GetThumbBitmap())
 	{
@@ -166,12 +124,8 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 	}
 	else
 	{
-		owner->MovePenTo(frame.left+10+40, frame.top+(60+(fheight/2)));
-	#ifdef _ZETA_OS_	
-		owner->DrawString(_T("No thumbnail"));
-	#else	
+		owner->MovePenTo(frame.left+10+40, frame.top+(60+(fheight/2)));	
 		owner->DrawString("No thumbnail");
-	#endif
 	}
 
 }

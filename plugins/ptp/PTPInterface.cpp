@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -22,9 +22,9 @@ FILE *lfptpi;
 int PTP_find_endpoint(int type, int &interface, int &endpoint)
 {
 	#ifdef DEBUG
-	lfptpi = fopen(LOGFILE,"a");
-	fprintf(lfptpi,"PTP: Global endpoint is: %d \n",globalEndpoint);
-	fclose(lfptpi);
+		lfptpi = fopen(LOGFILE,"a");
+		fprintf(lfptpi,"PTP: Global endpoint is: %d \n",globalEndpoint);
+		fclose(lfptpi);
 	#endif
 	interface = 0;
 	
@@ -56,9 +56,9 @@ int PTP_find_endpoint(int type, int &interface, int &endpoint)
 bool  PTP_init_ptp_usb(PTPParams* params,BUSBDevice *dev)
 {
 	#ifdef DEBUG
-	lfptpi = fopen(LOGFILE,"a");
-	fprintf(lfptpi,"PTP: Init ptp usb\n");
-	fclose(lfptpi);
+		lfptpi = fopen(LOGFILE,"a");
+		fprintf(lfptpi,"PTP: Init ptp usb\n");
+		fclose(lfptpi);
 	#endif
 	LoadSettingsFromFile();
 	params->write_func=PTP_ptp_write_func;
@@ -120,25 +120,25 @@ PTP_ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 		while(length > 0)
 		{
 			#ifdef DEBUG
-			lfptpi = fopen(LOGFILE,"a");
-			fprintf(lfptpi,"PTP: Transfer begin: %d \n",length);
-			fclose(lfptpi);
+				lfptpi = fopen(LOGFILE,"a");
+				fprintf(lfptpi,"PTP: Transfer begin: %d \n",length);
+				fclose(lfptpi);
 			#endif
 			
 			result = iept->BulkTransfer(buf,USBBULK_BUFFER);
 			#ifdef DEBUG
-			lfptpi = fopen(LOGFILE,"a");
-			fprintf(lfptpi,"PTP: Transfer: %d /%d\n",length,size);
-			fclose(lfptpi);
+				lfptpi = fopen(LOGFILE,"a");
+				fprintf(lfptpi,"PTP: Transfer: %d /%d\n",length,size);
+				fclose(lfptpi);
 			#endif
 
 			if(result > 0)
 			{
 				unsigned int i = 0;
 				#ifdef DEBUG
-				lfptpi = fopen(LOGFILE,"a");
-				fprintf(lfptpi,"Transfer data : %d\n",(int)strlen((char *)buf));
-				fclose(lfptpi);
+					lfptpi = fopen(LOGFILE,"a");
+					fprintf(lfptpi,"Transfer data : %d\n",(int)strlen((char *)buf));
+					fclose(lfptpi);
 				#endif
 				while(i < USBBULK_BUFFER && index < size)
 				{
@@ -155,9 +155,9 @@ PTP_ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 			else
 			{
 				#ifdef DEBUG
-				lfptpi = fopen(LOGFILE,"a");
-				fprintf(lfptpi,"PTP: ERROR in transfer, please check the camera.\n");
-				fclose(lfptpi);
+					lfptpi = fopen(LOGFILE,"a");
+					fprintf(lfptpi,"PTP: ERROR in transfer, please check the camera.\n");
+					fclose(lfptpi);
 				#endif
 				delete(buf);
 				return(PTP_ERROR_IO_READ);
@@ -269,9 +269,9 @@ PTP_logError(int ErrorMes)
 			errorMessage = "PTP: An unexpected error occured\n";
 	}
 	#ifdef DEBUG
-	lfptpi = fopen(LOGFILE,"a");
-	fprintf(lfptpi,errorMessage);
-	fclose(lfptpi);
+		lfptpi = fopen(LOGFILE,"a");
+		fprintf(lfptpi,errorMessage);
+		fclose(lfptpi);
 	#endif
 	return(ErrorMes);
 }

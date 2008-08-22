@@ -1,7 +1,7 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 			*
- * All rights reserved.											 						*
- * Distributed under the terms of the MIT License.               			*
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye		 			 *
+ * All rights reserved.											 *
+ * Distributed under the terms of the MIT License.    			 *
  *****************************************************************/
 //
 // File defenition
@@ -68,9 +68,6 @@ class BeCam_ConfigWindow : public BWindow
 		BBox				*becam_debugbox;
 		BCheckBox			*becam_checkTerminal;
 		BCheckBox			*becam_checkFile;
-		//	Extra section
-		//BBox				*becam_extrabox;
-		//BCheckBox			*becam_checkMovie;
 		//	Screen section
 		BButton				*becam_savebutton;
 		BButton				*becam_cancelbutton;

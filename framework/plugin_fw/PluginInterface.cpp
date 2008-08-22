@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -274,13 +274,12 @@ bool CamInterface::takeItem()
 }
 //
 //		Interface: get Name
-char* CamInterface::getName(int /*index*/)
+char* CamInterface::getName()
 {
 	char * itemName;
 	
 	if(check_imageName)
 	{
-		//setCurrentItem(index);
 		(*getImageName)(itemName);
 		return itemName;
 	}
@@ -288,13 +287,12 @@ char* CamInterface::getName(int /*index*/)
 }
 //
 //		Interface: get Size
-int CamInterface::getSize(int index)
+int CamInterface::getSize()
 {
 	int itemSize;
 	
 	if(check_imageSize)
 	{
-		//setCurrentItem(index);
 		(*getImageSize)(itemSize);
 		return itemSize;
 	}
@@ -302,13 +300,12 @@ int CamInterface::getSize(int index)
 }
 //
 //		Interface: get Date
-char* CamInterface::getDate(int index)
+char* CamInterface::getDate()
 {
 	char * itemDate;
 	
 	if(check_imageDate)
 	{
-		//setCurrentItem(index);
 		(*getImageDate)(itemDate);
 		return itemDate;
 	}
@@ -316,13 +313,12 @@ char* CamInterface::getDate(int index)
 }
 //
 //		Interface: get Thumbnail
-BBitmap* CamInterface::getThumb(int index) 
+BBitmap* CamInterface::getThumb() 
 {
 	BBitmap* itemThumb;
 	
 	if(check_thumbnail)
 	{
-		//setCurrentItem(index);
 		(*getThumbnail)(itemThumb);
 		return itemThumb;
 	}
@@ -330,13 +326,12 @@ BBitmap* CamInterface::getThumb(int index)
 }
 //
 //		Interface: get Height
-int CamInterface::getHeight(int index)
+int CamInterface::getHeight()
 {
 	int itemHeight;
 	
 	if(check_imageSize)
 	{
-		//setCurrentItem(index);
 		(*getImageHeight)(itemHeight);
 		return itemHeight;
 	}
@@ -344,13 +339,12 @@ int CamInterface::getHeight(int index)
 }
 //
 //		Interface: get Width
-int CamInterface::getWidth(int index)
+int CamInterface::getWidth()
 {
 	int itemWidth;
 	
 	if(check_imageWidth)
 	{
-		//setCurrentItem(index);
 		(*getImageWidth)(itemWidth);
 		return itemWidth;
 	}

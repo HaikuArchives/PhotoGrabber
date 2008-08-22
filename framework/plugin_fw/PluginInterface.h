@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -39,12 +39,12 @@ class CamInterface
 		bool			downloadItem(int index,BPath path);
 		bool			deleteItem(int index);
 		bool			takeItem();
-		char*			getName(int index);
-		int				getSize(int index);
-		char*			getDate(int index);
-		BBitmap*		getThumb(int index);
-		int				getHeight(int index);
-		int				getWidth(int index);
+		char*			getName();
+		int				getSize();
+		char*			getDate();
+		BBitmap*		getThumb();
+		int				getHeight();
+		int				getWidth();
 		bool			setCoreSystemLoop(BLooper *core);
 		int				getDevType();
 		bool			cameraConnected(); 

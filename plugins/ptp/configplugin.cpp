@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -22,11 +22,7 @@
 #include "MenuField.h"
 
 // ZETA Locale
-#ifdef _ZETA_OS_
-#include "locale/Locale.h"
-#else
 #define _T(x) (x)
-#endif
 //
 
 const rgb_color BKG_GREY		= { 216, 216, 216, 0 };
@@ -36,8 +32,6 @@ configplugin::configplugin(BRect rect) :BWindow(rect, _T("Communication Properti
  	LoadSettingsFromFile();
  	BMenuItem *type1,*type2;
  	menu = new BPopUpMenu("");
- 	//
- 	//printf("PTP - %d\n",eptype);
  	
 	type1 = new BMenuItem("1", NULL);
 	if(globalEndpoint == 1)
@@ -77,7 +71,6 @@ void configplugin::MessageReceived(BMessage* message)
 	{
 		case CANCELPORTWINDOW:
 		{
-			//printf("PTP - %s\n", menu->FindMarked()->Label());
 			if(!strcmp(menu->FindMarked()->Label(),"1"))
 				globalEndpoint = 1;
 			else
@@ -93,7 +86,3 @@ void configplugin::MessageReceived(BMessage* message)
 		}
 	}
 }
-
-
-
-

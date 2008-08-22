@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	PhotoGrabber-team					 *
+ * Copyright (c) 2004-2008,	PhotoGrabber-team					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************

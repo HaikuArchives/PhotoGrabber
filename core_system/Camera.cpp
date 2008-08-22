@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -9,11 +9,6 @@
 //	Local includes
 #include "Camera.h"
 #include "core_system.h"
-#ifdef _ZETA_OS_
-	#include <locale/Locale.h>
-	#include <locale/Paramable.h>
-	#include <locale/Formatter.h>
-#endif
 //
 //		External variables
 extern class BeDiGiCamApp *app;
@@ -21,17 +16,10 @@ extern class BeDiGiCamApp *app;
 // Camera::constructor
 Camera::Camera(char *libName, char *looperName) : BLooper(looperName)
 {
-	#ifdef _ZETA_OS_
-		CameraModel = _T("not available");
-		CameraManufacturer = _T("not available");
-		CameraVersion = _T("no version");
-		CameraSerialNumber = _T("no serial number");
-	#else
-		CameraModel = "Not Available";
-		CameraManufacturer = "Not Available";
-		CameraVersion = "No Version";
-		CameraSerialNumber = "No Serial Number";
-	#endif
+	CameraModel = "Not Available";
+	CameraManufacturer = "Not Available";
+	CameraVersion = "No Version";
+	CameraSerialNumber = "No Serial Number";
 	// First create the temporary directory
 	BDirectory tmpDir("/boot");
 	tmpDir.CreateDirectory("var/tmp",&tmpDir);
@@ -207,16 +195,15 @@ bool Camera::GetCameraItems()
 			{
 				
 				localItemData = new ItemData();
+				// set current item is important! Don't forget it!
 				camInterface->setCurrentItem(i);
 				localItemData->ItemHandle = i;
-				localItemData->ItemSize = camInterface->getSize(i);
-				localItemData->ItemName = camInterface->getName(i);
-				localItemData->ItemXres = camInterface->getWidth(i);
-				localItemData->ItemYres = camInterface->getHeight(i);
-				localItemData->ItemDate = camInterface->getDate(i);
-				localItemData->ItemThumbBitmap = GetItemThumbnail(i);
-				// Insert the Item in the list
-				//cameraItems.insert(pair<int,ItemData*>(i,localItemData));
+				localItemData->ItemSize = camInterface->getSize();
+				localItemData->ItemName = camInterface->getName();
+				localItemData->ItemXres = camInterface->getWidth();
+				localItemData->ItemYres = camInterface->getHeight();
+				localItemData->ItemDate = camInterface->getDate();
+				localItemData->ItemThumbBitmap = camInterface->getThumb();
 				// send a message to insert a item in the list
 				message = new BMessage(ADD_ITEM);
 				message->AddPointer("item",localItemData);
@@ -238,10 +225,10 @@ bool Camera::SaveCameraItem (char *data, long int size, const char filename[255]
 }
 // 
 //	Camera::Get the item thumbnail bitmap
-BBitmap* Camera::GetItemThumbnail (uint32 index)
+/*BBitmap* Camera::GetItemThumbnail (uint32 index)
 {
-	return(camInterface->getThumb(index));
-}
+	return(camInterface->getThumb());
+}*/
 // 
 //	Camera::open the camera storage info
 bool Camera::GetStorageInfo(void)

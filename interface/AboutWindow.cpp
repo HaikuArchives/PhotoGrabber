@@ -1,5 +1,5 @@
 /*****************************************************************
-* Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
 * All rights reserved.											 *
 * Distributed under the terms of the MIT License.                *
  *****************************************************************/
@@ -64,8 +64,6 @@ BeCam_AboutView::BeCam_AboutView(float xPos, float yPos):BView(BRect(0,0,WINDOW_
     rgb_color darkgrey = { 100, 100, 100, 255 }; 
     rgb_color pgGreen = { 42, 131, 36, 255 }; 
     rgb_color pgOrange = { 255, 69, 0, 255 }; 
-    //rgb_color pgYellow = { 255, 176, 0, 255 }; 
-    //rgb_color linkBlue = { 80, 80, 200, 255 }; 
 	//
 	BFont font(be_bold_font); 
     font.SetSize(font.Size() + 4); 

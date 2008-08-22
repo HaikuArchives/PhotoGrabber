@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -61,60 +61,39 @@ void BeCam_ListView::MouseDown(BPoint where)
 	int32 buttons = 0;
 	BMessage *message =	Window()->CurrentMessage();
 	message->FindInt32("buttons",&buttons);
-	//BPopUpMenu	*fMenu;
 	
 	int index = IndexOf(where);
 
 	if ((index >= 0) && (index < CountItems())) 
 	{
-		/*// if clicked with second mouse button, let's do a context-sensitive menu
-		if (buttons & B_SECONDARY_MOUSE_BUTTON) 
-		{
-			BPoint	point = where;
-			ConvertToScreen(&point);
+        // clicked with primary button
+        int32 clicks;
+        // see how many times we've been clicked
+		Window()->CurrentMessage()->FindInt32("clicks", &clicks);
+        // if we've only been clicked once
+        // on this item, see if user
+        // intends to drag
+        if ((clicks == 1) || (index != CurrentSelection()))
+        {
+           	int32 modifs = modifiers();
 			// select this item
-			Select(index);
-			// build menu
-			fMenu = new BPopUpMenu("context menu");
-			fMenu->SetRadioMode(false);
-			fMenu->AddItem(new BMenuItem("Download Item", new BMessage(eItemMenuSelected)));
-			fMenu->Go(point, true, false, true);
-			return;
-		}
-		else						
-        {*/
-        	// clicked with primary button
-            int32 clicks;
-            // see how many times we've been clicked
-			Window()->CurrentMessage()->FindInt32("clicks", &clicks);
-            // if we've only been clicked once
-            // on this item, see if user
-            // intends to drag
-            if ((clicks == 1) || (index != CurrentSelection()))
-            {
-               	int32 modifs = modifiers();
-				// select this item
-      			if ((modifs & B_OPTION_KEY) || (modifs & B_SHIFT_KEY))
-      				Select(index,true);
-               	else
-                	Select(index);
-               	// create a structure of
-               	// useful data
-               	list_tracking_data *data = new list_tracking_data();
-               	data->start = where;
-               	data->view = this;
-               	// spawn a thread that watches
-               	// the mouse to see if a drag
-               	// should occur.  this will free
-               	// up the window for more
-               	// important tasks
-               	resume_thread(spawn_thread((status_t(*)(void*))TrackItem,"list_tracking",B_DISPLAY_PRIORITY,data));
-               	return;
-            }
-            						
-		/*}
-		if(fMenu != NULL)
-			delete(fMenu);*/
+      		if ((modifs & B_OPTION_KEY) || (modifs & B_SHIFT_KEY))
+      			Select(index,true);
+            else
+               	Select(index);
+            // create a structure of
+            // useful data
+            list_tracking_data *data = new list_tracking_data();
+            data->start = where;
+            data->view = this;
+            // spawn a thread that watches
+            // the mouse to see if a drag
+            // should occur.  this will free
+            // up the window for more
+            // important tasks
+            resume_thread(spawn_thread((status_t(*)(void*))TrackItem,"list_tracking",B_DISPLAY_PRIORITY,data));
+            return;
+        }
 	}
 	// either the user dbl-clicked an item or clicked in an area with no
 	// items.  either way, let BListView take care of it
@@ -230,8 +209,6 @@ status_t BeCam_ListView::TrackItem(list_tracking_data *data)
         // take a breather
         snooze(10000);
     } // while button
-    // free resource
-    //free(data);
     delete(data);
     return B_NO_ERROR;
 }
@@ -244,26 +221,7 @@ void BeCam_ListView::ActionCopy(BMessage *request)
     
     entry_ref directory;
     request->FindRef("directory", &directory);
-  	/*int count = CountItems();
-	for(int index=0;index < count;index++)
-		if(IsItemSelected(index))
-		{
-			item = dynamic_cast<BeCam_Item *>(ItemAt(index));
-			int handle = item->GetHandle();
-    		if (item) 
-    		{*/
-    			BMessage *copyRequest = new BMessage(B_COPY_TARGET);
-    			//copyRequest->AddInt32("handle",handle);
-    			copyRequest->AddRef("directory",&directory);
-				//app->PostMessage(copyRequest);
-			//}
-			//delete(item);
-		//}
-    
-    //item = dynamic_cast<BeCam_Item *>(ItemAt(CurrentSelection()));
-    //if (item) 
-    //{
-    	//request->AddInt32("handle",item->GetHandle());
-		Window()->PostMessage(request);
-	//} 
+  	BMessage *copyRequest = new BMessage(B_COPY_TARGET);
+    copyRequest->AddRef("directory",&directory);
+	Window()->PostMessage(request);
 }

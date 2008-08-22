@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -9,16 +9,8 @@
 #ifndef WGLOBAL_H
 #define WGLOBAL_H
 
-// #include "target_os.h"
-
 //includes
-#ifdef _ZETA_OS_
-	#include <locale/Locale.h>
-	#include <locale/Paramable.h>
-	#include <locale/Formatter.h>
-#else
-	#define _T(x) (x)
-#endif
+#define _T(x) (x)
 // Global Messages
 
 #define	DEL_BUTTON 					'DELB'
