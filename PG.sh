@@ -32,10 +32,13 @@ mkdir ./build/PhotoGrabber
 mkdir ./build/PhotoGrabber/interface
 mkdir ./build/PhotoGrabber/plugins
 
-
 # Copy the binaries to the build directory
 cp ./obj.x86/PhotoGrabber ./build/PhotoGrabber/
 cp ./interface/obj.x86/libPGInterface ./build/PhotoGrabber/interface/
 cp ./plugins/ptp/obj.x86/libbdcp_ptp ./build/PhotoGrabber/plugins/
 
+# Make the package
+cd build
+tar -czvf PhotoGrabber.tgz PhotoGrabber
+cd ..
 
