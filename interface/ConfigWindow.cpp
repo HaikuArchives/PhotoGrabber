@@ -57,7 +57,6 @@ BeCam_ConfigWindow::BeCam_ConfigWindow(float xPos,float yPos,BeCam_MainWindow *m
 								);
 	becam_configbox->SetLabel(_T("Camera Configuration"));
 	// 		Create the popup menu
-	//LoadSettingsFromFile();
 	// 		Add the camera type label to the config groupbox
 	BTextView	*becam_typelabel = new BTextView(BRect(15, r.top + 10, r.right - 20, r.top + 40),"typelabel",BRect(0,0,r.right - 30,r.top + 80),B_FOLLOW_LEFT | B_FOLLOW_BOTTOM,B_WILL_DRAW);
 	becam_typelabel->SetWordWrap(true);
@@ -68,25 +67,25 @@ BeCam_ConfigWindow::BeCam_ConfigWindow(float xPos,float yPos,BeCam_MainWindow *m
 	becam_typelabel->SetViewColor(bg_color);
 	becam_configbox->AddChild(becam_typelabel);
 	//	Create the plugin details textboxes
-	BStringView *becam_pluginNameLabel = new BStringView(BRect(r.left + 15, r.top + 70 , r.left + 95, r.top + 85),"pnamelabel",_T("Plugin Name:"),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
+	BStringView *becam_pluginNameLabel = new BStringView(BRect(r.left + 10, r.top + 70 , r.left + 100, r.top + 85),"pnamelabel",_T("Plugin Name:"),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
 	becam_configbox->AddChild(becam_pluginNameLabel);
-	becam_pluginName = new BStringView(BRect(r.left + 105, r.top + 70 , r.right - 20 , r.top + 85),"pluginnamefield","n/a",B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
+	becam_pluginName = new BStringView(BRect(r.left + 110, r.top + 70 , r.right - 20 , r.top + 85),"pluginnamefield","n/a",B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
 	//becam_pluginName->SetEnabled(false);
 	becam_configbox->AddChild(becam_pluginName);
 	//
-	BStringView *becam_pluginSourceLabel = new BStringView(BRect(r.left + 15, r.top + 90 , r.left + 95, r.top + 105),"psourcelabel",_T("Plugin Source:"),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
+	BStringView *becam_pluginSourceLabel = new BStringView(BRect(r.left + 10, r.top + 90 , r.left + 100, r.top + 105),"psourcelabel",_T("Plugin Source:"),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
 	becam_configbox->AddChild(becam_pluginSourceLabel);
-	becam_pluginSource = new BStringView(BRect(r.left + 105, r.top + 90, r.right - 20, r.top + 105),"pluginsourcefield","n/a",B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
+	becam_pluginSource = new BStringView(BRect(r.left + 110, r.top + 90, r.right - 20, r.top + 105),"pluginsourcefield","n/a",B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
 	//becam_pluginSource->SetEnabled(false);
 	becam_configbox->AddChild(becam_pluginSource);
 	//
-	BStringView *becam_pluginVersionLabel = new BStringView(BRect(r.left + 15, r.top + 110 , r.left + 95, r.top + 125),"pverslabel",_T("Plugin Version:"),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
+	BStringView *becam_pluginVersionLabel = new BStringView(BRect(r.left + 10, r.top + 110 , r.left + 100, r.top + 125),"pverslabel",_T("Plugin Version:"),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
 	becam_configbox->AddChild(becam_pluginVersionLabel);
-	becam_pluginVersion = new BStringView(BRect(r.left + 105, r.top + 110 , r.right - 20, r.top + 125),"pluginversionfield","n/a",B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
+	becam_pluginVersion = new BStringView(BRect(r.left + 110, r.top + 110 , r.right - 20, r.top + 125),"pluginversionfield","n/a",B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
 	//becam_pluginVersion->SetEnabled(false);
 	becam_configbox->AddChild(becam_pluginVersion);
 	// 		Add the config button the the config box
-	becam_pluginConfig = new BButton(BRect(r.left + 15, r.top + 130, r.left + 145, r.top + 145), "pluginconfbutton", _T("Plugin Configuration"),new BMessage(CONF_BUT), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
+	becam_pluginConfig = new BButton(BRect(r.left + 10, r.top + 130, r.left + 155, r.top + 145), "pluginconfbutton", _T("Plugin Configuration"),new BMessage(CONF_BUT), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
 	//becam_pluginConfig->SetEnabled(false);
 	becam_configbox->AddChild(becam_pluginConfig);
 	//
@@ -126,8 +125,6 @@ BeCam_ConfigWindow::BeCam_ConfigWindow(float xPos,float yPos,BeCam_MainWindow *m
 	becam_configView->AddChild(becam_configbox);
 	// 		Add the debug groupbox to the view
 	becam_configView->AddChild(becam_debugbox);
-	// 		Add the extra groupbox to the view
-	//becam_configView->AddChild(becam_extrabox);
 	AddChild(becam_configView);
 }
 
@@ -203,9 +200,7 @@ void BeCam_ConfigWindow::MessageReceived(BMessage* message)
 void BeCam_ConfigWindow::CreateCameraTypeMenu(BRect r)
 {
 	BMenuItem *cameraName;
-	//CamInterface *interface;
 	vector<string> *supportedCams;
-	//multimap<const char*,string>	*pluginSupportedCams_t;
  	//		Create the menu
  	becam_cameraMenu = new BPopUpMenu("");
 	BMessenger messenger(NULL,parent->systemcore);
@@ -232,7 +227,7 @@ void BeCam_ConfigWindow::CreateCameraTypeMenu(BRect r)
 	}
 	
 	// 	Add the popup menu to the config groupbox
-	becam_cameraPopup = new BMenuField(BRect(15, r.top + 50, r.right - 20, r.top + 15), "plugin", _T("Plugin:"), becam_cameraMenu);
+	becam_cameraPopup = new BMenuField(BRect(15, r.top + 45, r.right - 20, r.top + 10), "plugin", _T("Plugin:"), becam_cameraMenu);
 	becam_cameraPopup->SetDivider(be_plain_font->StringWidth(_T("Plugin:")) + 5);
 	becam_configbox->AddChild(becam_cameraPopup);
 }
