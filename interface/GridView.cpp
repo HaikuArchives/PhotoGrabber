@@ -552,8 +552,8 @@ void GridView::ScrollToSelection ()
 	BRect rect = ItemRect (fSelectedItemIndex);
 	if (rect.bottom >= currentPosition + Bounds().Height())		// down
 	{
-		ScrollTo (0, rect.top + 2 - (Bounds().Height() - ItemHeight()));
-		printf ("%f\n", rect.top + 2 - (Bounds().Height() - ItemHeight()));
+		ScrollTo (0, rect.top + 2 - (Bounds().Height() - ItemHeight() -ItemMargin()));
+		printf ("%f\n", rect.top + 2 - (Bounds().Height() - ItemHeight() - ItemMargin()));
 	}	
 	else if (rect.top <= currentPosition)				// up
 		ScrollTo (0, rect.top - 4);
