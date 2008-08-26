@@ -39,6 +39,6 @@ cp ./plugins/ptp/obj.x86/libbdcp_ptp ./build/PhotoGrabber/plugins/
 
 # Make the package
 cd build
-zip PhotoGrabber.zip PhotoGrabber
+zip PhotoGrabber_Haiku.zip PhotoGrabber
 cd ..
 
