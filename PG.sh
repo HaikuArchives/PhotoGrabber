@@ -39,6 +39,6 @@ cp ./plugins/ptp/obj.x86/libbdcp_ptp ./build/PhotoGrabber/plugins/
 
 # Make the package
 cd build
-tar -czvf PhotoGrabber.tgz PhotoGrabber
+zip PhotoGrabber.zip PhotoGrabber
 cd ..
 
