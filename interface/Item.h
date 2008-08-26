@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/ 
@@ -9,7 +9,8 @@
 #define ITEM_H
 
 //		Includes
-#include <ListView.h>
+#include <interface/ListView.h>
+#include <interface/Region.h>
 //
 //		Local Includes
 #include "intf_global.h"
@@ -35,9 +36,15 @@ class BeCam_Item : public BListItem
 		char*			GetItemPath();
 		uint32			GetStatus();
 		uint32			GetOrientation();
+		float			Height() const;
+		float			Width() const;
+		virtual bool	IsClickableFrame (BPoint point) const;
 		
 	private:
-		ItemData				*itemdata;
+		ItemData		*itemdata;
+		BRegion			fRegion;
+		float			fHeight;
+		float			fWidth;		
 };
 
 #endif

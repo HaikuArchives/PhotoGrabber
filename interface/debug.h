@@ -10,5 +10,5 @@
 // defenitions
 //#define	DEBUG
 // log-file
-#define INTF_LOGFILE "/boot/var/log/interface.log"
+#define INTF_LOGFILE "/boot/var/tmp/interface.log"
 #endif

@@ -12,7 +12,8 @@
 #include "intf_global.h"
 #include "Item.h"
 #include "MainView.h"
-#include "ListView.h"
+//#include "ListView.h"
+#include "GridView.h"
 #include "StatusWindow.h"
 #include "AboutWindow.h"
 #include "ConfigWindow.h"
@@ -70,7 +71,8 @@ class BeCam_MainWindow : public BWindow
 		void                CloseStatusWindow(void);
 		void                CalculatePos(float *xPos,float *yPos,int winType);
 		// GUI components
-		BeCam_ListView		*becam_listview;
+		//BeCam_ListView		*becam_listview;
+		GridView			*becam_listview;
 		BeCam_MainView		*becam_view;
 		BMenuBar			*becam_menubar;
 		BMenu				*becam_iconMenu;

@@ -43,7 +43,7 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 //		
 //	MainWindow:: Constructor
  BeCam_MainWindow::BeCam_MainWindow(BRect r,BLooper *syscore,int devtype) 
-				: BWindow(r,"PhotoGrabber",B_DOCUMENT_WINDOW, B_WILL_DRAW | B_NOT_H_RESIZABLE)
+				: BWindow(r,"PhotoGrabber",B_DOCUMENT_WINDOW, B_WILL_DRAW)
 {
 	#ifdef DEBUG
 		lfmainw = fopen(LOGFILE,"a");	
@@ -82,9 +82,15 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 	r.left=5;
 	r.right-=20;
 	r.bottom=r.bottom-90-becam_menubar->Bounds().bottom;
-
-	becam_listview = new BeCam_ListView(r);
-
+	//becam_listview = new BeCam_ListView(r);
+	
+	/*r.top= 5;
+	r.left= 5;
+	r.right-= 20;
+	r.bottom-= 50;*/
+	becam_listview = new GridView(r,"gridview", B_FOLLOW_ALL, B_WILL_DRAW);
+	
+		
 	becam_scrollview = new BScrollView(
 									"becam_scrollview",
 									becam_listview,
@@ -95,6 +101,7 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 									B_FANCY_BORDER
 									);
     becam_view->AddChild(becam_scrollview);
+    becam_listview->TargetedByScrollView (becam_scrollview);
     #ifdef DEBUG
 		lfmainw = fopen(LOGFILE,"a");	
 		fprintf(lfmainw,"MAINWINDOW - Create popupmenu\n");
@@ -217,7 +224,7 @@ void BeCam_MainWindow::addStatusBar ()
 									NULL,
 									"Status", 
 									new BMessage(-1),
-									B_FOLLOW_BOTTOM | B_FOLLOW_RIGHT | B_FOLLOW_LEFT,
+									B_FOLLOW_RIGHT | B_FOLLOW_BOTTOM | B_FOLLOW_LEFT,
 									B_WILL_DRAW | B_NAVIGABLE
 									);
 	becam_winstatusbar->SetEnabled(false);

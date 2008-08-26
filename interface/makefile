@@ -46,7 +46,8 @@ SRCS := AboutWindow.cpp			\
 		preferences.cpp			\
 		prefsaver.cpp			\
 		StatusWindow.cpp		\
-		Animation.cpp
+		Animation.cpp			\
+		GridView.cpp
 
 
 #       specify the resource files to use 
