@@ -47,8 +47,8 @@ class GridView : public BView
 		void					RemoveItemFast (BeCam_Item* item);
 		void					AddList (BList& listOfGridItemPtrs);
 		BRect					ItemRect (int32 index);
-		void					Select (int32 index);
-		void					Select (int32 fromIndex, int32 toIndex);
+		void					Select (int32 index, bool extend = false);
+		void					Select (int32 fromIndex, int32 toIndex, bool extend = false);
 		void 					SelectAll ();
 		void					Deselect (int32 index);
 		void					Deselect (int32 fromIndex, int32 toIndex);

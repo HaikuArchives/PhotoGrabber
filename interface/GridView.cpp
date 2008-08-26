@@ -296,14 +296,21 @@ void GridView::MouseDown (BPoint point)
 	
 	// Check if the user clicked once and intends to drag
 	int index = IndexOf(point);
-	if ((clickCount == 1) || (index != CurrentSelection()))
+	
+	if (clickCount == 1)
     {
-       	//int32 modifs = modifiers();
+       	int32 modifs = modifiers();
 		// select this item
-      	//if ((modifs & B_OPTION_KEY) || (modifs & B_SHIFT_KEY))
-      	Select(index);
-        //else
-        //  Select(index);
+      	if ((modifs & B_OPTION_KEY))
+      	{
+			Select(index,true);
+      	}      	
+      	else if((modifs & B_SHIFT_KEY))
+      	{
+      		Select(fSelectedItemIndex,index,true);
+      	}
+      	else
+      		Select(index);
         // create a structure of
         // useful data
         list_tracking_data *data = new list_tracking_data();
@@ -325,41 +332,6 @@ void GridView::MouseDown (BPoint point)
 //	GridView :: MouseUp
 void GridView::MouseUp (BPoint point)
 {
-	#ifdef DEBUG
-		lfgridv = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfgridv,"GRIDVIEW - Mouse Up\n");
-		fclose(lfgridv);
-	#endif
-	if (!Window() || Window()->IsActive() == false)
-		return;
-
-	int32 itemIndex = IndexOf(point);
-	
-	#ifdef DEBUG
-		lfgridv = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfgridv,"GRIDVIEW - Item index = %d\n",itemIndex);
-		fclose(lfgridv);
-	#endif
-	
-	BRect itemRect = ItemRect (itemIndex);
-	BeCam_Item *item = reinterpret_cast<BeCam_Item*>(fItemList->ItemAt(itemIndex));
-
-	if (itemRect.Contains (point) && item)
-	{
-		#ifdef DEBUG
-			lfgridv = fopen(INTF_LOGFILE,"a");	
-			fprintf(lfgridv,"GRIDVIEW - Select Item with index %d\n",itemIndex);
-			fclose(lfgridv);
-		#endif
-		Select (itemIndex);
-		ScrollToSelection ();
-	}
-	else
-		DeselectAll ();
-
-	if (IsFocus() == false)
-		MakeFocus (true);
-
 	return BView::MouseUp (point);
 }
 
@@ -439,22 +411,14 @@ bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 		case B_RIGHT_ARROW:
 		{
 			keyHandled = true;
-
-			// The if check simply prevents going to the next row, remove if needed
-			//if ((fSelectedItemIndex + 1) % CountColumns() != 0 || fSelectedItemIndex == 0)
 			Select (fSelectedItemIndex < CountItems() - 1 ? fSelectedItemIndex + 1 : CountItems() - 1);
-
 			break;
 		}
 
 		case B_LEFT_ARROW:
 		{
 			keyHandled = true;
-
-			// The if check simply prevents going to the previous row, remove if needed
-			//if ((fSelectedItemIndex + 1) % CountColumns() != 1 || fSelectedItemIndex == CountItems() - 1)
-				Select (fSelectedItemIndex > 0 ? fSelectedItemIndex - 1 : 0);
-
+			Select (fSelectedItemIndex > 0 ? fSelectedItemIndex - 1 : 0);
 			break;
 		}
 		
@@ -526,6 +490,13 @@ bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 			int32 whichColumn = fSelectedItemIndex % CountColumns();
 
 			Select (index >= 0 ? index : whichColumn);
+			break;
+		}
+		case B_ESCAPE:
+		{
+			keyHandled = true;
+
+			DeselectAll ();
 			break;
 		}
 	}
@@ -622,68 +593,49 @@ void GridView::SendKeyStrokesTo (BLooper* looper, BHandler* handler)
 }
 //
 //	GridView :: Select
-void GridView::Select (int32 index)
+void GridView::Select (int32 index, bool extend = false)
 {
 	#ifdef DEBUG
 		lfgridv = fopen(INTF_LOGFILE,"a");	
 		fprintf(lfgridv,"GRIDVIEW - Select Item\n");
 		fclose(lfgridv);
 	#endif
-	int32 modifs = modifiers();
-	
-	if ((modifs & B_OPTION_KEY))
-	{
-		// 1) Click + Option Key
-		
+	if(!extend && !IsItemSelected(index))
+		DeselectAll();
+	BeCam_Item *item = (BeCam_Item*)(fItemList->ItemAt(index));
+	if(item != NULL && !item->IsSelected())
+	{	
+		item->Select();
+		item->DrawItem (this, ItemRect (index), false);
+		fSelectedItem = item;
+		fSelectedItemIndex = index;
 	}
-	else if((modifs & B_SHIFT_KEY))
+
+}
+//	GridView :: Select From To
+void GridView::Select (int32 fromIndex, int32 toIndex, bool extend = false)
+{
+	BeCam_Item *item;
+	int32 startIndex;
+	int32 stopIndex;
+	if(fromIndex < toIndex)
 	{
-		// 2) Click + Shift Key
+		startIndex = fromIndex;
+		stopIndex = toIndex;
 	}
 	else
 	{
-		// 3) Click
-		
-		if (index == fSelectedItemIndex)
-			return;
-	
-		if (fSelectedItem != NULL)
-			Deselect (fSelectedItemIndex);
-	
-		if (index < 0 || index > fItemList->CountItems() - 1)
-		{
-			fSelectedItem = NULL;
-			fSelectedItemIndex = -1;
-			return;
-		}
-		
-		BeCam_Item *item = reinterpret_cast<BeCam_Item*>(fItemList->ItemAt(index));
-		item->Select ();
-
-		fSelectedItem = item;
-		fSelectedItem->DrawItem (this, ItemRect (index), false);
-		fSelectedItemIndex = index;
+		startIndex = toIndex;
+		stopIndex = fromIndex;
 	}
-}
-//	GridView :: Select From To
-void GridView :: Select (int32 fromIndex, int32 toIndex)
-{
-	BeCam_Item *item;
-	for(int32 i = fromIndex;i <= toIndex;i++)
-	{
-		item = reinterpret_cast<BeCam_Item*>(fItemList->ItemAt(i));
-		if(item != NULL)
-			item->Select();
-	}
+	for(int32 i = startIndex;i <= stopIndex;i++)
+		Select(i,extend);
 }
 //
 //	GridView:: Select All Items
 void 	GridView::SelectAll ()
 {
-	for (int32 i = 0; i < fItemList->CountItems(); i++)
-	{
-		Select(i);
-	}
+	Select(0,fItemList->CountItems()-1,true);
 }
 
 //
@@ -692,10 +644,10 @@ void GridView::Deselect(int32 index)
 {
 	
 	BeCam_Item *item = (BeCam_Item*)(fItemList->ItemAt(index));
-	if(item != NULL)
+	if(item != NULL && item->IsSelected())
 	{
 		item->Deselect ();
-		fSelectedItem->DrawItem (this, ItemRect (index), false);
+		item->DrawItem (this, ItemRect (index), false);
 		Invalidate();
 	}
 	
@@ -708,18 +660,27 @@ void GridView::Deselect(int32 index)
 void GridView::Deselect(int32 fromIndex, int32 toIndex)
 {
 	BeCam_Item *item;
-	for(int32 i = fromIndex;i <= toIndex;i++)
+	int32 startIndex;
+	int32 stopIndex;
+	if(fromIndex < toIndex)
 	{
-		item = (BeCam_Item*)(fItemList->ItemAt(i));
-		if(item != NULL)
-			item->Deselect();
+		startIndex = fromIndex;
+		stopIndex = toIndex;
 	}
+	else
+	{
+		startIndex = toIndex;
+		stopIndex = fromIndex;
+	}
+	for(int32 i = startIndex;i <= stopIndex;i++)
+		Deselect(i);
+		
 }
 //
 //	GridView :: Deselect All
 void GridView::DeselectAll()
 {
-	Deselect(0,fItemList->CountItems());
+	Deselect(0,fItemList->CountItems()-1);
 }
 //
 //	GridView:: Current Selection
