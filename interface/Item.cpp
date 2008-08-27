@@ -112,7 +112,7 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 		//	Draw a string	
 		owner->DrawString("No thumbnail");
 	}
-	//fRegion.Include(thumbRect);
+	fRegion.Include(thumbRect);
 }
 
 //

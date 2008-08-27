@@ -65,6 +65,7 @@ class GridView : public BView
 		BeCam_Item				*SelectedItem () const;
 
 		int32					CountColumns () const;
+		int32					CountColumnsWithMinHorizItemMargin () const;
 		int32					CountRows () const;
 		int32					CountItems() const;
 		void					SetSelectionCurveRadius (uint8 radius);
@@ -79,14 +80,21 @@ class GridView : public BView
 		bool					HandleKeyMovement (const char* bytes, int32 numBytes);
 		float					ItemHeight () const;
 		float					ItemWidth () const;
-		float					ItemMargin () const;
+		float					ItemHorizMargin () const;
+		float					ItemVertMargin () const;
+		void					SetHorizItemMargin (float margin);
+		void					SetVertItemMargin (float margin);
 		int32					IndexOf(BPoint point) const;
 		static status_t 		TrackItem(list_tracking_data *data);
 	 	void					ActionCopy(BMessage * request);
+	 	float					CalculateHorizMargin(float gridWidth) const;
 		
 		static float			fItemHeight;	// max height of bmp
 		static float			fItemWidth;		// max width of bmp
-		static float			fItemMargin;	// Margin
+		static float			fMinHorizItemMargin; // min horizontal margin
+		static float			fMinVertItemMargin; // min vertical margin
+		float					fHorizItemMargin;	// horizontal margin
+		float					fVertItemMargin;	// vertical margin
 		
 		int32					fCachedColumnCount,
 								fSelectedItemIndex;
