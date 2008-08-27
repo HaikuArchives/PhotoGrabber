@@ -55,9 +55,21 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 	rgb_color color_picture = {0x8b, 0x8b, 0x83, 0xff};
 	rgb_color color_background = owner->ViewColor();
 	BRect thumbRect;
+	BRect itemRect = BRect(0,0,(frame.right - frame.left),(frame.bottom - frame.top));
 	BBitmap* thumbnail = GetThumbBitmap();
+	BBitmap *itemBitmap;
+	BView *itemView;
+	
+	itemBitmap = new BBitmap(itemRect,B_RGB_32_BIT,TRUE);
+	itemView = new BView(itemBitmap->Bounds(),"itemRect",B_FOLLOW_ALL,B_WILL_DRAW);
+	itemBitmap->AddChild(itemView);
+	float xItemBitmapPos = (frame.right - frame.left)/2;
+	float yItemBitmapPos = (frame.bottom - frame.top)/2;
+	
+	
 	float xPos = frame.left + (frame.right - frame.left)/2;
 	float yPos = frame.top + (frame.bottom - frame.top)/2;
+	
 	if(thumbnail)
 	{
 		thumbRect=thumbnail->Bounds();
@@ -67,38 +79,59 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 		
 		BRect selectionRect;
 		
-		if (IsSelected() || complete)
+		owner->SetDrawingMode( B_OP_ALPHA );
+		itemBitmap->Lock();
+		if(complete)
+		{	
+			itemView->SetHighColor(owner->ViewColor());
+			itemView->SetLowColor(owner->ViewColor());
+			itemView->FillRect (itemView->Bounds());
+			itemView->StrokeRect (itemView->Bounds());
+		}
+		if (IsSelected())
 		{
-			selectionRect.left = xPos - (thumbWidth/2) - 3;
-			selectionRect.right = xPos + (thumbWidth/2) + 5;
-			selectionRect.top = yPos - (thumbHeight/2) - 3;
-			selectionRect.bottom = yPos + (thumbHeight/2) + 5;
-			owner->SetHighColor (color_selected);
-			owner->SetLowColor (color_selected);
+			selectionRect.left = xItemBitmapPos - (thumbWidth/2) - 3;
+			selectionRect.right = xItemBitmapPos + (thumbWidth/2) + 5;
+			selectionRect.top = yItemBitmapPos - (thumbHeight/2) - 3;
+			selectionRect.bottom = yItemBitmapPos + (thumbHeight/2) + 5;
+			itemView->SetHighColor (color_selected);
+			itemView->SetLowColor (color_selected);
 		}
 		else
 		{
-			selectionRect.left = xPos - (thumbWidth/2) - 1;
-			selectionRect.right = xPos + (thumbWidth/2) + 3;
-			selectionRect.top = yPos - (thumbHeight/2) - 1;
-			selectionRect.bottom = yPos + (thumbHeight/2) + 3;
-			owner->SetHighColor (color_picture);
-			owner->SetLowColor (color_picture);
+			selectionRect.left = xItemBitmapPos - (thumbWidth/2) - 1;
+			selectionRect.right = xItemBitmapPos + (thumbWidth/2) + 3;
+			selectionRect.top = yItemBitmapPos - (thumbHeight/2) - 1;
+			selectionRect.bottom = yItemBitmapPos + (thumbHeight/2) + 3;
+			itemView->SetHighColor (color_picture);
+			itemView->SetLowColor (color_picture);
 		}
-		owner->FillRoundRect (selectionRect, radius, radius);
-		owner->StrokeRoundRect (selectionRect, radius, radius);
+		
+		itemView->FillRoundRect (selectionRect, radius, radius);
+		itemView->StrokeRoundRect (selectionRect, radius, radius);
 		
 		if (IsEnabled())
-			owner->SetHighColor(color_enabled);
+			itemView->SetHighColor(color_enabled);
 		else
-			owner->SetHighColor(color_disabled);
-			
+			itemView->SetHighColor(color_disabled);
+		
+		
 		// Move the pen to draw
-		owner->MovePenTo(xPos - (thumbWidth/2),yPos -(thumbHeight/2));
+		itemView->MovePenTo(xItemBitmapPos -(thumbWidth/2),yItemBitmapPos -(thumbHeight/2));
 		if(thumbRect.right < thumbRect.bottom)
 			thumbRect.right = thumbRect.bottom;
+		thumbRect.left = xItemBitmapPos - (thumbWidth/2);
+		thumbRect.right = xItemBitmapPos + (thumbWidth/2);
+		thumbRect.top = yItemBitmapPos - (thumbHeight/2);
+		thumbRect.bottom = yItemBitmapPos + (thumbHeight/2);
 		//	Draw the thumbnail
-		owner->DrawBitmap(thumbnail);
+		itemView->DrawBitmapAsync(thumbnail,thumbRect);
+		itemView->Sync();
+		itemBitmap->Unlock();
+		
+		owner->DrawBitmapAsync(itemBitmap,frame);
+		owner->Sync();
+		owner->SetDrawingMode( B_OP_COPY );
 	}
 	else
 	{
@@ -112,6 +145,7 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 		//	Draw a string	
 		owner->DrawString("No thumbnail");
 	}
+	delete(itemBitmap);
 	fRegion.Include(thumbRect);
 }
 

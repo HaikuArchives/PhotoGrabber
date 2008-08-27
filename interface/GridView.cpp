@@ -174,11 +174,12 @@ void GridView::DrawContent (BRect /*_unused*/)
 		// Erase partial row content (those items have been moved left thus needs erasing)
 		if (remainingInRow > 0)
 		{
-			float top = ItemHeight();
-			toEraseRect.Set (remainingInRow * (ItemWidth() + ItemHorizMargin()), (rowCount - 2) * top - 1, bounds.right, rowCount * top);
+			toEraseRect.Set (remainingInRow * (ItemWidth() + ItemHorizMargin()), (rowCount - 1) * (ItemHeight() + ItemVertMargin()), bounds.right, rowCount * (ItemHeight() + + ItemVertMargin()));
 			FillRect (toEraseRect);
 		}
 	}
+	
+	fCachedColumnCount = columnCount;
 	
 	float horizMargin = CalculateHorizMargin(Bounds().Width());
 	SetHorizItemMargin(horizMargin);
@@ -199,7 +200,7 @@ void GridView::DrawContent (BRect /*_unused*/)
 		itemRect.right = itemRect.left + ItemWidth() + ItemHorizMargin();
 		itemRect.bottom = itemRect.top + ItemHeight() + ItemVertMargin();
 		// Draw the item
-		item->DrawItem(this, itemRect, false);
+		item->DrawItem(this, itemRect, true);
 		//
 		x++;
 		if (x >= columnCount)
@@ -208,16 +209,13 @@ void GridView::DrawContent (BRect /*_unused*/)
 			y++;
 		}
 	}
-	fCachedColumnCount = columnCount;
 }
 
 //
 // GridView :: FrameResized
 void GridView::FrameResized (float newWidth, float newHeight)
 {
-	if (CountColumns() != fCachedColumnCount)
-		Draw (BRect (0, 0, 0, 0));
-	
+	Draw (BRect (0, 0, 0, 0));	
 	UpdateScrollView();
 	return BView::FrameResized (newWidth, newHeight);
 }
@@ -232,7 +230,7 @@ BRect GridView::ItemRect (int32 index)
 		fclose(lfgridv);
 	#endif
 	
-	int32 columnCount = CountColumns();
+	int32 columnCount = CountColumnsWithMinHorizItemMargin();
 	int32 x = (index % columnCount);
 	int32 y = index / columnCount;
 
@@ -262,7 +260,7 @@ int32 GridView::CountColumnsWithMinHorizItemMargin () const
 //	GridView :: CountRows
 int32 GridView::CountRows () const
 {
-	return (int32)ceil ((double)(fItemList->CountItems()) / (double)CountColumns());
+	return (int32)ceil ((double)(fItemList->CountItems()) / (double)CountColumnsWithMinHorizItemMargin());
 }
 
 //
@@ -446,7 +444,7 @@ bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 				break;
 			}
 			
-			int32 index = CountColumns() + fSelectedItemIndex;
+			int32 index = CountColumnsWithMinHorizItemMargin() + fSelectedItemIndex;
 			Select (index <= CountItems() - 1 ? index : fSelectedItemIndex);
 			break;
 		}
@@ -455,13 +453,13 @@ bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 		{
 			keyHandled = true;
 
-			if (fSelectedItemIndex - CountColumns() < 0)
+			if (fSelectedItemIndex - CountColumnsWithMinHorizItemMargin() < 0)
 			{
 				Select (fSelectedItemIndex);
 				break;
 			}
 			
-			int32 index = fSelectedItemIndex - CountColumns();
+			int32 index = fSelectedItemIndex - CountColumnsWithMinHorizItemMargin();
 			Select (index <= CountItems() - 1 ? index : fSelectedItemIndex);
 			break;
 		}
@@ -487,9 +485,9 @@ bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 			keyHandled = true;
 
 			int8 rowsPerPage = (int8)(Bounds().Height() / ItemHeight());
-			int32 index = fSelectedItemIndex + rowsPerPage * CountColumns();
-			int32 finalRowIndex = (CountRows() - 1) * CountColumns();
-			int32 whichColumn = fSelectedItemIndex % CountColumns();
+			int32 index = fSelectedItemIndex + rowsPerPage * CountColumnsWithMinHorizItemMargin();
+			int32 finalRowIndex = (CountRows() - 1) * CountColumnsWithMinHorizItemMargin();
+			int32 whichColumn = fSelectedItemIndex % CountColumnsWithMinHorizItemMargin();
 
 			Select (index <= CountItems() - 1 ? index : MIN (finalRowIndex + whichColumn, CountItems() - 1));
 			break;
@@ -500,8 +498,8 @@ bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 			keyHandled = true;
 
 			int8 rowsPerPage = (int8)(Bounds().Height() / ItemHeight());
-			int32 index = fSelectedItemIndex - rowsPerPage * CountColumns();
-			int32 whichColumn = fSelectedItemIndex % CountColumns();
+			int32 index = fSelectedItemIndex - rowsPerPage * CountColumnsWithMinHorizItemMargin();
+			int32 whichColumn = fSelectedItemIndex % CountColumnsWithMinHorizItemMargin();
 
 			Select (index >= 0 ? index : whichColumn);
 			break;
@@ -638,11 +636,10 @@ void GridView::Select (int32 index, bool extend = false)
 	if(item != NULL && !item->IsSelected())
 	{	
 		item->Select();
-		item->DrawItem (this, ItemRect (index), false);
+		item->DrawItem (this, ItemRect (index), true);
 		fSelectedItem = item;
 		fSelectedItemIndex = index;
 	}
-	Invalidate();
 
 }
 //	GridView :: Select From To
@@ -680,13 +677,10 @@ void GridView::Deselect(int32 index)
 	if(item != NULL && item->IsSelected())
 	{
 		item->Deselect ();
-		item->DrawItem (this, ItemRect (index), false);
-		Invalidate();
+		item->DrawItem (this, ItemRect (index), true);
 	}
-	
 	fSelectedItem = NULL;
 	fSelectedItemIndex = -1;
-	Invalidate();
 }
 //
 //	GridView :: Deselect From To
@@ -860,15 +854,18 @@ int32 GridView::IndexOf(BPoint point) const
 {
 	int32 rowIndex = (int32)floor (point.y  / (ItemHeight() + ItemVertMargin())); 
 	int32 colIndex = (int32)floor (point.x / (ItemWidth() + ItemHorizMargin()));
-	int32 itemIndex = colIndex + rowIndex * (CountColumns());
+	int32 itemIndex = colIndex + rowIndex * (CountColumnsWithMinHorizItemMargin());
 	return itemIndex;
 }
 //
 //	GridView :: Calculate horizontal margin
 float GridView::CalculateHorizMargin(float gridWidth) const
 {
-	float totalMargin =  gridWidth - (ItemWidth() * CountColumnsWithMinHorizItemMargin());
-	float horizMargin = totalMargin / CountColumnsWithMinHorizItemMargin();
+	int32 countColumns = CountColumnsWithMinHorizItemMargin();
+	if(countColumns < 1)
+		countColumns = 1;
+	float totalMargin =  gridWidth - (ItemWidth() * countColumns);
+	float horizMargin = totalMargin / countColumns;
 	return horizMargin;
 }
 
