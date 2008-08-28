@@ -358,7 +358,7 @@ void BeCam_MainWindow::removeSelectedItems()
 		{
 			count = becam_listview->CountItems();
 			// create the status bar
-			for(index=0;index < count;index++)
+			/*for(index=0;index < count;index++)
 			{
 				if(becam_listview->IsItemSelected(index))
 				{
@@ -369,15 +369,15 @@ void BeCam_MainWindow::removeSelectedItems()
 					#endif
 					totalpics++;
 				}	
-			}
+			}*/
 			#ifdef DEBUG
 				lfmainw = fopen(LOGFILE,"a");	
 				fprintf(lfmainw,"MAINWINDOW - %ld items should be removed\n",totalpics);
 				fclose(lfmainw);
 			#endif
-			sprintf(tmpBuffer,"Removing number %ld of the %ld selected files",(uint32)0,totalpics);
-			CreateStatusWindow(totalpics, tmpBuffer);
-			UpdateStatusWindow(0, tmpBuffer);
+			//sprintf(tmpBuffer,"Removing number %ld of the %ld selected files",(uint32)0,totalpics);
+			//CreateStatusWindow(totalpics, tmpBuffer);
+			//UpdateStatusWindow(0, tmpBuffer);
 			index = 0;
 			BeCam_Item *selectedItem;
 			while((index = becam_listview->CurrentSelection(index)) >= 0)
@@ -393,8 +393,8 @@ void BeCam_MainWindow::removeSelectedItems()
 					messenger.SendMessage(cam_message,&reply);
 					if(reply.what == REM_ITEM_OK)
 					{
-						sprintf(tmpBuffer,"Removing number %ld of the %ld selected files",(uint32)selectedindex,totalpics);
-						UpdateStatusWindow(1,tmpBuffer);
+						//sprintf(tmpBuffer,"Removing number %ld of the %ld selected files",(uint32)selectedindex,totalpics);
+						//UpdateStatusWindow(1,tmpBuffer);
 						removeItem(selectedItem);
 						delete(selectedItem);
 						selectedItem = NULL;
@@ -405,12 +405,12 @@ void BeCam_MainWindow::removeSelectedItems()
 					delete(cam_message);
 					index++;
 			}
-			CloseStatusWindow();
+			//CloseStatusWindow();
 			becam_download->SetEnabled(true);
 			becam_delete->SetEnabled(true);
 			becam_extraMenu->SetEnabled(true);
 			becam_downloadPopup->SetEnabled(true);	
-			becam_winstatusbar->SetText(_T("All items have been removed."));
+			becam_winstatusbar->SetText(_T("All selected items have been removed."));
 		}
 	}
 	else

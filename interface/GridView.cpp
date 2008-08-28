@@ -83,14 +83,13 @@ void GridView::AddItem (BeCam_Item* item)
 
 //
 //	GridView :: Add Item Fast
-inline void
-GridView::AddItemFast (BeCam_Item* item)
+inline void GridView::AddItemFast (BeCam_Item* item)
 {
 	fItemList->AddItem (reinterpret_cast<void*>(item));
 }
 //
 //	GridView :: Remove Item
-void	GridView::RemoveItem(BeCam_Item* item)
+void GridView::RemoveItem(BeCam_Item* item)
 {
 	#ifdef DEBUG
 		lfgridv = fopen(INTF_LOGFILE,"a");	
@@ -144,6 +143,7 @@ void GridView::DrawContent (BRect /*_unused*/)
 		fprintf(lfgridv,"GRIDVIEW - Draw Content\n");
 		fclose(lfgridv);
 	#endif
+	
 	SetHighColor (ViewColor());
 	if (fItemList == NULL || fItemList->CountItems() == 0)
 	{
@@ -180,7 +180,6 @@ void GridView::DrawContent (BRect /*_unused*/)
 	}
 	
 	fCachedColumnCount = columnCount;
-	
 	float horizMargin = CalculateHorizMargin(Bounds().Width());
 	SetHorizItemMargin(horizMargin);
 	
@@ -192,11 +191,11 @@ void GridView::DrawContent (BRect /*_unused*/)
 		BeCam_Item *item = (BeCam_Item*)(fItemList->ItemAt (i));
 		if (item == NULL)
 			break;	
+		
 		BRect itemRect;
-		
-		itemRect.left = x * (ItemWidth() + ItemHorizMargin()) ;
-		itemRect.top = y * (ItemHeight() + ItemVertMargin()); 
-		
+		//
+		itemRect.left = x * (ItemWidth() + ItemHorizMargin());
+		itemRect.top = y * (ItemHeight() + ItemVertMargin()); 	
 		itemRect.right = itemRect.left + ItemWidth() + ItemHorizMargin();
 		itemRect.bottom = itemRect.top + ItemHeight() + ItemVertMargin();
 		// Draw the item
@@ -714,7 +713,15 @@ void GridView::DeselectAll()
 //	GridView:: Current Selection
 int32	GridView::CurrentSelection(int32 index = 0)
 {
-	return fSelectedItemIndex;
+	int32 countItems = fItemList->CountItems();
+	BeCam_Item* item;
+	for(int i = index;i < countItems;i++)
+	{
+		item = (BeCam_Item*)fItemList->ItemAt (i);
+		if(item != NULL && item->IsSelected())
+			return i;
+	}
+	return -1;
 }
 //
 //	GridView:: Is item selected
@@ -748,6 +755,8 @@ status_t GridView::TrackItem(list_tracking_data *data)
 {
     uint32  buttons;
     BPoint  point;
+    rgb_color color_items = {0xee, 0x00, 0x00, 0xff};
+    rgb_color color_itemstrings = {0xff, 0xff, 0xff, 0xff};
     // we're going to loop as long as the mouse
     //is down and hasn't moved
     // more than kDRAG SLOP pixels
@@ -816,6 +825,28 @@ status_t GridView::TrackItem(list_tracking_data *data)
                         offscreen_view->SetBlendingMode(B_CONSTANT_ALPHA,B_ALPHA_COMPOSITE);
                         // blend in bitmap
                         offscreen_view->DrawBitmap(src_bits);
+                        offscreen_view->SetDrawingMode(B_OP_COPY);
+                        //
+                        int numberOfItemsSelected = data->view->GetNumberOfSelectedItems();
+                        font_height fontHeight;
+						data->view->GetFontHeight (&fontHeight);
+						float fFontHeight = fontHeight.ascent + fontHeight.descent - 4;
+						BString numberOfItemsSelectedString;
+                        numberOfItemsSelectedString << numberOfItemsSelected;
+                        float fStringWidth = data->view->StringWidth(numberOfItemsSelectedString.String());
+                        float ellipseX = offscreen_view->Bounds().left + 15;
+                        float ellipseY = drag_bits->Bounds().top + 15;
+                        if(numberOfItemsSelected > 1)
+                        {
+                        	offscreen_view->SetHighColor(color_items);
+                        	BRect r(5,5,25,25);
+                        	offscreen_view->FillEllipse(r);
+                        	offscreen_view->StrokeEllipse(r);
+                        	offscreen_view->MovePenTo(ellipseX - fStringWidth/2,ellipseY + fFontHeight/2);
+                        	offscreen_view->SetHighColor(color_itemstrings);
+                        	offscreen_view->DrawString(numberOfItemsSelectedString.String());
+                        }
+                        //
                         drag_bits->Unlock();
                         // initiate drag from center
                         // of bitmap
