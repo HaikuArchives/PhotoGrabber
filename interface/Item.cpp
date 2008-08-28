@@ -91,16 +91,16 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 		if (IsSelected())
 		{
 			selectionRect.left = xItemBitmapPos - (thumbWidth/2) - 3;
-			selectionRect.right = xItemBitmapPos + (thumbWidth/2) + 5;
-			selectionRect.top = yItemBitmapPos - (thumbHeight/2) - 3;
-			selectionRect.bottom = yItemBitmapPos + (thumbHeight/2) + 5;
+			selectionRect.right = xItemBitmapPos + (thumbWidth/2) + 3;
+			selectionRect.top = yItemBitmapPos - (thumbHeight/2) - 2;
+			selectionRect.bottom = yItemBitmapPos + (thumbHeight/2) + 4;
 			itemView->SetHighColor (color_selected);
 			itemView->SetLowColor (color_selected);
 		}
 		else
 		{
-			selectionRect.left = xItemBitmapPos - (thumbWidth/2) - 1;
-			selectionRect.right = xItemBitmapPos + (thumbWidth/2) + 3;
+			selectionRect.left = xItemBitmapPos - (thumbWidth/2) - 2;
+			selectionRect.right = xItemBitmapPos + (thumbWidth/2) + 2;
 			selectionRect.top = yItemBitmapPos - (thumbHeight/2) - 1;
 			selectionRect.bottom = yItemBitmapPos + (thumbHeight/2) + 3;
 			itemView->SetHighColor (color_picture);
