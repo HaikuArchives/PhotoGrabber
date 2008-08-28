@@ -825,11 +825,13 @@ status_t GridView::TrackItem(list_tracking_data *data)
                         offscreen_view->SetBlendingMode(B_CONSTANT_ALPHA,B_ALPHA_COMPOSITE);
                         // blend in bitmap
                         offscreen_view->DrawBitmap(src_bits);
-                        offscreen_view->SetDrawingMode(B_OP_COPY);
                         //
                         int numberOfItemsSelected = data->view->GetNumberOfSelectedItems();
+                        BFont font = be_plain_font;
                         font_height fontHeight;
-						data->view->GetFontHeight (&fontHeight);
+                        font.SetFace(B_BOLD_FACE);
+                        offscreen_view->SetFont(&font);
+						offscreen_view->GetFontHeight (&fontHeight);
 						float fFontHeight = fontHeight.ascent + fontHeight.descent - 4;
 						BString numberOfItemsSelectedString;
                         numberOfItemsSelectedString << numberOfItemsSelected;
@@ -839,11 +841,13 @@ status_t GridView::TrackItem(list_tracking_data *data)
                         if(numberOfItemsSelected > 1)
                         {
                         	offscreen_view->SetHighColor(color_items);
+                        	offscreen_view->SetLowColor(color_items);
                         	BRect r(5,5,25,25);
                         	offscreen_view->FillEllipse(r);
-                        	offscreen_view->StrokeEllipse(r);
                         	offscreen_view->MovePenTo(ellipseX - fStringWidth/2,ellipseY + fFontHeight/2);
                         	offscreen_view->SetHighColor(color_itemstrings);
+                        	offscreen_view->SetLowColor(color_itemstrings);
+                        	offscreen_view->StrokeEllipse(r);
                         	offscreen_view->DrawString(numberOfItemsSelectedString.String());
                         }
                         //
