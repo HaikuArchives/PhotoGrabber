@@ -50,7 +50,7 @@ class GridView : public BView
 		void					Select (int32 index, bool extend = false);
 		void					Select (int32 fromIndex, int32 toIndex, bool extend = false);
 		void 					SelectAll ();
-		void					Deselect (int32 index);
+		void					Deselect (int32 index,bool extend = false);
 		void					Deselect (int32 fromIndex, int32 toIndex);
 		void 					DeselectAll ();
 		void					DeleteAllItems ();
@@ -97,7 +97,8 @@ class GridView : public BView
 		float					fVertItemMargin;	// vertical margin
 		
 		int32					fCachedColumnCount,
-								fSelectedItemIndex;
+								fSelectedItemIndex,
+								fLastSelectedItemIndex;
 		int8					fSelectionRadius;
 		BList*					fItemList;
 		BeCam_Item*				fSelectedItem;

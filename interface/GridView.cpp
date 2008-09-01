@@ -43,6 +43,8 @@ GridView::GridView (BRect rect, const char* name, uint32 resize,uint32 flags)
 	fItemList = new BList();
 	fHorizItemMargin = fMinHorizItemMargin;
 	fVertItemMargin = fMinVertItemMargin;
+	fSelectedItemIndex = 0;
+	fLastSelectedItemIndex = 0;
 }
 
 //
@@ -315,6 +317,11 @@ void GridView::MouseDown (BPoint point)
 		// select this item
       	if ((modifs & B_OPTION_KEY))
       	{
+			#ifdef DEBUG
+				lfgridv = fopen(INTF_LOGFILE,"a");	
+				fprintf(lfgridv,"GRIDVIEW - Option Key down\n");
+				fclose(lfgridv);
+			#endif
 			Select(index,true);
       	}      	
       	else if((modifs & B_SHIFT_KEY))
@@ -334,9 +341,10 @@ void GridView::MouseDown (BPoint point)
         // up the window for more
         // important tasks
         resume_thread(spawn_thread((status_t(*)(void*))TrackItem,"list_tracking",B_DISPLAY_PRIORITY,data));
-        return;
+        //return;
     }
 	previousPoint = point;
+	ScrollToSelection ();
 	return BView::MouseDown (point);
 }
 
@@ -416,50 +424,60 @@ void GridView::UpdateScrollView ()
 //	GridView :: Handle KeyMovement
 bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 {
+	#ifdef DEBUG
+		lfgridv = fopen(INTF_LOGFILE,"a");	
+		fprintf(lfgridv,"GRIDVIEW - Handle KeyMovement\n");
+		fclose(lfgridv);
+	#endif
 	bool keyHandled = false;
+	int32 modifs = modifiers();
 	switch (bytes[0])
 	{
 		case B_RIGHT_ARROW:
 		{
 			keyHandled = true;
-			Select (fSelectedItemIndex < CountItems() - 1 ? fSelectedItemIndex + 1 : CountItems() - 1);
+			if((modifs & B_SHIFT_KEY))
+				Select (fSelectedItemIndex,fLastSelectedItemIndex < CountItems() - 1 ? fLastSelectedItemIndex + 1 : CountItems() - 1,true);
+			else
+				Select (fSelectedItemIndex < CountItems() - 1 ? fSelectedItemIndex + 1 : CountItems() - 1);
+			ScrollToSelection ();
 			break;
 		}
 
 		case B_LEFT_ARROW:
 		{
 			keyHandled = true;
-			Select (fSelectedItemIndex > 0 ? fSelectedItemIndex - 1 : 0);
+			if((modifs & B_SHIFT_KEY))
+				Select (fSelectedItemIndex,fLastSelectedItemIndex > 0 ? fLastSelectedItemIndex - 1 : 0,true);
+			else
+				Select (fSelectedItemIndex > 0 ? fSelectedItemIndex - 1 : 0);
+			ScrollToSelection ();
 			break;
 		}
 		
 		case B_DOWN_ARROW:
 		{
 			keyHandled = true;
-
-			if (fSelectedItemIndex < 0)
-			{
-				Select (0);
-				break;
-			}
 			
-			int32 index = CountColumnsWithMinHorizItemMargin() + fSelectedItemIndex;
-			Select (index <= CountItems() - 1 ? index : fSelectedItemIndex);
+			int32 index = CountColumnsWithMinHorizItemMargin() + fLastSelectedItemIndex;
+			if((modifs & B_SHIFT_KEY))
+				Select (fSelectedItemIndex,index <= CountItems() - 1 ? index : CountItems() - 1,true);
+			else
+				Select (index <= CountItems() - 1 ? index : fSelectedItemIndex);
+			ScrollToSelection ();
 			break;
 		}
 
 		case B_UP_ARROW:
 		{
 			keyHandled = true;
-
-			if (fSelectedItemIndex - CountColumnsWithMinHorizItemMargin() < 0)
-			{
-				Select (fSelectedItemIndex);
-				break;
-			}
 			
-			int32 index = fSelectedItemIndex - CountColumnsWithMinHorizItemMargin();
-			Select (index <= CountItems() - 1 ? index : fSelectedItemIndex);
+			int32 index = fLastSelectedItemIndex - CountColumnsWithMinHorizItemMargin();
+			if((modifs & B_SHIFT_KEY))
+				Select (fSelectedItemIndex,index >= 0 ? index : 0,true);
+			else
+				Select (index <= CountItems() - 1 ? index : fSelectedItemIndex);
+			ScrollToSelection ();
 			break;
 		}
 
@@ -468,6 +486,7 @@ bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 			keyHandled = true;
 
 			Select (0);
+			ScrollToSelection ();
 			break;
 		}
 		
@@ -476,6 +495,7 @@ bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 			keyHandled = true;
 
 			Select (CountItems() - 1);
+			ScrollToSelection ();
 			break;
 		}
 		
@@ -489,6 +509,7 @@ bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 			int32 whichColumn = fSelectedItemIndex % CountColumnsWithMinHorizItemMargin();
 
 			Select (index <= CountItems() - 1 ? index : MIN (finalRowIndex + whichColumn, CountItems() - 1));
+			ScrollToSelection ();
 			break;
 		}
 		
@@ -501,6 +522,7 @@ bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 			int32 whichColumn = fSelectedItemIndex % CountColumnsWithMinHorizItemMargin();
 
 			Select (index >= 0 ? index : whichColumn);
+			ScrollToSelection ();
 			break;
 		}
 		case B_ESCAPE:
@@ -511,8 +533,6 @@ bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 			break;
 		}
 	}
-	
-	ScrollToSelection ();
 	return keyHandled;
 }
 
@@ -632,14 +652,20 @@ void GridView::Select (int32 index, bool extend = false)
 	if(!extend && !IsItemSelected(index))
 		DeselectAll();
 	BeCam_Item *item = (BeCam_Item*)(fItemList->ItemAt(index));
-	if(item != NULL && !item->IsSelected())
+	if(item != NULL)
 	{	
-		item->Select();
-		item->DrawItem (this, ItemRect (index), true);
-		fSelectedItem = item;
-		fSelectedItemIndex = index;
+		if(!item->IsSelected())
+		{
+			item->Select();
+			item->DrawItem (this, ItemRect (index), true);
+			if(!extend)
+			{
+				fSelectedItem = item;
+				fSelectedItemIndex = index;
+			}
+		}
+		fLastSelectedItemIndex = index;
 	}
-
 }
 //	GridView :: Select From To
 void GridView::Select (int32 fromIndex, int32 toIndex, bool extend = false)
@@ -657,8 +683,15 @@ void GridView::Select (int32 fromIndex, int32 toIndex, bool extend = false)
 		startIndex = toIndex;
 		stopIndex = fromIndex;
 	}
-	for(int32 i = startIndex;i <= stopIndex;i++)
-		Select(i,extend);
+	int32 countItems = fItemList->CountItems();
+	for(int32 i = 0;i <= countItems;i++)
+	{
+		if(i < startIndex || i > stopIndex)  
+			Deselect(i,extend);
+	}
+	for(int32 j = startIndex;j <= stopIndex;j++)
+		Select(j,extend);
+	fLastSelectedItemIndex = toIndex;
 }
 //
 //	GridView:: Select All Items
@@ -669,7 +702,7 @@ void 	GridView::SelectAll ()
 
 //
 //	GridView :: Deselect
-void GridView::Deselect(int32 index)
+void GridView::Deselect(int32 index, bool extend = false)
 {
 	
 	BeCam_Item *item = (BeCam_Item*)(fItemList->ItemAt(index));
@@ -678,8 +711,11 @@ void GridView::Deselect(int32 index)
 		item->Deselect ();
 		item->DrawItem (this, ItemRect (index), true);
 	}
-	fSelectedItem = NULL;
-	fSelectedItemIndex = -1;
+	if(!extend)
+	{
+		fSelectedItem = NULL;
+		fSelectedItemIndex = -1;
+	}
 }
 //
 //	GridView :: Deselect From To
@@ -715,7 +751,7 @@ int32	GridView::CurrentSelection(int32 index = 0)
 {
 	int32 countItems = fItemList->CountItems();
 	BeCam_Item* item;
-	for(int i = index;i < countItems;i++)
+	for(int i = index;i <= countItems;i++)
 	{
 		item = (BeCam_Item*)fItemList->ItemAt (i);
 		if(item != NULL && item->IsSelected())

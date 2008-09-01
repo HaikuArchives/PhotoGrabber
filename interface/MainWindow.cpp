@@ -357,55 +357,36 @@ void BeCam_MainWindow::removeSelectedItems()
 		if(button_index == 1)
 		{
 			count = becam_listview->CountItems();
-			// create the status bar
-			/*for(index=0;index < count;index++)
-			{
-				if(becam_listview->IsItemSelected(index))
-				{
-					#ifdef DEBUG
-						lfmainw = fopen(LOGFILE,"a");	
-						fprintf(lfmainw,"MAINWINDOW - File %d should be removed\n",index);
-						fclose(lfmainw);
-					#endif
-					totalpics++;
-				}	
-			}*/
 			#ifdef DEBUG
 				lfmainw = fopen(LOGFILE,"a");	
 				fprintf(lfmainw,"MAINWINDOW - %ld items should be removed\n",totalpics);
 				fclose(lfmainw);
 			#endif
-			//sprintf(tmpBuffer,"Removing number %ld of the %ld selected files",(uint32)0,totalpics);
-			//CreateStatusWindow(totalpics, tmpBuffer);
-			//UpdateStatusWindow(0, tmpBuffer);
 			index = 0;
 			BeCam_Item *selectedItem;
 			while((index = becam_listview->CurrentSelection(index)) >= 0)
 			{
 				selectedItem = (BeCam_Item *)becam_listview->ItemAt(index);
 				// Send a message to the camera 
-					// to get the selected item
-					cam_message = new BMessage(REM_ITEM);
-					cam_message->AddInt32("itemhandle", (int32)selectedItem->GetHandle());
-					// Wait untill the item has been downloaded
-					BMessenger messenger(NULL,systemcore);
-					BMessage reply;
-					messenger.SendMessage(cam_message,&reply);
-					if(reply.what == REM_ITEM_OK)
-					{
-						//sprintf(tmpBuffer,"Removing number %ld of the %ld selected files",(uint32)selectedindex,totalpics);
-						//UpdateStatusWindow(1,tmpBuffer);
-						removeItem(selectedItem);
-						delete(selectedItem);
-						selectedItem = NULL;
-						index = 0;
-						delete(cam_message);
-						continue;
-					}
+				// to get the selected item
+				cam_message = new BMessage(REM_ITEM);
+				cam_message->AddInt32("itemhandle", (int32)selectedItem->GetHandle());
+				// Wait untill the item has been downloaded
+				BMessenger messenger(NULL,systemcore);
+				BMessage reply;
+				messenger.SendMessage(cam_message,&reply);
+				if(reply.what == REM_ITEM_OK)
+				{
+					removeItem(selectedItem);
+					delete(selectedItem);
+					selectedItem = NULL;
+					index = 0;
 					delete(cam_message);
-					index++;
+					continue;
+				}
+				delete(cam_message);
+				index++;
 			}
-			//CloseStatusWindow();
 			becam_download->SetEnabled(true);
 			becam_delete->SetEnabled(true);
 			becam_extraMenu->SetEnabled(true);
@@ -727,7 +708,13 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			}
 			break;
 		}
+		case B_KEY_DOWN:
+		{
+			removeSelectedItems();
+			break;
+		}
 		default:
 			BWindow::MessageReceived(message);
 		}
 }
+
