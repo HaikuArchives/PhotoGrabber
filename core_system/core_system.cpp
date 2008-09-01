@@ -25,7 +25,7 @@ BeDiGiCamApp::BeDiGiCamApp()
 	globalPath = new char[512];
 	title =	new char[512];
 	bgcolor = new char[512];
-	strcpy(globalPath,"/boot/home/Pictures/PhotoGrabber");
+	strcpy(globalPath,"/boot/home/Desktop");
 }
 // 
 //	BeDiGiCam::Destructor (cleaning up)

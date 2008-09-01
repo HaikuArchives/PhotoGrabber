@@ -71,6 +71,7 @@
 #define DOWN_ITEM					'DOWI'
 #define DOWN_ITEM_OK				'DITO'
 #define GET_ITEMS					'GITM'
+#define REM_ITEMS					'RITM'
 #define ADD_PTPCAM					'ADDP'
 #define REM_PTPCAM					'REMP'
 #define ADD_MSCAM					'ADDM'

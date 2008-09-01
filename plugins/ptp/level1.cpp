@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -78,7 +78,6 @@ virtual status_t DeviceAdded(BUSBDevice *dev)
 virtual void DeviceRemoved(BUSBDevice *dev)
 	{
 		fprintf(stderr,"removed %s @ '%s'\n",dev->IsHub() ? "hub" : "device", dev->Location());
-		//ptp_closesession(params);
 		appDev = NULL;
 		// send a message to the system core
 		BMessage *core_msg;
@@ -105,7 +104,7 @@ void getPluginVersion(version_info &ver)
 {
 	ver.major = 2;
 	ver.middle = 0;
-	ver.minor = 1;
+	ver.minor = 2;
 	ver.variety = 0;
 	ver.internal = 0;
 	sprintf(ver.short_info,"Jan-Rixt Van Hoye 2008");
@@ -146,7 +145,6 @@ status_t closeCamera(void)
 	fprintf(lflevel1,"PTP - Close camera\n");
 	fclose(lflevel1);
 	#endif
-	//ptp_closesession(params);
 	roster->Stop();
 	return(B_NO_ERROR);
 }
@@ -160,7 +158,6 @@ status_t getNumberofPics(int &number)
 	fprintf(lflevel1,"PTP - Get number of pictures\n");
 	fclose(lflevel1);
 	#endif
-	//ptp_opensession(params,1);
 	ptp_getobjecthandles(params, 0xffffffff, 0x000000, 0x000000,&params->handles);
 	#ifdef DEBUG
 	lflevel1 = fopen(LOGFILE,"a");
@@ -196,7 +193,7 @@ status_t getNumberofPics(int &number)
 			#endif
 			if((*params).objectinfo[j].ObjectFormat != PTP_OFC_Undefined && (*params).objectinfo[j].ObjectFormat != PTP_OFC_Association && (*params).objectinfo[j].ObjectFormat != PTP_OFC_DPOF)
 			{
-				handles[i] = j;//(*params).handles.Handler[j];
+				handles[i] = j;
 				i++;
 			}
 		}
@@ -207,7 +204,6 @@ status_t getNumberofPics(int &number)
 		fclose(lflevel1);
 		#endif
 	}
-	//ptp_closesession(params);
 	#ifdef DEBUG
 	lflevel1 = fopen(LOGFILE,"a");
 	fprintf(lflevel1,"PTP - Number of pictures is: %d\n",number);
@@ -236,7 +232,8 @@ status_t setCurrentPicture(int picturenum)
 status_t downloadPicture(BPath savedir)
 {
 	char *image = NULL;
-	char filename[255];
+	//char filename[512];
+	char *filename;
 	long int size=0;
 	int ret=0;
 	
@@ -245,39 +242,29 @@ status_t downloadPicture(BPath savedir)
 	fprintf(lflevel1,"PTP - Download pictures\n");
 	fclose(lflevel1);
 	#endif
-	//ptp_opensession(params,1);
-	 // BEGIN Bugfix: 09/03/2007
-    //(*params).objectinfo =(PTPObjectInfo*)malloc(sizeof(PTPObjectInfo));
-	//ptp_getobjectinfo(params,currentitemhandle,&params->objectinfo[0]);
-    #ifdef DEBUG
-	lflevel1 = fopen(LOGFILE,"a");
-	fprintf(lflevel1,"Type: %d\n",&params->objectinfo[0].ObjectFormat);
-	fclose(lflevel1);
-	#endif
-	//size=(*params).objectinfo[0].ObjectCompressedSize;
-	size=(*params).objectinfo[currentpicturenumber].ObjectCompressedSize;
-	// END
-	//ret = ptp_getobject(params,currentitemhandle,&image);
-	ret = ptp_getobject(params,(*params).handles.Handler[currentpicturenumber],&image);
-	if ( ret == PTP_RC_OK)
+	if(savedir != NULL)
 	{
-		strcpy(filename,savedir.Path());
-		strcat(filename,"/");
-		strcat(filename,(*params).objectinfo[currentpicturenumber].Filename);
-		//strcat(filename,(*params).objectinfo[0].Filename);
-		if(saveCamPicture(image,size,filename))
-		{	
-			image = NULL;
-			//ptp_closesession(params);
-			return(B_NO_ERROR);
-		}
-			
+		size=(*params).objectinfo[currentpicturenumber].ObjectCompressedSize;
+		ret = ptp_getobject(params,(*params).handles.Handler[currentpicturenumber],&image);
+		if ( ret == PTP_RC_OK)
+		{
+			int32 pathLength = strlen(savedir.Path());
+			int32 fileNameLength = strlen((*params).objectinfo[currentpicturenumber].Filename);
+			filename = new char[pathLength + fileNameLength + 1];
+			strcpy(filename,savedir.Path());
+			strcat(filename,"/");
+			strcat(filename,(*params).objectinfo[currentpicturenumber].Filename);
+			if(saveCamPicture(image,size,filename))
+			{	
+				image = NULL;
+				return(B_NO_ERROR);
+			}
+		}	
 	}
-	//ptp_closesession(params);
 	return(B_ERROR);
 }
 
-bool saveCamPicture (char *data, long int size, const char filename[255])
+bool saveCamPicture (char *data, long int size, const char *filename)
 {
 	int					systemresult;
 	BFile				*fh;
@@ -307,11 +294,10 @@ bool saveCamPicture (char *data, long int size, const char filename[255])
 		else
 		{
 			delete fh;
-			//return(B_ERROR);
 		}
 	}
 	systemresult=-1;
 	
-return (B_NO_ERROR);
+	return (B_NO_ERROR);
 }
 

@@ -82,18 +82,13 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 	r.left=5;
 	r.right-=20;
 	r.bottom=r.bottom-90-becam_menubar->Bounds().bottom;
-	//becam_listview = new BeCam_ListView(r);
-	
-	/*r.top= 5;
-	r.left= 5;
-	r.right-= 20;
-	r.bottom-= 50;*/
-	becam_listview = new GridView(r,"gridview", B_FOLLOW_ALL, B_WILL_DRAW);
+
+	becam_gridview = new GridView(r,"gridview", B_FOLLOW_ALL, B_WILL_DRAW);
 	
 		
 	becam_scrollview = new BScrollView(
 									"becam_scrollview",
-									becam_listview,
+									becam_gridview,
 									B_FOLLOW_ALL_SIDES,
 									B_WILL_DRAW | B_FRAME_EVENTS,
 									false,
@@ -101,7 +96,7 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 									B_FANCY_BORDER
 									);
     becam_view->AddChild(becam_scrollview);
-    becam_listview->TargetedByScrollView (becam_scrollview);
+    becam_gridview->TargetedByScrollView (becam_scrollview);
     #ifdef DEBUG
 		lfmainw = fopen(LOGFILE,"a");	
 		fprintf(lfmainw,"MAINWINDOW - Create popupmenu\n");
@@ -110,7 +105,7 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
     // 	Popup menu to choose your path
  	becam_downloadMenu = new BPopUpMenu("downloadMenu");
 	// 	Add the popup menu to the config groupbox
-	r.top = becam_listview->Frame().bottom + 10;
+	r.top = becam_gridview->Frame().bottom + 10;
 	r.left = 5;
 	r.right= r.left + 250;
 	becam_downloadPopup = new BMenuField(r, "path", _T("Download Folder:"), 
@@ -144,7 +139,7 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 	// Create a FilePanel to select the download directory
 	becam_selectdirpanel = new BFilePanel(B_OPEN_PANEL, new BMessenger(this), NULL, B_DIRECTORY_NODE, false,new BMessage(OPEN_FILE_PANEL), NULL, false, true);
 	//Set the focus to the listview
-	becam_listview->MakeFocus(true);
+	becam_gridview->MakeFocus(true);
 	#ifdef DEBUG
 		lfmainw = fopen(LOGFILE,"a");	
 		fprintf(lfmainw,"MAINWINDOW - Window created\n");
@@ -196,7 +191,7 @@ void BeCam_MainWindow::addActionBar ()
 	BRect r;
 	r.left = 5;
 	r.right = r.left + 108;
-	r.top = becam_listview->Frame().bottom + 35;
+	r.top = becam_gridview->Frame().bottom + 35;
 	r.bottom = r.top + 30;
 	// Create download button
 	becam_download = new BButton(r, "download", _T("Download"),new BMessage(DOWN_BUTTON), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
@@ -235,7 +230,7 @@ void BeCam_MainWindow::addStatusBar ()
 void BeCam_MainWindow::addItem(class BeCam_Item *item)
 {
 	Lock();
-	becam_listview->AddItem(item);
+	becam_gridview->AddItem(item);
 	Unlock();
 }
 //
@@ -243,7 +238,7 @@ void BeCam_MainWindow::addItem(class BeCam_Item *item)
 void BeCam_MainWindow::removeItem(class BeCam_Item *item)
 {
 	Lock();
-	becam_listview->RemoveItem(item);
+	becam_gridview->RemoveItem(item);
 	Unlock();
 }
 //
@@ -251,7 +246,7 @@ void BeCam_MainWindow::removeItem(class BeCam_Item *item)
 void BeCam_MainWindow::clearItems()
 {
 	Lock();
-	becam_listview->MakeEmpty();
+	becam_gridview->MakeEmpty();
 	Unlock();
 }
 //
@@ -259,7 +254,7 @@ void BeCam_MainWindow::clearItems()
 void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
 {
 	//
-	if(becam_listview->CurrentSelection() >= 0)
+	if(becam_gridview->CurrentSelection() >= 0)
 	{
 		entry_ref refentry;
 		int count,index=0,selectedindex=0;
@@ -273,11 +268,11 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
 		becam_extraMenu->SetEnabled(false);
 		becam_downloadPopup->SetEnabled(false);
 		//
-		count = becam_listview->CountItems();
+		count = becam_gridview->CountItems();
 		// create the status bar
 		for(index=0;index < count;index++)
 		{
-			if(becam_listview->IsItemSelected(index))
+			if(becam_gridview->IsItemSelected(index))
 				totalpics++;	
 		}
 		sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)0,totalpics);
@@ -286,10 +281,10 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
 		//
 		for(index=0;index < count;index++)
 		{
-			if(becam_listview->IsItemSelected(index))
+			if(becam_gridview->IsItemSelected(index))
 			{
 				selectedindex++;
-				LocaleItem = (BeCam_Item *)becam_listview->ItemAt(index);
+				LocaleItem = (BeCam_Item *)becam_gridview->ItemAt(index);
 				// Send a message to the camera interface 
 				// to get the selected item
 				cam_message = new BMessage(DOWN_ITEM);
@@ -338,7 +333,7 @@ void BeCam_MainWindow::removeSelectedItems()
 		fprintf(lfmainw,"MAINWINDOW - Begin remove Items\n");
 		fclose(lfmainw);
 	#endif
-	if(becam_listview->CurrentSelection() >= 0)
+	if(becam_gridview->CurrentSelection() >= 0)
 	{
 		int count,index=0,selectedindex=0;
 		uint32 totalpics=0;
@@ -356,7 +351,7 @@ void BeCam_MainWindow::removeSelectedItems()
 		uint32 button_index = myAlert->Go();
 		if(button_index == 1)
 		{
-			count = becam_listview->CountItems();
+			count = becam_gridview->CountItems();
 			#ifdef DEBUG
 				lfmainw = fopen(LOGFILE,"a");	
 				fprintf(lfmainw,"MAINWINDOW - %ld items should be removed\n",totalpics);
@@ -364,9 +359,9 @@ void BeCam_MainWindow::removeSelectedItems()
 			#endif
 			index = 0;
 			BeCam_Item *selectedItem;
-			while((index = becam_listview->CurrentSelection(index)) >= 0)
+			while((index = becam_gridview->CurrentSelection(index)) >= 0)
 			{
-				selectedItem = (BeCam_Item *)becam_listview->ItemAt(index);
+				selectedItem = (BeCam_Item *)becam_gridview->ItemAt(index);
 				// Send a message to the camera 
 				// to get the selected item
 				cam_message = new BMessage(REM_ITEM);
@@ -615,6 +610,7 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			becam_selectdirpanel->Show();
 			break;
 		case DEL_BUTTON:
+		case REM_ITEMS:
 			removeSelectedItems();
 			break;
 		case OPN_STATUS:
@@ -650,7 +646,7 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			CreateConfigWindow();
 			break;
 		case B_SELECT_ALL:
-			becam_listview->SelectAll();
+			becam_gridview->SelectAll();
 			break;
 		case B_COPY_TARGET:
 		{
@@ -706,11 +702,6 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			{
 				actionsMenu->SetEnabled(false);
 			}
-			break;
-		}
-		case B_KEY_DOWN:
-		{
-			removeSelectedItems();
 			break;
 		}
 		default:

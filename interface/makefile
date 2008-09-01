@@ -39,7 +39,6 @@ TYPE := SHARED
 SRCS := AboutWindow.cpp			\
 		ConfigWindow.cpp			\
 		Item.cpp			\
-		ListView.cpp			\
 		MainView.cpp			\
 		MainWindow.cpp			\
 		PictureItem.cpp			\

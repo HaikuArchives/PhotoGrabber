@@ -315,7 +315,7 @@ void GridView::MouseDown (BPoint point)
     {
        	int32 modifs = modifiers();
 		// select this item
-      	if ((modifs & B_OPTION_KEY))
+      	if ((modifs & B_COMMAND_KEY))
       	{
 			#ifdef DEBUG
 				lfgridv = fopen(INTF_LOGFILE,"a");	
@@ -476,7 +476,7 @@ bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 			if((modifs & B_SHIFT_KEY))
 				Select (fSelectedItemIndex,index >= 0 ? index : 0,true);
 			else
-				Select (index <= CountItems() - 1 ? index : fSelectedItemIndex);
+				Select (index >= 0 ? index : fSelectedItemIndex);
 			ScrollToSelection ();
 			break;
 		}
@@ -530,6 +530,14 @@ bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 			keyHandled = true;
 
 			DeselectAll ();
+			break;
+		}
+		case B_DELETE:
+		{
+			keyHandled = true;
+			
+			BMessage *message = new BMessage(REM_ITEMS);
+			Window()->PostMessage(message);
 			break;
 		}
 	}
