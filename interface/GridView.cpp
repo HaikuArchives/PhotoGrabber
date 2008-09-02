@@ -137,7 +137,7 @@ void GridView::Draw (BRect rect)
 
 //
 // GridView :: DrawContent
-void GridView::DrawContent (BRect /*_unused*/)
+void GridView::DrawContent (BRect updateRect)
 {
 
 	#ifdef DEBUG
@@ -187,6 +187,7 @@ void GridView::DrawContent (BRect /*_unused*/)
 	
 	int32 x = 0;
 	int32 y = 0;
+	BRegion *updateRegion = new BRegion(updateRect);
 	
 	for (int32 i = 0; i < fItemList->CountItems(); i++)
 	{
@@ -200,8 +201,9 @@ void GridView::DrawContent (BRect /*_unused*/)
 		itemRect.top = y * (ItemHeight() + ItemVertMargin()); 	
 		itemRect.right = itemRect.left + ItemWidth() + ItemHorizMargin();
 		itemRect.bottom = itemRect.top + ItemHeight() + ItemVertMargin();
-		// Draw the item
-		item->DrawItem(this, itemRect, true);
+		
+		if(updateRegion->Intersects(itemRect))
+			item->DrawItem(this, itemRect, true);
 		//
 		x++;
 		if (x >= columnCount)
@@ -216,7 +218,7 @@ void GridView::DrawContent (BRect /*_unused*/)
 // GridView :: FrameResized
 void GridView::FrameResized (float newWidth, float newHeight)
 {
-	Draw (BRect (0, 0, 0, 0));	
+	Draw (BRect (0, 0, newWidth, newHeight));	
 	UpdateScrollView();
 	return BView::FrameResized (newWidth, newHeight);
 }
