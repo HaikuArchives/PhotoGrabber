@@ -70,23 +70,19 @@ BeCam_ConfigWindow::BeCam_ConfigWindow(float xPos,float yPos,BeCam_MainWindow *m
 	BStringView *becam_pluginNameLabel = new BStringView(BRect(r.left + 10, r.top + 70 , r.left + 100, r.top + 85),"pnamelabel",_T("Plugin Name:"),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
 	becam_configbox->AddChild(becam_pluginNameLabel);
 	becam_pluginName = new BStringView(BRect(r.left + 110, r.top + 70 , r.right - 20 , r.top + 85),"pluginnamefield","n/a",B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
-	//becam_pluginName->SetEnabled(false);
 	becam_configbox->AddChild(becam_pluginName);
 	//
 	BStringView *becam_pluginSourceLabel = new BStringView(BRect(r.left + 10, r.top + 90 , r.left + 100, r.top + 105),"psourcelabel",_T("Plugin Source:"),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
 	becam_configbox->AddChild(becam_pluginSourceLabel);
 	becam_pluginSource = new BStringView(BRect(r.left + 110, r.top + 90, r.right - 20, r.top + 105),"pluginsourcefield","n/a",B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
-	//becam_pluginSource->SetEnabled(false);
 	becam_configbox->AddChild(becam_pluginSource);
 	//
 	BStringView *becam_pluginVersionLabel = new BStringView(BRect(r.left + 10, r.top + 110 , r.left + 100, r.top + 125),"pverslabel",_T("Plugin Version:"),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
 	becam_configbox->AddChild(becam_pluginVersionLabel);
 	becam_pluginVersion = new BStringView(BRect(r.left + 110, r.top + 110 , r.right - 20, r.top + 125),"pluginversionfield","n/a",B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW);
-	//becam_pluginVersion->SetEnabled(false);
 	becam_configbox->AddChild(becam_pluginVersion);
-	// 		Add the config button the the config box
-	becam_pluginConfig = new BButton(BRect(r.left + 10, r.top + 130, r.left + 155, r.top + 145), "pluginconfbutton", _T("Plugin Configuration"),new BMessage(CONF_BUT), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
-	//becam_pluginConfig->SetEnabled(false);
+	//	Add the config button the the config box
+	becam_pluginConfig = new BButton(BRect(r.left + 10, r.top + 128, r.left + 155, r.top + 145), "pluginconfbutton", _T("Plugin Configuration"),new BMessage(CONF_BUT), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
 	becam_configbox->AddChild(becam_pluginConfig);
 	//
 	//	Create and add the camera type popupmenu to the BDCP box
@@ -256,9 +252,11 @@ void BeCam_ConfigWindow::GetPluginDetails(char * cameraname = NULL)
 	char *lVersion = new char[10];
 	sprintf(lVersion,"%ld.%ld.%ld",versioninfo->major,versioninfo->middle,versioninfo->minor);
 	becam_pluginVersion->SetText(lVersion);
+	if(!IsPluginConfigPresent())
+		becam_pluginConfig->SetEnabled(false);
 	delete(lVersion);	
 }
-
+//
 //	configWindow::OpenPluginConfiguration
 void BeCam_ConfigWindow::OpenPluginConfig()
 {
@@ -287,3 +285,17 @@ void BeCam_ConfigWindow::OpenPluginConfig()
 		fclose(lfconfigw);
 	#endif		
 }
+//
+//	configWindow::OpenPluginConfiguration
+bool BeCam_ConfigWindow::IsPluginConfigPresent()
+{
+	bool present = false;
+	BMessenger messenger(NULL,parent->systemcore);
+	BMessage appmessage(PLUG_CONFIG_PRESENT);
+	BMessage reply;
+	appmessage.AddString("camerastring",pgsettings->deviceName);
+	messenger.SendMessage(&appmessage,&reply);
+	reply.FindBool("present",present);
+	return present;	
+}
+

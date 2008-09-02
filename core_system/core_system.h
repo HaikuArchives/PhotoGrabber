@@ -45,6 +45,7 @@ class BeDiGiCamApp : public BApplication {
 		bool						GetCameraStrings();
 		bool						GetPluginDetails(char *camerastring);
 		bool						OpenPluginConfig(char *camerastring, BPoint *interfacePoint);
+		bool						IsPluginConfigPresent(char *camerastring);
 		CamInterface 				*interface;
 		vector<string> 				supportedCams;
 		multimap<const char*,string>	pluginSupportedCams;

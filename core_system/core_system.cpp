@@ -156,11 +156,21 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
             	}
             	break;
             }
+            case PLUG_CONFIG_PRESENT:
+            {	
+            	const char *camerastring;
+            	BMessage reply;
+            	camerastring = message->FindString("camerastring");
+    			bool present = IsPluginConfigPresent((char *)camerastring);
+            	reply.AddBool("present",present);
+            	message->SendReply(&reply);
+            	break;
+            }
             case OPEN_PLUG_WINDOW:
             {
             	const char *camerastring;
             	BPoint interfacepoint;
-            	BMessage reply;
+            	//BMessage reply;
             	camerastring = message->FindString("camerastring");
             	message->FindPoint("point",&interfacepoint);
             	OpenPluginConfig((char *)camerastring,&interfacepoint);
@@ -311,9 +321,21 @@ bool BeDiGiCamApp::OpenPluginConfig(char *camerastring,BPoint *interfacePoint)
 				pluginconfwindow = interface->pluginConfiguration(lPoint);
 				pluginconfwindow->Show();
 			}
-			//delete(interface);
 			return true;
 		}
+		i++;
+	}
+	return false;
+}
+//
+//	BeDiGiCam:: Check if there is a plugin configuration screen
+bool BeDiGiCamApp::IsPluginConfigPresent(char *camerastring)
+{
+	multimap<const char*,string>::iterator i = pluginSupportedCams.begin();
+	while(i != pluginSupportedCams.end())
+	{
+		if(!strcmp((*i).second.c_str(),camerastring))
+			return interface->check_configurePlugin;
 		i++;
 	}
 	return false;

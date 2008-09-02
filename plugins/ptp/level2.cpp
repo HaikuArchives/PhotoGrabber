@@ -265,8 +265,8 @@ status_t getDeviceType(int &type)
 	type =  TYPE_USB;
 	return(B_NO_ERROR);
 }
-BWindow* configurePlugin(BPoint middle)
+/*BWindow* configurePlugin(BPoint middle)
 {
 	return(new configplugin(BRect(middle.x - 74,middle.y - 122,
 								  middle.x + 74,middle.y + 122 )));
-}
+}*/

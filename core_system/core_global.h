@@ -94,6 +94,7 @@
 #define GET_PLUG_DETAIL				'GPDT'
 #define OPEN_PLUG_WINDOW			'OPWI'
 #define SHOW_MAINWINDOW				'SMWI'
+#define PLUG_CONFIG_PRESENT			'PCRE'
 //
 //		Item status
 #define	ITEM_NOT_DOWNLOADED			0

@@ -74,6 +74,7 @@ class BeCam_ConfigWindow : public BWindow
 		void				CreateCameraTypeMenu(BRect r);
 		void				GetPluginDetails(char *cameraname = NULL);
 		void				OpenPluginConfig();
+		bool				IsPluginConfigPresent();
 		multimap<const char*,string>	*pluginSupportedCams;
 		class BeCam_MainWindow    *parent;
 		version_info		versioninfo;

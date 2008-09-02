@@ -32,7 +32,7 @@ extern "C" status_t getImageDate(char* &date);
 extern "C" status_t getThumbnail(BBitmap* &);
 extern "C" status_t getLevel3FunctionNames(map<char*, char*> &menunames);
 extern "C" status_t setMessageTarget(BLooper* mtarget);
-extern "C" BWindow * configurePlugin(BPoint middle);
+//extern "C" BWindow * configurePlugin(BPoint middle);
 //Functions for BDCP3
 extern "C" status_t getDeviceType(int &type);
 extern "C" status_t getImageHeight(int &height);

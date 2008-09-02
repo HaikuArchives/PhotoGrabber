@@ -16,7 +16,7 @@ extern "C" {
 }
 
 
-int					PTP_findendpoint(int type, int &interface, int &endpoint);
+//int					PTP_findendpoint(int type, int &interface, int &endpoint);
 bool 				PTP_init_ptp_usb(PTPParams* params, BUSBDevice* dev);
 short		 		PTP_ptp_read_func (unsigned char *bytes, unsigned int size, void *data);
 short		 		PTP_ptp_write_func (unsigned char *bytes, unsigned int size, void *data);

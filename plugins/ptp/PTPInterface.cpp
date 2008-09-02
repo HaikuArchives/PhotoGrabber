@@ -19,7 +19,7 @@ FILE *lfptpi;
 
  //		Find Endpoint
 //
-int PTP_find_endpoint(int type, int &interface, int &endpoint)
+/*int PTP_find_endpoint(int type, int &interface, int &endpoint)
 {
 	#ifdef DEBUG
 		lfptpi = fopen(LOGFILE,"a");
@@ -49,7 +49,7 @@ int PTP_find_endpoint(int type, int &interface, int &endpoint)
 		return 0;
 	}
 	return -1;
-}
+}*/
 
 // initialize a PTP camera via the USB protocol
 //
@@ -86,15 +86,20 @@ PTP_ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 	const BUSBEndpoint 	*iept;
 	
 	/* get input endpoint */
-	ret = PTP_find_endpoint(PTP_ENDPOINT_OUTPUT,interface,endpoint);
-	if(ret > -1)
+	//ret = PTP_find_endpoint(PTP_ENDPOINT_OUTPUT,interface,endpoint);
+	//if(ret > -1)
+	//{
+	PTP_logValue(PTP_ENDPOINT_READ,endpoint);
+	PTP_logValue(PTP_INTERFACE_READ,interface);
+	iept=dev->ActiveConfiguration()->InterfaceAt(interface)->EndpointAt(endpoint);	
+	if(iept->IsOutput())
 	{
-		PTP_logValue(PTP_ENDPOINT_READ,endpoint);
-		PTP_logValue(PTP_INTERFACE_READ,interface);
-		iept=dev->ActiveConfiguration()->InterfaceAt(interface)->EndpointAt(endpoint);	
+		endpoint = 1;
+		iept=dev->ActiveConfiguration()->InterfaceAt(interface)->EndpointAt(endpoint);
 	}
-	else
-		return PTP_logError(PTP_ERROR_ENDPOINT_READ);
+	//}
+	//else
+	//	return PTP_logError(PTP_ERROR_ENDPOINT_READ);
 	
 	if(iept == NULL)
 	{
@@ -190,15 +195,20 @@ PTP_ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
 	const BUSBEndpoint 	*iept;
 	
 	/*get output endpoint*/
-	ret = PTP_find_endpoint(PTP_ENDPOINT_INPUT,interface,endpoint);
-	if(ret > -1)
-	{	
-		PTP_logValue(PTP_ENDPOINT_WRITE,endpoint);
-		PTP_logValue(PTP_INTERFACE_WRITE,interface);
+	//ret = PTP_find_endpoint(PTP_ENDPOINT_INPUT,interface,endpoint);
+	//if(ret > -1)
+	//{	
+	PTP_logValue(PTP_ENDPOINT_WRITE,endpoint);
+	PTP_logValue(PTP_INTERFACE_WRITE,interface);
+	iept=dev->ActiveConfiguration()->InterfaceAt(interface)->EndpointAt(endpoint);
+	if(iept->IsInput())
+	{
+		endpoint = 1;
 		iept=dev->ActiveConfiguration()->InterfaceAt(interface)->EndpointAt(endpoint);
 	}
-	else
-		return PTP_logError(PTP_ERROR_IO_WRITE);
+	//}
+	//else
+	//	return PTP_logError(PTP_ERROR_IO_WRITE);
 		
 	if(iept == NULL)
 		return PTP_logError(PTP_ERROR_IO_WRITE);
