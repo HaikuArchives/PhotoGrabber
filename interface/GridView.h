@@ -102,6 +102,7 @@ class GridView : public BView
 		int8					fSelectionRadius;
 		BList*					fItemList;
 		BeCam_Item*				fSelectedItem;
+		BeCam_Item*				fLastSelectedItem;
 		BScrollView*			fScrollView;
 		BMessage*				fSelectMsg;
 		BMessage*				fInvokeMsg;

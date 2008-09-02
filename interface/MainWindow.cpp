@@ -256,18 +256,20 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
 	//
 	if(becam_gridview->CurrentSelection() >= 0)
 	{
-		entry_ref refentry;
-		int count,index=0,selectedindex=0;
-		uint32 totalpics=0;
-		char	tmpBuffer[100];
-		BeCam_Item *LocaleItem;
-		BMessage *cam_message;
 		becam_winstatusbar->SetText(_T("Downloading items..."));
 		becam_download->SetEnabled(false);
 		becam_delete->SetEnabled(false);
 		becam_extraMenu->SetEnabled(false);
 		becam_downloadPopup->SetEnabled(false);
 		//
+		/*
+		entry_ref refentry;
+		int count,index=0,selectedindex=0;
+		uint32 totalpics=0;
+		char	tmpBuffer[100];
+		BeCam_Item *LocaleItem;
+		BMessage *cam_message;
+		
 		count = becam_gridview->CountItems();
 		// create the status bar
 		for(index=0;index < count;index++)
@@ -278,7 +280,7 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
 		sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)0,totalpics);
 		CreateStatusWindow(totalpics, tmpBuffer);
 		UpdateStatusWindow(0, tmpBuffer);
-		//
+		// 
 		for(index=0;index < count;index++)
 		{
 			if(becam_gridview->IsItemSelected(index))
@@ -309,7 +311,52 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
 				delete(cam_message);
 			}
 		}
+		//
 		CloseStatusWindow();
+		*/
+		entry_ref refentry;
+		int count=0,index=0;
+		uint32 totalpics=0;
+		char	tmpBuffer[100];
+		BeCam_Item *selectedItem;
+		BMessage *cam_message;
+		
+		// create the status bar
+		totalpics = becam_gridview->GetNumberOfSelectedItems();
+		sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)0,totalpics);
+		CreateStatusWindow(totalpics, tmpBuffer);
+		UpdateStatusWindow(0, tmpBuffer);
+		// 
+		while((index = becam_gridview->CurrentSelection(index)) >= 0)
+		{
+			selectedItem = (BeCam_Item *)becam_gridview->ItemAt(index);
+			// Send a message to the camera interface 
+			// to get the selected item
+			cam_message = new BMessage(DOWN_ITEM);
+			cam_message->AddInt32("itemhandle",(int32)selectedItem->GetHandle());
+			if(copyToDir != NULL)
+				cam_message->AddRef("copyToDir", copyToDir);
+			else
+			{
+				BEntry *entry = new BEntry(becam_downloadMenu->FindMarked()->Label());
+				entry->GetRef(&refentry);
+				cam_message->AddRef("copyToDir", &refentry);
+			}
+			// Wait untill the item has been downloaded
+			BMessenger messenger(NULL,systemcore);
+			BMessage reply;
+			messenger.SendMessage(cam_message,&reply);
+			if(reply.what == DOWN_ITEM_OK)
+			{
+				count++;
+				sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)count,totalpics);
+				UpdateStatusWindow(1,tmpBuffer);
+			}
+			delete(cam_message);
+			index++;
+		}
+		CloseStatusWindow();
+		//
 		becam_download->SetEnabled(true);
 		becam_delete->SetEnabled(true);
 		becam_extraMenu->SetEnabled(true);
@@ -324,6 +371,58 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
 	}
 }
 //
+//	MainWindow:: Download Items thread function
+status_t BeCam_MainWindow::DownloadItems(items_data *data)
+{
+	BEntry *entry;
+	entry_ref refentry;
+	int count=0,index=0;
+	uint32 totalpics=0;
+	char	tmpBuffer[100];
+	BeCam_Item *selectedItem;
+	BMessage *cam_message;
+	// create the status bar
+	totalpics = data->gridview->GetNumberOfSelectedItems();
+	sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)0,totalpics);
+	data->window->CreateStatusWindow(totalpics, tmpBuffer);
+	data->window->UpdateStatusWindow(0, tmpBuffer);
+	//
+	if(data->downloadDir != NULL)
+		refentry = *(data->downloadDir);
+	else
+	{
+		entry = new BEntry(data->window->becam_downloadMenu->FindMarked()->Label());
+		entry->GetRef(&refentry);
+		cam_message->AddRef("copyToDir", &refentry);
+	} 
+	while((index = data->gridview->CurrentSelection(index)) >= 0)
+	{
+		selectedItem = (BeCam_Item *)data->gridview->ItemAt(index);
+		// Send a message to the camera interface 
+		// to get the selected item
+		cam_message = new BMessage(DOWN_ITEM);
+		cam_message->AddInt32("itemhandle",(int32)selectedItem->GetHandle());
+		cam_message->AddRef("copyToDir", &refentry);
+		// Wait untill the item has been downloaded
+		BMessenger messenger(NULL,data->window->systemcore);
+		BMessage reply;
+		messenger.SendMessage(cam_message,&reply);
+		if(reply.what == DOWN_ITEM_OK)
+		{
+			count++;
+			sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)count,totalpics);
+			data->window->UpdateStatusWindow(1,tmpBuffer);
+		}
+		delete(cam_message);
+		index++;
+	}
+	//
+	if(entry!= NULL)
+		delete(entry);
+	data->window->CloseStatusWindow();
+	return B_NO_ERROR;
+}
+//
 // MainWindow:: Remove the selected items
 void BeCam_MainWindow::removeSelectedItems()
 {
@@ -335,11 +434,6 @@ void BeCam_MainWindow::removeSelectedItems()
 	#endif
 	if(becam_gridview->CurrentSelection() >= 0)
 	{
-		int count,index=0,selectedindex=0;
-		uint32 totalpics=0;
-		char	tmpBuffer[100];
-		BMessage *cam_message;
-		//
 		becam_winstatusbar->SetText(_T("Removing items..."));
 		becam_download->SetEnabled(false);
 		becam_delete->SetEnabled(false);
@@ -351,37 +445,17 @@ void BeCam_MainWindow::removeSelectedItems()
 		uint32 button_index = myAlert->Go();
 		if(button_index == 1)
 		{
-			count = becam_gridview->CountItems();
 			#ifdef DEBUG
 				lfmainw = fopen(LOGFILE,"a");	
 				fprintf(lfmainw,"MAINWINDOW - %ld items should be removed\n",totalpics);
 				fclose(lfmainw);
 			#endif
-			index = 0;
-			BeCam_Item *selectedItem;
-			while((index = becam_gridview->CurrentSelection(index)) >= 0)
-			{
-				selectedItem = (BeCam_Item *)becam_gridview->ItemAt(index);
-				// Send a message to the camera 
-				// to get the selected item
-				cam_message = new BMessage(REM_ITEM);
-				cam_message->AddInt32("itemhandle", (int32)selectedItem->GetHandle());
-				// Wait untill the item has been downloaded
-				BMessenger messenger(NULL,systemcore);
-				BMessage reply;
-				messenger.SendMessage(cam_message,&reply);
-				if(reply.what == REM_ITEM_OK)
-				{
-					removeItem(selectedItem);
-					delete(selectedItem);
-					selectedItem = NULL;
-					index = 0;
-					delete(cam_message);
-					continue;
-				}
-				delete(cam_message);
-				index++;
-			}
+			//
+			items_data *data = new items_data();
+        	data->gridview = becam_gridview;
+        	data->window = this;
+			resume_thread(spawn_thread((status_t(*)(void*))RemoveItems,"remove_items",B_DISPLAY_PRIORITY,data));
+			//
 			becam_download->SetEnabled(true);
 			becam_delete->SetEnabled(true);
 			becam_extraMenu->SetEnabled(true);
@@ -401,6 +475,39 @@ void BeCam_MainWindow::removeSelectedItems()
 		fclose(lfmainw);
 	#endif
 			
+}
+//
+//	MainWindow:: Remove Items thread function
+status_t BeCam_MainWindow::RemoveItems(items_data *data)
+{
+	int count=0,index=0;
+	BMessage *cam_message;
+		
+	count = data->gridview->CountItems();
+	BeCam_Item *selectedItem;
+	while((index = data->gridview->CurrentSelection(index)) >= 0)
+	{
+		selectedItem = (BeCam_Item *)data->gridview->ItemAt(index);
+		// Send a message to the camera 
+		// to get the selected item
+		cam_message = new BMessage(REM_ITEM);
+		cam_message->AddInt32("itemhandle", (int32)selectedItem->GetHandle());
+		// Wait untill the item has been downloaded
+		BMessenger messenger(NULL,data->window->systemcore);
+		BMessage reply;
+		messenger.SendMessage(cam_message,&reply);
+		if(reply.what == REM_ITEM_OK)
+		{
+			data->window->removeItem(selectedItem);
+			selectedItem = NULL;
+			index = 0;
+			delete(cam_message);
+			continue;
+		}
+		delete(cam_message);
+		index++;
+	}
+	return B_NO_ERROR;
 }
 //
 //	MainWindow:: Error messages
@@ -611,8 +718,10 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			break;
 		case DEL_BUTTON:
 		case REM_ITEMS:
+		{
 			removeSelectedItems();
 			break;
+		}
 		case OPN_STATUS:
 		{	
 			char	tmpBuffer[100];
@@ -633,8 +742,6 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 				strncpy(pgsettings->defaultDownloadPath,path.Path(),B_FILE_NAME_LENGTH);
 				BMessage *appmessage = new BMessage(SAVE_CONFIGURATION);
 				systemcore->PostMessage(appmessage);
-				//appmessage = new BMessage(RELOAD_CONFIGURATION);
-				//systemcore->PostMessage(appmessage);
 				delete(appmessage);
 			}
 			break; 

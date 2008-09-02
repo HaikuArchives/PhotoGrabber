@@ -17,40 +17,6 @@ short verbose = 0;
 unsigned int USBBULK_BUFFER = 512;
 FILE *lfptpi;
 
- //		Find Endpoint
-//
-/*int PTP_find_endpoint(int type, int &interface, int &endpoint)
-{
-	#ifdef DEBUG
-		lfptpi = fopen(LOGFILE,"a");
-		fprintf(lfptpi,"PTP: Global endpoint is: %d \n",globalEndpoint);
-		fclose(lfptpi);
-	#endif
-	interface = 0;
-	
-	if (type == PTP_ENDPOINT_OUTPUT && globalEndpoint == 1)
-	{
-		endpoint=1;
-		return 0;
-	}
-	else if(type == PTP_ENDPOINT_OUTPUT && globalEndpoint == 2)
-	{
-		endpoint = 0;
-		return 0;
-	}
-	else if(type == PTP_ENDPOINT_INPUT && globalEndpoint == 1)
-	{
-		endpoint = 0;
-		return 0;
-	}
-	else if(type == PTP_ENDPOINT_INPUT && globalEndpoint == 2)
-	{
-		endpoint = 1;	
-		return 0;
-	}
-	return -1;
-}*/
-
 // initialize a PTP camera via the USB protocol
 //
 bool  PTP_init_ptp_usb(PTPParams* params,BUSBDevice *dev)
@@ -85,10 +51,6 @@ PTP_ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 	BUSBDevice *dev=(BUSBDevice *)data;
 	const BUSBEndpoint 	*iept;
 	
-	/* get input endpoint */
-	//ret = PTP_find_endpoint(PTP_ENDPOINT_OUTPUT,interface,endpoint);
-	//if(ret > -1)
-	//{
 	PTP_logValue(PTP_ENDPOINT_READ,endpoint);
 	PTP_logValue(PTP_INTERFACE_READ,interface);
 	iept=dev->ActiveConfiguration()->InterfaceAt(interface)->EndpointAt(endpoint);	
@@ -97,9 +59,6 @@ PTP_ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 		endpoint = 1;
 		iept=dev->ActiveConfiguration()->InterfaceAt(interface)->EndpointAt(endpoint);
 	}
-	//}
-	//else
-	//	return PTP_logError(PTP_ERROR_ENDPOINT_READ);
 	
 	if(iept == NULL)
 	{
@@ -151,7 +110,6 @@ PTP_ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 					bytes++;
 					i++;index++;				
 				}
-				//strcat((char *)bytes,(char *)buf);
 				if(length > USBBULK_BUFFER)
 					length -= USBBULK_BUFFER;
 				else
@@ -193,11 +151,7 @@ PTP_ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
 	int result,endpoint=0,interface=0, ret = 0;
 	BUSBDevice *dev=(BUSBDevice *)data;
 	const BUSBEndpoint 	*iept;
-	
-	/*get output endpoint*/
-	//ret = PTP_find_endpoint(PTP_ENDPOINT_INPUT,interface,endpoint);
-	//if(ret > -1)
-	//{	
+
 	PTP_logValue(PTP_ENDPOINT_WRITE,endpoint);
 	PTP_logValue(PTP_INTERFACE_WRITE,interface);
 	iept=dev->ActiveConfiguration()->InterfaceAt(interface)->EndpointAt(endpoint);
@@ -206,10 +160,7 @@ PTP_ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
 		endpoint = 1;
 		iept=dev->ActiveConfiguration()->InterfaceAt(interface)->EndpointAt(endpoint);
 	}
-	//}
-	//else
-	//	return PTP_logError(PTP_ERROR_IO_WRITE);
-		
+	
 	if(iept == NULL)
 		return PTP_logError(PTP_ERROR_IO_WRITE);
 

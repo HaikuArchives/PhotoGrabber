@@ -548,7 +548,7 @@ bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 //	GridView :: ScrollToSelection
 void GridView::ScrollToSelection ()
 {
-	if (!fSelectedItem)
+	if (!fLastSelectedItem)
 		return;
 	
 	float currentPosition = 0;
@@ -559,7 +559,7 @@ void GridView::ScrollToSelection ()
 			currentPosition = vertbar->Value();
 	}
 
-	BRect rect = ItemRect (fSelectedItemIndex);
+	BRect rect = ItemRect (fLastSelectedItemIndex);
 	if (rect.bottom >= currentPosition + Bounds().Height())		// down
 	{
 		ScrollTo (0, rect.top + 2 - (Bounds().Height() - ItemHeight() -ItemVertMargin()));
@@ -672,6 +672,7 @@ void GridView::Select (int32 index, bool extend = false)
 				fSelectedItemIndex = index;
 			}
 		}
+		fLastSelectedItem = item;
 		fLastSelectedItemIndex = index;
 	}
 }

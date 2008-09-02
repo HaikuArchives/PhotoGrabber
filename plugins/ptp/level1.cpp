@@ -145,6 +145,8 @@ status_t closeCamera(void)
 	fprintf(lflevel1,"PTP - Close camera\n");
 	fclose(lflevel1);
 	#endif
+	if(appDev != NULL)
+		ptp_closesession(params);
 	roster->Stop();
 	return(B_NO_ERROR);
 }

@@ -34,9 +34,16 @@
 #include <interface/Bitmap.h>
 #include <app/Looper.h>
 #include <Path.h>
+//
+//	Struct 
+struct items_data 
+{
+	BeCam_MainWindow	*window;
+	GridView			*gridview;
+	entry_ref			*downloadDir;
+};
 
-
-//		PTP wrapper class
+//		Main window class
 class BeCam_MainWindow : public BWindow
 {
 	public:
@@ -59,6 +66,8 @@ class BeCam_MainWindow : public BWindow
 		void				clearItems();
 		void				downloadSelectedItems(entry_ref *copyToDir = NULL);
 		void				removeSelectedItems();
+		static status_t 	RemoveItems(items_data *data);
+		static status_t 	DownloadItems(items_data *data);
 		void				loadButtonPictures();
 		void				addMenuBar();
 		void				addActionBar();
