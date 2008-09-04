@@ -37,16 +37,18 @@ TYPE := SHARED
 #		If you leave this blank, then all *.c *.cpp *.S *.s *.asm files
 #		in the top level local directory are automatically included.
 SRCS := AboutWindow.cpp			\
-		ConfigWindow.cpp			\
-		Item.cpp			\
+		ConfigWindow.cpp		\
+		Item.cpp				\
 		MainView.cpp			\
 		MainWindow.cpp			\
 		PictureItem.cpp			\
 		preferences.cpp			\
 		prefsaver.cpp			\
-		StatusWindow.cpp		\
 		Animation.cpp			\
-		GridView.cpp
+		GridView.cpp			\
+		PictureLabelButton.cpp		\
+		StatusDock.cpp		\
+		ActionDock.cpp
 
 
 #       specify the resource files to use 

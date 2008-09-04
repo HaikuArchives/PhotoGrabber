@@ -38,7 +38,7 @@ GridView::GridView (BRect rect, const char* name, uint32 resize,uint32 flags)
 	,fKeyTargetLooper (NULL)
 	,fKeyTargetHandler (NULL)
 {
-	rgb_color color_background = ui_color(B_MENU_BACKGROUND_COLOR);
+	rgb_color color_background =  {0x42, 0x42, 0x42, 0xff};//ui_color(B_MENU_BACKGROUND_COLOR);
 	SetViewColor(color_background);
 	fItemList = new BList();
 	fHorizItemMargin = fMinHorizItemMargin;
@@ -313,7 +313,7 @@ void GridView::MouseDown (BPoint point)
 	// Check if the user clicked once and intends to drag
 	int index = IndexOf(point);
 	
-	if (clickCount == 1)
+	if (clickCount == 1 && button == B_PRIMARY_MOUSE_BUTTON)
     {
        	int32 modifs = modifiers();
 		// select this item

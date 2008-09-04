@@ -10,10 +10,8 @@
 //
 //	Local includes
 #include "Animation.h"
-#include "debug.h"
 //
 //	Includes
-#include <stdio.h>
 #include <interface/Bitmap.h>
 #include <interface/Window.h>
 #include <translation/TranslationUtils.h>
@@ -26,7 +24,7 @@ static const uint32	skSpacing = 5;
 //	Animation :: Constructor
 Animation::Animation(BRect _frame): BView( _frame, "Animation", B_FOLLOW_ALL, B_WILL_DRAW )
 {	
-	// Nothing yet
+	Hide();
 }
 //
 //	Animation :: Destructor
@@ -61,20 +59,35 @@ void Animation::MessageReceived(BMessage* message)
 void Animation::StartAnimation()
 {
 	#ifdef DEBUG
-	lfanimation = fopen(INTF_LOGFILE,"a");	
-	fprintf(lfanimation,"ANIMATION - Start animation\n");
-	fclose(lfanimation);
+		lfanimation = fopen(INTF_LOGFILE,"a");	
+		fprintf(lfanimation,"ANIMATION - Start animation\n");
+		fclose(lfanimation);
 	#endif
 	Show();
 	fAnimationPos = 0;
-	fMsg = BMessenger(this);
-	fMsgRun = new BMessageRunner(fMsg,new BMessage(skDelayMessage),150000);
+	fMsg = new BMessenger(this);
+	fMsgRun = new BMessageRunner(*fMsg,new BMessage(skDelayMessage),150000);
+}
+//
+//	Animation :: StopAnimation
+void Animation::StopAnimation()
+{
+	#ifdef DEBUG
+		lfanimation = fopen(INTF_LOGFILE,"a");	
+		fprintf(lfanimation,"ANIMATION - Stop animation\n");
+		fclose(lfanimation);
+	#endif
+	Hide();
+	if(fMsgRun)
+		delete(fMsgRun);
+	if(fMsg->IsValid())
+		delete(fMsg);
 }
 //
 //	Animation :: AnimationStep
 void Animation::AnimationStep()
 {
-	if( false == IsHidden() )
+	if(!IsHidden())
 	{
 		++fAnimationPos;
 		// reset animation
@@ -103,65 +116,37 @@ void Animation::SetImgExtension(BString extension)
 void Animation::AttachedToWindow()
 {
 	#ifdef DEBUG
-	lfanimation = fopen(INTF_LOGFILE,"a");	
-	fprintf(lfanimation,"ANIMATION - Attach to window\n");
-	fclose(lfanimation);
+		lfanimation = fopen(INTF_LOGFILE,"a");	
+		fprintf(lfanimation,"ANIMATION - Attach to window\n");
+		fclose(lfanimation);
 	#endif
 	BView::AttachedToWindow();
 	SetViewColor( ui_color( B_PANEL_BACKGROUND_COLOR ) );	
 	bool done = false;
-	#ifdef DEBUG
-	lfanimation = fopen(INTF_LOGFILE,"a");	
-	fprintf(lfanimation,"ANIMATION - Begin loading images\n");
-	fclose(lfanimation);
-	#endif
 	// load images for the animation
 	for( size_t i = 0; false == done; ++i )
 	{
 		BString lImgName = fImgFrontName;
 		lImgName << i << fImgExtension;
-	#ifdef DEBUG
-		lfanimation = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfanimation,"ANIMATION - image: %s\n",lImgName.String());
-		fclose(lfanimation);
-	#endif
 		BBitmap* aniframe = BTranslationUtils::GetBitmap('PNG ', lImgName.String());
 		if( NULL != aniframe )
 			fAnimationFrames.push_back(aniframe);	
 		else
 			done = true;
 	}
-	#ifdef DEBUG
-	lfanimation = fopen(INTF_LOGFILE,"a");	
-	fprintf(lfanimation,"ANIMATION - images loaded\n");
-	fclose(lfanimation);
-	#endif
 	fDrawPos.x = ( Bounds().Width() - fAnimationFrames[0]->Bounds().Width() ) / 2; 
 	fDrawPos.y = ( Bounds().Height() - fAnimationFrames[0]->Bounds().Height() ) / 2;
-	#ifdef DEBUG
-	lfanimation = fopen(INTF_LOGFILE,"a");	
-	fprintf(lfanimation,"ANIMATION - Attached to window\n");
-	fclose(lfanimation);
-	#endif
+	
 }
 //
 //	Animation :: Draw
-void Animation::Draw(BRect _frame)
+void Animation::Draw(BRect frame)
 {
-	BView::Draw(_frame);
-	#ifdef DEBUG
-		BRect r = fAnimationFrames[fAnimationPos]->Bounds();
-		BBitmap *offscreen = new BBitmap(r,B_RGB_32_BIT,TRUE);
-		BView *offview = new BView(r,"off",B_FOLLOW_ALL,B_WILL_DRAW);
-		offview->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-		offscreen->AddChild(offview);
-		offscreen->Lock();
-		r = offview->Bounds();
-		offview->DrawBitmap(fAnimationFrames[fAnimationPos],fDrawPos);
-		offview->Sync();
-		offscreen->Unlock();
-	#endif
+	BView::Draw(frame);
 	SetDrawingMode( B_OP_ALPHA );
-	DrawBitmap( fAnimationFrames[fAnimationPos], fDrawPos );
+	SetHighColor(ViewColor());
+	SetLowColor(ViewColor());
+	FillRect(Bounds());
+	DrawBitmap(fAnimationFrames[fAnimationPos], fDrawPos);
 	SetDrawingMode( B_OP_COPY );				
 }

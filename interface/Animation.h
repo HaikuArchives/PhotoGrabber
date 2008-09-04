@@ -8,7 +8,12 @@
  *																 *	
  *****************************************************************/
 //
+// File defenition
+#ifndef ANIMATION_H
+#define ANIMATION_H
+//
 //	Includes
+#include <stdio.h>
 #include <interface/View.h>
 #include <app/Messenger.h>
 #include <interface/Point.h>
@@ -34,13 +39,14 @@ class Animation : public BView
 		virtual	void	AttachedToWindow();		
 		virtual	void	Draw( BRect _frame );
 				void	StartAnimation();
+				void	StopAnimation();
 				void	AnimationStep();
 				void	SetImgFrontName(BString frontname);
 				void	SetImgExtension(BString extension);
 		
 	private:		
 	
-		BMessenger			fMsg;
+		BMessenger			*fMsg;
 		BMessageRunner		*fMsgRun;
 		size_t				fAnimationPos;
 		BPoint				fDrawPos;
@@ -48,3 +54,5 @@ class Animation : public BView
 		BString				fImgFrontName;	
 		BString				fImgExtension;	
 };
+
+#endif

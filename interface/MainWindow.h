@@ -13,11 +13,12 @@
 #include "Item.h"
 #include "MainView.h"
 #include "GridView.h"
-#include "StatusWindow.h"
 #include "AboutWindow.h"
 #include "ConfigWindow.h"
 #include "settings.h"
 #include "debug.h"
+#include "ActionDock.h"
+#include "StatusDock.h"
 //
 //		Includes
 #include <Window.h>
@@ -41,6 +42,8 @@ struct items_data
 	BeCam_MainWindow	*window;
 	GridView			*gridview;
 	entry_ref			*downloadDir;
+	float				totalitems;
+	StatusDock			*statusDock;
 };
 
 //		Main window class
@@ -51,7 +54,6 @@ class BeCam_MainWindow : public BWindow
 		virtual bool		QuitRequested();
 		virtual void		MessageReceived(BMessage* message);
 		// Other interface windows
-		class BeCam_StatusWindow	*statusWindow;
 		class BeCam_AboutWindow		*aboutWindow;
 		class BeCam_ConfigWindow	*configWindow;
 		// system core looper
@@ -68,33 +70,30 @@ class BeCam_MainWindow : public BWindow
 		void				removeSelectedItems();
 		static status_t 	RemoveItems(items_data *data);
 		static status_t 	DownloadItems(items_data *data);
-		void				loadButtonPictures();
 		void				addMenuBar();
-		void				addActionBar();
-		void				addStatusBar();
+		void				CreateActionDock();
+		void				CreateStatusDock();
 		void                CreateConfigWindow();
 		void                CreateAboutWindow();
-		void                CreateStatusWindow(int32 totalbytes, char *message);
-		void                UpdateStatusWindow(uint32 delta, char *message);
-		void                CloseStatusWindow(void);
+		void                ShowStatusDock(float totalbytes, char *message);
+		void                UpdateStatusDock(uint32 delta, char *message);
+		void                HideStatusDock(void);
 		void                CalculatePos(float *xPos,float *yPos,int winType);
 		// GUI components
 		GridView			*becam_gridview;
 		BeCam_MainView		*becam_view;
 		BMenuBar			*becam_menubar;
-		BMenu				*becam_iconMenu;
 		BMenu				*becam_fileMenu;
-		BMenu				*actionsMenu;
+		BMenu				*becam_actionsMenu;
 		BMenu				*becam_extraMenu;
 		BScrollView			*becam_scrollview;
-        BTextControl		*becam_winstatusbar;
-        BButton				*becam_download;
-		BButton				*becam_delete;
+		ActionDock			*becam_actionDock;
+		StatusDock			*becam_statusDock;
 		// the camera interface
-		BMenuField			*becam_downloadPopup;
-		BPopUpMenu			*becam_downloadMenu;
-		BMenuItem 			*defaultPath;
-		BFilePanel 			*becam_selectdirpanel;
+		//BMenuField			*becam_downloadPopup;
+		//BPopUpMenu			*becam_downloadMenu;
+		//BMenuItem 			*defaultPath;
+		//BFilePanel 			*becam_selectdirpanel;
 		int					devicetype;
 		SETTINGS			*pgsettings;
 };
@@ -106,7 +105,12 @@ class BeCam_MainWindow : public BWindow
 
 // Size
 #define MAIN_WINDOW					3
-#define WINDOW_HEIGHT_MAIN			450
-#define	WINDOW_WIDTH_MAIN			350
+#define WINDOW_HEIGHT_MAIN			550
+#define	WINDOW_WIDTH_MAIN			700
+
+//
+#define SHOW_STATUSDOCK					'SSTD'
+#define HIDE_STATUSDOCK					'HSTD'
+
 #endif
 
