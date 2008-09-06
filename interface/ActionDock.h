@@ -11,7 +11,11 @@
 //	Includes
 #include <stdio.h>
 #include <interface/View.h>
+#include <interface/Button.h>
+#include <interface/TextView.h>
 #include <app/Messenger.h>
+#include <FilePanel.h>
+#include <Path.h>
 //
 //	Local includes
 #include "intf_global.h"
@@ -20,6 +24,12 @@
 // Define
 #define HIDE_ACTIONDOCK		'SACD'
 #define	SHOW_ACTIONDOCK		'HACD'
+#define	DEL_BUTTON 			'DELB'
+#define	DOWN_BUTTON 		'DOWN'
+#define	NEXT_BUTTON 		'NBTN'
+#define	PREVIOUS_BUTTON		'BBTN'
+#define	SELECT_PATHMENU		'SPME'
+#define OPEN_FILE_PANEL		'OFPA'
 
 //
 //	Class ActionDock
@@ -33,17 +43,20 @@ class ActionDock : public BView
 		virtual	void	MessageReceived(BMessage* message);
 		virtual	void	AttachedToWindow();
 		virtual	void	Draw(BRect frame);
+		virtual void	FrameResized (float newWidth, float newHeight);
 				void	Hide();
 				void	Show();
 	
 	private:
 		PictureLabelButton			*downloadButton;
 		PictureLabelButton			*deleteButton;
-		// the camera interface
-		//BMenuField			*becam_downloadPopup;
-		//BPopUpMenu			*becam_downloadMenu;
-		//BMenuItem 			*defaultPath;
-		//BFilePanel 			*becam_selectdirpanel;
+		PictureLabelButton			*nextButton;
+		PictureLabelButton			*previousButton;
+		PictureLabelButton			*acceptButton;
+		PictureLabelButton			*cancelButton;
+		BButton						*selectButton;
+		BTextView					*defaultPath;
+		BFilePanel 					*selectDirPanel;
 };
 
 #endif

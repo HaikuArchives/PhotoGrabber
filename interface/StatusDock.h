@@ -15,13 +15,15 @@
 //
 // Local includes
 #include "intf_global.h"
-#include "Animation.h"
 #include "core_global.h"
 #include "debug.h"
 //
 // defines
-#define MODE_INIT			0
-#define MODE_DOWNLOAD		1
+#define MODE_INIT				0
+#define MODE_DOWNLOAD			1
+#define MODE_CONNECTED			2
+#define SD_MIN_BITMAP_HEIGHT	48
+#define SD_MIN_BITMAP_WIDTH		48
 
 //
 //		StatusDock:: View
@@ -44,12 +46,11 @@ public:
 private:
 	BString			*statusMessage;
 	BStatusBar		*statusbar;	
-	Animation		*statusanimation;
-	BBitmap			*connectBitmap;
+	BBitmap			*connectBitmapOn;
+	BBitmap			*connectBitmapOff;
+	BBitmap			*downloadBitmap;
 	int				modus;
-	void 			CreateAnimation();
 	void 			CreateStatusBar();
-	void			CreateConnectStatus();
 };
 
 #endif

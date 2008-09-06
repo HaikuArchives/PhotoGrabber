@@ -43,8 +43,8 @@ GridView::GridView (BRect rect, const char* name, uint32 resize,uint32 flags)
 	fItemList = new BList();
 	fHorizItemMargin = fMinHorizItemMargin;
 	fVertItemMargin = fMinVertItemMargin;
-	fSelectedItemIndex = 0;
-	fLastSelectedItemIndex = 0;
+	fSelectedItemIndex = -1;
+	fLastSelectedItemIndex = -1;
 }
 
 //
@@ -137,7 +137,7 @@ void GridView::Draw (BRect rect)
 
 //
 // GridView :: DrawContent
-void GridView::DrawContent (BRect updateRect)
+void GridView::DrawContent (BRect /*notused*/)
 {
 
 	#ifdef DEBUG
@@ -187,7 +187,7 @@ void GridView::DrawContent (BRect updateRect)
 	
 	int32 x = 0;
 	int32 y = 0;
-	BRegion *updateRegion = new BRegion(updateRect);
+	BRegion *updateRegion = new BRegion(Bounds());
 	
 	for (int32 i = 0; i < fItemList->CountItems(); i++)
 	{
@@ -218,9 +218,14 @@ void GridView::DrawContent (BRect updateRect)
 // GridView :: FrameResized
 void GridView::FrameResized (float newWidth, float newHeight)
 {
+	#ifdef DEBUG
+		lfgridv = fopen(INTF_LOGFILE,"a");	
+		fprintf(lfgridv,"GRIDVIEW - FrameResized width: %d - height: %d\n",newWidth,newHeight);
+		fclose(lfgridv);
+	#endif
+	BView::FrameResized (newWidth, newHeight);
 	Draw (BRect (0, 0, newWidth, newHeight));	
 	UpdateScrollView();
-	return BView::FrameResized (newWidth, newHeight);
 }
 
 //
@@ -375,9 +380,12 @@ void GridView::DeleteAllItems ()
 		delete item;
 		item = NULL;
 	}
-
+	fSelectedItem = NULL;
+	fSelectedItemIndex = -1;
+	fLastSelectedItemIndex = -1;
 	fItemList->MakeEmpty();
 	Draw (Bounds());
+	UpdateScrollView();
 }
 
 //
@@ -391,9 +399,9 @@ void GridView::TargetedByScrollView (BScrollView* scrollView)
 //
 // GridView :: AttachedToWindow
 void GridView::AttachedToWindow()
-{
+{	
+	BView::AttachedToWindow();
 	UpdateScrollView ();
-	return BView::AttachedToWindow();
 }
 
 //
@@ -421,7 +429,27 @@ void GridView::UpdateScrollView ()
 		}
 	}
 }
+//
+//	GridView :: ScrollToSelection
+void GridView::ScrollToSelection ()
+{
+	if (!fLastSelectedItem)
+		return;
+	
+	float currentPosition = 0;
+	if (fScrollView)
+	{
+		BScrollBar *vertbar = fScrollView->ScrollBar (B_VERTICAL);
+		if (vertbar)
+			currentPosition = vertbar->Value();
+	}
 
+	BRect rect = ItemRect (fLastSelectedItemIndex);
+	if (rect.bottom >= currentPosition + Bounds().Height())		// down
+		ScrollTo (0, rect.top + 2 - (Bounds().Height() - ItemHeight() -ItemVertMargin()));	
+	else if (rect.top <= currentPosition)				// up
+		ScrollTo (0, rect.top - 4);
+}
 //
 //	GridView :: Handle KeyMovement
 bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
@@ -438,22 +466,14 @@ bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 		case B_RIGHT_ARROW:
 		{
 			keyHandled = true;
-			if((modifs & B_SHIFT_KEY))
-				Select (fSelectedItemIndex,fLastSelectedItemIndex < CountItems() - 1 ? fLastSelectedItemIndex + 1 : CountItems() - 1,true);
-			else
-				Select (fSelectedItemIndex < CountItems() - 1 ? fSelectedItemIndex + 1 : CountItems() - 1);
-			ScrollToSelection ();
+			SelectNext(modifs);
 			break;
 		}
 
 		case B_LEFT_ARROW:
 		{
 			keyHandled = true;
-			if((modifs & B_SHIFT_KEY))
-				Select (fSelectedItemIndex,fLastSelectedItemIndex > 0 ? fLastSelectedItemIndex - 1 : 0,true);
-			else
-				Select (fSelectedItemIndex > 0 ? fSelectedItemIndex - 1 : 0);
-			ScrollToSelection ();
+			SelectPrevious(modifs);
 			break;
 		}
 		
@@ -545,32 +565,6 @@ bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 	}
 	return keyHandled;
 }
-
-//
-//	GridView :: ScrollToSelection
-void GridView::ScrollToSelection ()
-{
-	if (!fLastSelectedItem)
-		return;
-	
-	float currentPosition = 0;
-	if (fScrollView)
-	{
-		BScrollBar *vertbar = fScrollView->ScrollBar (B_VERTICAL);
-		if (vertbar)
-			currentPosition = vertbar->Value();
-	}
-
-	BRect rect = ItemRect (fLastSelectedItemIndex);
-	if (rect.bottom >= currentPosition + Bounds().Height())		// down
-	{
-		ScrollTo (0, rect.top + 2 - (Bounds().Height() - ItemHeight() -ItemVertMargin()));
-		printf ("%f\n", rect.top + 2 - (Bounds().Height() - ItemHeight() - ItemVertMargin()));
-	}	
-	else if (rect.top <= currentPosition)				// up
-		ScrollTo (0, rect.top - 4);
-}
-
 //
 //	GridView :: ItemHeight
 float GridView::ItemHeight () const
@@ -710,7 +704,26 @@ void 	GridView::SelectAll ()
 {
 	Select(0,fItemList->CountItems()-1,true);
 }
-
+//
+//	GridView:: Select next item
+void 	GridView::SelectNext(int32 modifiers = 0)
+{
+	if((modifiers & B_SHIFT_KEY))
+		Select (fSelectedItemIndex,fLastSelectedItemIndex < CountItems() - 1 ? fLastSelectedItemIndex + 1 : CountItems() - 1,true);
+	else
+		Select (fSelectedItemIndex < CountItems() - 1 ? fSelectedItemIndex + 1 : CountItems() - 1);
+	ScrollToSelection ();
+}
+//
+//	GridView:: Select previous item
+void 	GridView::SelectPrevious (int32 modifiers = 0)
+{
+	if((modifiers & B_SHIFT_KEY))
+		Select (fSelectedItemIndex,fLastSelectedItemIndex > 0 ? fLastSelectedItemIndex - 1 : 0,true);
+	else
+		Select (fSelectedItemIndex > 0 ? fSelectedItemIndex - 1 : 0);
+	ScrollToSelection ();
+}
 //
 //	GridView :: Deselect
 void GridView::Deselect(int32 index, bool extend = false)
@@ -726,6 +739,7 @@ void GridView::Deselect(int32 index, bool extend = false)
 	{
 		fSelectedItem = NULL;
 		fSelectedItemIndex = -1;
+		fLastSelectedItemIndex = -1;
 	}
 }
 //

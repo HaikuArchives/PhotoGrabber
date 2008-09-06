@@ -7,13 +7,20 @@
 // File defenition
 #ifndef GRIDVIEW_H
 #define GRIDVIEW_H
-
+//
+// Includes
 #include <interface/View.h>
 #include <interface/ScrollView.h>
 #include <interface/Region.h>
-
+//
+// Local Includes
 #include "Item.h"
-
+//
+// Defines
+#define ITEM_NEXT	'INXT'
+#define ITEM_BACK	'IBAK'
+//
+// Classes
 class GridView;
 class BMessenger;
 //
@@ -45,45 +52,46 @@ class GridView : public BView
 		void					RemoveItem(BeCam_Item* item);
 		void					AddItemFast (BeCam_Item* item);
 		void					RemoveItemFast (BeCam_Item* item);
-		void					AddList (BList& listOfGridItemPtrs);
-		BRect					ItemRect (int32 index);
-		void					Select (int32 index, bool extend = false);
-		void					Select (int32 fromIndex, int32 toIndex, bool extend = false);
-		void 					SelectAll ();
-		void					Deselect (int32 index,bool extend = false);
-		void					Deselect (int32 fromIndex, int32 toIndex);
-		void 					DeselectAll ();
-		void					DeleteAllItems ();
-		void					ScrollToSelection ();
+		void					AddList(BList& listOfGridItemPtrs);
+		BRect					ItemRect(int32 index);
+		void					Select(int32 index, bool extend = false);
+		void					Select(int32 fromIndex, int32 toIndex, bool extend = false);
+		void 					SelectAll();
+		void					SelectNext(int32 modifiers = 0);
+		void					SelectPrevious(int32 modifiers = 0);
+		void					Deselect(int32 index,bool extend = false);
+		void					Deselect(int32 fromIndex, int32 toIndex);
+		void 					DeselectAll();
+		void					DeleteAllItems();
+		void					ScrollToSelection();
 		void					UpdateScrollView();
 		int32					CurrentSelection(int32 index = 0);
 		bool					IsItemSelected(int32 index);
 		void					MakeEmpty();
 		int						GetNumberOfSelectedItems();
 		
-		BeCam_Item*		 		ItemAt (int32 index) const;
-		BeCam_Item				*SelectedItem () const;
+		BeCam_Item*		 		ItemAt(int32 index) const;
+		BeCam_Item				*SelectedItem() const;
 
-		int32					CountColumns () const;
+		int32					CountColumns() const;
 		int32					CountColumnsWithMinHorizItemMargin () const;
-		int32					CountRows () const;
+		int32					CountRows() const;
 		int32					CountItems() const;
-		void					SetSelectionCurveRadius (uint8 radius);
-		uint8					SelectionCurveRadius () const;
-		void					SendKeyStrokesTo (BLooper* looper,
-										BHandler* handler = NULL);
+		void					SetSelectionCurveRadius(uint8 radius);
+		uint8					SelectionCurveRadius() const;
+		void					SendKeyStrokesTo(BLooper* looper,BHandler* handler = NULL);
 				
 	private:
 		friend class			Item;
 		
-		void					DrawContent (BRect updateRect);
-		bool					HandleKeyMovement (const char* bytes, int32 numBytes);
-		float					ItemHeight () const;
-		float					ItemWidth () const;
-		float					ItemHorizMargin () const;
-		float					ItemVertMargin () const;
-		void					SetHorizItemMargin (float margin);
-		void					SetVertItemMargin (float margin);
+		void					DrawContent(BRect updateRect);
+		bool					HandleKeyMovement(const char* bytes, int32 numBytes);
+		float					ItemHeight() const;
+		float					ItemWidth() const;
+		float					ItemHorizMargin() const;
+		float					ItemVertMargin() const;
+		void					SetHorizItemMargin(float margin);
+		void					SetVertItemMargin(float margin);
 		int32					IndexOf(BPoint point) const;
 		static status_t 		TrackItem(list_tracking_data *data);
 	 	void					ActionCopy(BMessage * request);

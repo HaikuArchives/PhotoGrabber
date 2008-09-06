@@ -8,6 +8,7 @@
 //		Includes
 #include <stdio.h>
 #include <translation/TranslationUtils.h>
+#include <Bitmap.h>
 //
 //		Status Bar:: Local includes
 #include "StatusDock.h"
@@ -23,20 +24,30 @@ StatusDock::StatusDock(BRect rect, const char* name, uint32 resize,uint32 flags)
 {
 	rgb_color bg_color=ui_color(B_PANEL_BACKGROUND_COLOR);
 	SetViewColor(bg_color);
-	//1. Create the animation
-	CreateAnimation();
-	//2. Create the statusbar
-	CreateStatusBar();
-	//3. Create the connection status screen
-	CreateConnectStatus();
 	//
+	if(Bounds().Height() >= 75)
+	{
+		downloadBitmap = BTranslationUtils::GetBitmap('PNG ', "download_64_on");
+		connectBitmapOn = BTranslationUtils::GetBitmap('PNG ', "cam_64_on");
+		connectBitmapOff = BTranslationUtils::GetBitmap('PNG ', "cam_64_off");
+	}
+	else
+	{
+		downloadBitmap = BTranslationUtils::GetBitmap('PNG ', "download_48_on");
+		connectBitmapOn = BTranslationUtils::GetBitmap('PNG ', "cam_48_on");
+		connectBitmapOff = BTranslationUtils::GetBitmap('PNG ', "cam_64_off");
+	}
+	// 1.Create the statusbar
+	CreateStatusBar();
 	modus = MODE_INIT;
 }
 //
 //	StatusDock :: Destructor
 StatusDock::~StatusDock()
 {
-	// Nothing yet
+	delete(downloadBitmap);
+	delete(connectBitmapOn);
+	delete(connectBitmapOff);
 }
 //
 //		StatusDock::MessageRecieved
@@ -67,7 +78,7 @@ void	StatusDock::UpdateStatus(float delta, char *message)
 		fclose(lfstatusb);
 	#endif
 	if(message)
-		statusMessage = new BString(message);
+		SetStatusMessage(message);
 	statusbar->Update(delta);
 	Draw(Frame());
 	
@@ -83,45 +94,81 @@ void	StatusDock::Draw(BRect rect)
 	#endif
 	rgb_color color_label = {0x00, 0x00, 0x00, 0xff};
 	rgb_color color_border = {0x8b, 0x8b, 0x83, 0xff};
+	BFont font = be_plain_font;
+	font_height fontHeight;
+	float fFontHeight = 0;
+	float fStringWidth = 0;
+	BRect statDockRect;
+	BRect picRect;
+	//
 	SetDrawingMode( B_OP_ALPHA );
 	SetHighColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	SetLowColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	FillRect(Bounds());
+	//
+	SetFont(&font);
+	GetFontHeight (&fontHeight);
+	fFontHeight = fontHeight.ascent + fontHeight.descent;
+	fStringWidth = StringWidth(statusMessage->String());
+	//
+	float picHeight = SD_MIN_BITMAP_HEIGHT;
+	float picWidth = SD_MIN_BITMAP_WIDTH;
+	int margin = 15;
+	statDockRect = Bounds();
+	picRect = statDockRect;
+	//
 	switch(modus)
 	{
 		case MODE_INIT:
 		{
-			#ifdef DEBUG
-				lfstatusb = fopen(INTF_LOGFILE,"a");	
-				fprintf(lfstatusb,"STATUSDOCK - Draw() - Init mode\n");
-				fclose(lfstatusb);
-			#endif
-			BFont font = be_plain_font;
-			font.SetSize(24);
-			font.SetFace(B_BOLD_FACE);
-    		font_height fontHeight;
-    		SetFont(&font);
-			GetFontHeight (&fontHeight);
-			float fFontHeight = fontHeight.ascent + fontHeight.descent;
-			float fStringWidth = StringWidth(statusMessage->String());
-			int picHeight = 64;
-			int picWidth = 64;
-			int margin = 5;
-			BRect statDockRect = Bounds();
-			BRect picRect = statDockRect;
-			picRect.left = picRect.left + (statDockRect.Width()/2) - (picWidth + margin + fStringWidth)/2;
+			if(connectBitmapOff != NULL)
+			{
+				picWidth = connectBitmapOff->Bounds().Width();
+				picHeight = connectBitmapOff->Bounds().Height();
+			}
+			picRect.left = margin;
 			picRect.right = picRect.left + picWidth;
 			picRect.top = statDockRect.top + ceil((statDockRect.Height())/2) -picHeight/2;
 			picRect.bottom = picRect.top + picHeight;
-			if(connectBitmap != NULL)
-				DrawBitmap(connectBitmap,picRect);
+			if(connectBitmapOff != NULL)
+				DrawBitmap(connectBitmapOff,picRect);
 			else
+			{
 				SetHighColor(color_border);
 				SetLowColor(color_border);
 				StrokeRoundRect(picRect,2,2);
+			}
 			if(statusMessage != NULL)
 			{
-				MovePenTo(statDockRect.Width()/2 - fStringWidth/2 + picRect.Width() + margin, statDockRect.top + ceil((statDockRect.Height())/2) + fFontHeight/2);
+				MovePenTo(2 * margin + picWidth, statDockRect.top + ceil((statDockRect.Height())/2) + fFontHeight/2);
+				SetHighColor(color_label);
+				SetLowColor(color_label);
+				DrawString(statusMessage->String());
+			}
+			break;
+		}
+		case MODE_CONNECTED:
+		{
+			if(connectBitmapOn != NULL)
+			{
+				picWidth = connectBitmapOn->Bounds().Width();
+				picHeight = connectBitmapOn->Bounds().Height();
+			}
+			picRect.left = margin;
+			picRect.right = picRect.left + picWidth;
+			picRect.top = statDockRect.top + ceil((statDockRect.Height())/2) -picHeight/2;
+			picRect.bottom = picRect.top + picHeight;
+			if(connectBitmapOn != NULL)
+				DrawBitmap(connectBitmapOn,picRect);
+			else
+			{
+				SetHighColor(color_border);
+				SetLowColor(color_border);
+				StrokeRoundRect(picRect,2,2);
+			}
+			if(statusMessage != NULL)
+			{
+				MovePenTo(2 * margin + picWidth, statDockRect.top + ceil((statDockRect.Height())/2) + fFontHeight/2);
 				SetHighColor(color_label);
 				SetLowColor(color_label);
 				DrawString(statusMessage->String());
@@ -130,43 +177,28 @@ void	StatusDock::Draw(BRect rect)
 		}
 		case MODE_DOWNLOAD:
 		{
-			#ifdef DEBUG
-				lfstatusb = fopen(INTF_LOGFILE,"a");	
-				fprintf(lfstatusb,"STATUSDOCK - Draw() - Download mode\n");
-				fclose(lfstatusb);
-			#endif
-			if(statusMessage != NULL)
+			if(downloadBitmap != NULL)
 			{
-				BFont font = be_plain_font;
-				font.SetSize(12);
-				font_height fontHeight;
-    			SetFont(&font);
-				MovePenTo(statusanimation->Frame().right + 10, statusbar->Frame().top - 5);
-				SetHighColor(color_label);
-				SetLowColor(color_label);
-				DrawString(statusMessage->String());
+				picWidth = downloadBitmap->Bounds().Width();
+				picHeight = downloadBitmap->Bounds().Height();
+			}
+			picRect.left = margin;
+			picRect.right = picRect.left + picWidth;
+			picRect.top = statDockRect.top + ceil((statDockRect.Height())/2) -picHeight/2;
+			picRect.bottom = picRect.top + picHeight;
+			if(downloadBitmap != NULL)
+				DrawBitmap(downloadBitmap,picRect);
+			else
+			{
+				SetHighColor(color_border);
+				SetLowColor(color_border);
+				StrokeRoundRect(picRect,2,2);
 			}
 			break;
 		}
 	}
 	SetDrawingMode(B_OP_COPY);
 	BView::Draw(Bounds());
-}
-//
-//		StatusDock:: Creation of the animation in the statusbar screen		
-void	StatusDock::CreateAnimation()
-{
-	#ifdef DEBUG
-		lfstatusb = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfstatusb,"STATUSDOCK - Create Animation\n");
-		fclose(lfstatusb);
-	#endif
-	BRect r= Bounds();
-	r.right = r.left + 252;
-	statusanimation = new Animation(r);
-	statusanimation->SetImgFrontName(BString("img_mov_"));
-	statusanimation->SetImgExtension(BString(".png"));
-	AddChild(statusanimation);
 }
 //
 //		StatusDock:: Creation of the status bar	
@@ -177,25 +209,26 @@ void	StatusDock::CreateStatusBar()
 		fprintf(lfstatusb,"STATUSDOCK - Create Statusbar\n");
 		fclose(lfstatusb);
 	#endif
+	int margin = 15;
 	BRect r = Bounds();
-	r.left = statusanimation->Bounds().right + 5;
-	r.top = r.bottom - 40;
-	r.bottom = r.bottom - 30;
-	r.right -= 20;
+	float downBitMapWidth = 0;
+	float downBitMapHeight = 0;
+	if(downloadBitmap != NULL)
+	{
+		downBitMapWidth = downloadBitmap->Bounds().Width();
+		downBitMapHeight = downloadBitmap->Bounds().Height();
+	}
+	else
+	{
+		downBitMapWidth = SD_MIN_BITMAP_WIDTH;
+		downBitMapHeight = SD_MIN_BITMAP_HEIGHT;
+	}
+	r.left = 2 * margin + downBitMapWidth;
+	r.right -= 2 * margin;
+	r.top = r.top + downBitMapHeight/2;
 	statusbar = new BStatusBar(r,"becam_status_bar");
 	AddChild(statusbar);
 	statusbar->SetBarHeight(10);
-	statusbar->Hide();
-}
-//
-//		StatusDock:: Create the connection status screen	
-void	StatusDock::CreateConnectStatus()
-{
-	#ifdef DEBUG
-		lfstatusb = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfstatusb,"STATUSDOCK - Create Connect status controls\n");
-		fclose(lfstatusb);
-	#endif
 }
 //
 //	StatusDock :: Show the needed controls
@@ -217,7 +250,6 @@ void	StatusDock::ShowChildren(int newModus)
 				fprintf(lfstatusb,"STATUSDOCK - ShowChildren() - Init mode\n");
 				fclose(lfstatusb);
 			#endif
-			statusanimation->Hide();
 			statusbar->Hide();
 			break;
 		}
@@ -228,7 +260,6 @@ void	StatusDock::ShowChildren(int newModus)
 				fprintf(lfstatusb,"STATUSDOCK - ShowChildren() - Download mode\n");
 				fclose(lfstatusb);
 			#endif
-			statusanimation->Show();
 			statusbar->Show();
 			break;
 		}
@@ -244,11 +275,9 @@ void StatusDock::AttachedToWindow()
 		fprintf(lfstatusb,"STATUSDOCK - Attached to window\n");
 		fclose(lfstatusb);
 	#endif
-	SetViewColor( ui_color( B_PANEL_BACKGROUND_COLOR ) );
-	connectBitmap = BTranslationUtils::GetBitmap('PNG ', "Camera");	
-	statusanimation->Hide();
-	statusanimation->StartAnimation();
-	BView::AttachedToWindow();	
+	BView::AttachedToWindow();
+	SetViewColor(B_TRANSPARENT_COLOR);	
+	statusbar->Hide();
 }
 //
 //	StatusDock :: SetMaxStatusBar
@@ -267,4 +296,5 @@ void StatusDock::SetMaxStatusBar(float maximum)
 void StatusDock::SetStatusMessage(const char* message)
 {
 	statusMessage = new BString(message);
+	statusbar->SetText(statusMessage->String());
 }

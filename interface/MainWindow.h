@@ -89,11 +89,6 @@ class BeCam_MainWindow : public BWindow
 		BScrollView			*becam_scrollview;
 		ActionDock			*becam_actionDock;
 		StatusDock			*becam_statusDock;
-		// the camera interface
-		//BMenuField			*becam_downloadPopup;
-		//BPopUpMenu			*becam_downloadMenu;
-		//BMenuItem 			*defaultPath;
-		//BFilePanel 			*becam_selectdirpanel;
 		int					devicetype;
 		SETTINGS			*pgsettings;
 };

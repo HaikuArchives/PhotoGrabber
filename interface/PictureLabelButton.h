@@ -10,7 +10,7 @@
 //
 //	Includes
 #include <stdio.h>
-#include <interface/View.h>
+#include <interface/Control.h>
 #include <app/Messenger.h>
 #include <String.h>
 //
@@ -18,19 +18,26 @@
 #include "intf_global.h"
 #include "debug.h"
 //
+// defines
+#define PLB_MIN_BITMAP_HEIGHT	48
+#define PLB_MIN_BITMAP_WIDTH	48
+//
 //	Class PictureButton
-class PictureLabelButton : public BView
+class PictureLabelButton : public BControl
 {
 	public:
 						PictureLabelButton(BRect rect, 
 									const char* name,
 									const char *label,
+									BBitmap *bitmapOn,
+									BBitmap *bitmapOff,
 									BMessage *message, 
 									uint32 resizeMask = B_FOLLOW_ALL,
-									uint32 flags = B_WILL_DRAW);
+									uint32 flags = B_WILL_DRAW | B_FRAME_EVENTS);
 						~PictureLabelButton();
 		virtual	void	MessageReceived(BMessage* message);
 		virtual	void	AttachedToWindow();
+		virtual void	KeyDown(const char *bytes, int32 numBytes);
 		virtual	void	Draw(BRect frame);
 		virtual void	MouseUp(BPoint point);
 		virtual void	MouseDown(BPoint point);
@@ -39,9 +46,9 @@ class PictureLabelButton : public BView
 	private:
 		float			buttonHeight;
 		float			buttonWidth;
-		BBitmap			*buttonBitmap;
-		BString			*buttonLabel;
-		BMessage		*buttonMessage;
+		float			bitmapHeight;
+		BBitmap			*buttonBitmapOn;
+		BBitmap			*buttonBitmapOff;
 		BHandler		*buttonTargetHandler;
 };
 

@@ -11,6 +11,8 @@
 //
 // Includes
 #include <interface/Window.h>
+#include <TranslationUtils.h>
+#include <Bitmap.h>
 //
 //	Globals
 FILE *lfactionbar;
@@ -24,28 +26,109 @@ ActionDock::ActionDock(BRect rect, const char* name, uint32 resize,uint32 flags)
 	font.SetSize(11);
     font_height fontHeight;
     SetFont(&font);
-	// test
-	int picLabelHeight = 60;
-	int picLabelWidth = 64;
+	//
+	float picLabelHeight = Bounds().Height();
+	float picLabelWidth = 0;
+	float margin = 15;
 	BRect r = Bounds();
-	r.left = rect.left + 10;
-	r.top = r.top + ceil((rect.bottom - rect.top)/2) - picLabelHeight/2;
-	r.right = r.left + picLabelHeight;
-	r.bottom = r.top + picLabelWidth;
+	BBitmap *onBitmap = NULL;
+	BBitmap *offBitmap = NULL;
+	float labelWidth = 0;
+	float bitmapWidth = 0;
 	// Create download button
-	downloadButton = new PictureLabelButton(r, "download","Download",new BMessage(DOWN_BUTTON),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
-	AddChild(downloadButton);
-	r.left = r.right + 10;
+	if(picLabelHeight >= 75)
+	{
+		onBitmap = BTranslationUtils::GetBitmap('PNG ', "download_64_on");
+		offBitmap = BTranslationUtils::GetBitmap('PNG ', "download_64_off");
+	}
+	else
+	{
+		onBitmap = BTranslationUtils::GetBitmap('PNG ', "download_48_on");
+		offBitmap = BTranslationUtils::GetBitmap('PNG ', "download_48_off");
+	}
+	labelWidth = StringWidth("Download");
+	if(onBitmap != NULL)
+		bitmapWidth = onBitmap->Bounds().Width();
+	else
+		bitmapWidth = PLB_MIN_BITMAP_WIDTH;
+	picLabelWidth = labelWidth >= bitmapWidth?labelWidth:bitmapWidth;
+	r.left = rect.left + margin;
+	r.top = r.top + 1;
 	r.right = r.left + picLabelWidth;
+	r.bottom = r.top + picLabelHeight;
+	downloadButton = new PictureLabelButton(r, "download","Download",onBitmap,offBitmap,new BMessage(DOWN_BUTTON),B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
+	AddChild(downloadButton);
 	// Create delete button
-	deleteButton = new PictureLabelButton(r, "delete","Delete",new BMessage(DEL_BUTTON), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
+	if(picLabelHeight >= 75)
+	{
+		onBitmap = BTranslationUtils::GetBitmap('PNG ', "delete_64_on");
+		offBitmap = BTranslationUtils::GetBitmap('PNG ', "delete_64_off");
+	}
+	else
+	{
+		onBitmap = BTranslationUtils::GetBitmap('PNG ', "delete_48_on");
+		offBitmap = BTranslationUtils::GetBitmap('PNG ', "delete_48_off");
+	}
+	labelWidth = StringWidth("Delete");
+	if(onBitmap != NULL)
+		bitmapWidth = onBitmap->Bounds().Width();
+	else
+		bitmapWidth = PLB_MIN_BITMAP_WIDTH;
+	picLabelWidth = labelWidth >= bitmapWidth?labelWidth:bitmapWidth;
+	r.left = r.right + margin;
+	r.right = r.left + picLabelWidth;
+	deleteButton = new PictureLabelButton(r, "delete","Delete",onBitmap,offBitmap,new BMessage(DEL_BUTTON), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
 	AddChild(deleteButton);
+	// Create next button
+	if(picLabelHeight >= 75)
+	{
+		onBitmap = BTranslationUtils::GetBitmap('PNG ', "next_64_on");
+		offBitmap = BTranslationUtils::GetBitmap('PNG ', "next_64_off");
+	}
+	else
+	{
+		onBitmap = BTranslationUtils::GetBitmap('PNG ', "next_48_on");
+		offBitmap = BTranslationUtils::GetBitmap('PNG ', "next_48_off");
+	}
+	labelWidth = StringWidth("Next");
+	if(onBitmap != NULL)
+		bitmapWidth = onBitmap->Bounds().Width();
+	else
+		bitmapWidth = PLB_MIN_BITMAP_WIDTH;
+	picLabelWidth = labelWidth >= bitmapWidth?labelWidth:bitmapWidth;
+	r.right = Bounds().right - margin;
+	r.left = r.right - picLabelWidth;
+	nextButton = new PictureLabelButton(r, "next","Next",onBitmap,offBitmap,new BMessage(NEXT_BUTTON), B_FOLLOW_RIGHT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
+	AddChild(nextButton);
+	// Create previous button
+	if(picLabelHeight >= 75)
+	{
+		onBitmap = BTranslationUtils::GetBitmap('PNG ', "back_64_on");
+		offBitmap = BTranslationUtils::GetBitmap('PNG ', "back_64_off");
+	}
+	else
+	{
+		onBitmap = BTranslationUtils::GetBitmap('PNG ', "back_48_on");
+		offBitmap = BTranslationUtils::GetBitmap('PNG ', "back_48_off");
+	}
+	labelWidth = StringWidth("Delete");
+	if(onBitmap != NULL)
+		bitmapWidth = onBitmap->Bounds().Width();
+	else
+		bitmapWidth = PLB_MIN_BITMAP_WIDTH;
+	picLabelWidth = labelWidth >= bitmapWidth?labelWidth:bitmapWidth;
+	r.right = Bounds().right - 2 * margin - picLabelWidth;
+	r.left = r.right - picLabelWidth;
+	previousButton = new PictureLabelButton(r, "previous","Previous",onBitmap,offBitmap,new BMessage(PREVIOUS_BUTTON), B_FOLLOW_RIGHT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
+	AddChild(previousButton);
+	// Create the select view
+	selectDirPanel = new BFilePanel(B_OPEN_PANEL, new BMessenger(this), NULL, B_DIRECTORY_NODE, false,new BMessage(OPEN_FILE_PANEL), NULL, false, true);
 }
 //
 //	ActionDock :: Destructor
 ActionDock::~ActionDock()
 {
-	// Nothing yet
+	delete(selectDirPanel);
 }
 //						
 // ActionDock :: MessageReceived
@@ -59,6 +142,27 @@ void ActionDock::MessageReceived(BMessage* message)
 	
 	switch(message->what)
 	{
+		case OPEN_FILE_PANEL:
+		{
+			entry_ref dir;
+			message->FindRef("refs", &dir);
+			BEntry entry(&dir);
+			BPath path(&entry);
+			if(path.Path() != NULL)
+			{
+				// Set the path in the text field
+			}
+			break; 
+		}
+		case SELECT_PATHMENU:
+		{
+			selectDirPanel->SetButtonLabel(B_DEFAULT_BUTTON,_T("Select"));	
+			selectDirPanel->Window()->SetWorkspaces(B_CURRENT_WORKSPACE);
+			selectDirPanel->Show();
+			break;
+		}
+		case DOWN_BUTTON:
+			break;
 		default :
 			BView::MessageReceived(message);	
 			break;	
@@ -74,8 +178,6 @@ void ActionDock::AttachedToWindow()
 		fclose(lfactionbar);
 	#endif
 	BView::AttachedToWindow();
-	rgb_color color_background = {0x42, 0x42, 0x42, 0xff};
-	//SetViewColor(color_background);
 	SetViewColor( ui_color( B_PANEL_BACKGROUND_COLOR ) );	
 }
 //
@@ -87,17 +189,23 @@ void ActionDock::Draw(BRect frame)
 	BRect actionBarFrame = Bounds();
 	BPoint startPoint,endPoint;
 	startPoint.x = actionBarFrame.left;
-	startPoint.y = actionBarFrame.top + 1;
+	startPoint.y = actionBarFrame.top;
 	endPoint.x = actionBarFrame.right;
-	endPoint.y = actionBarFrame.top + 1;
+	endPoint.y = actionBarFrame.top;
 	SetDrawingMode( B_OP_ALPHA );
 	SetHighColor(color_border);
 	SetLowColor(color_border);
 	SetPenSize(1);
 	StrokeLine(startPoint,endPoint);
 	SetDrawingMode( B_OP_COPY );
-	BView::Draw(frame);
-					
+	BView::Draw(BRect(actionBarFrame.left,actionBarFrame.top,actionBarFrame.right,1));					
+}
+//
+// ActionDock :: FrameResized
+void ActionDock::FrameResized (float newWidth, float newHeight)
+{
+	//Draw (BRect (0, 0, newWidth, newHeight));	
+	//return BView::FrameResized (newWidth, newHeight);
 }
 //
 // ActionDock :: Hide
