@@ -217,7 +217,8 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data)
 		// to get the selected item
 		message = new BMessage(DOWN_ITEM);
 		message->AddInt32("itemhandle",(int32)selectedItem->GetHandle());
-		message->AddString("name",data->fileName);
+		if(data->gridview->GetNumberOfSelectedItems() == 1)
+			message->AddString("name",data->fileName);
 		if(data->downloadDir != NULL)
 			message->AddRef("copyToDir", &refentry);
 		else
