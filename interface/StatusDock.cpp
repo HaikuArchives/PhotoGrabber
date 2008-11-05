@@ -35,7 +35,7 @@ StatusDock::StatusDock(BRect rect, const char* name, uint32 resize,uint32 flags)
 	{
 		downloadBitmap = BTranslationUtils::GetBitmap('PNG ', "download_48_on");
 		connectBitmapOn = BTranslationUtils::GetBitmap('PNG ', "cam_48_on");
-		connectBitmapOff = BTranslationUtils::GetBitmap('PNG ', "cam_64_off");
+		connectBitmapOff = BTranslationUtils::GetBitmap('PNG ', "cam_48_off");
 	}
 	// 1.Create the statusbar
 	CreateStatusBar();
@@ -67,10 +67,9 @@ void StatusDock::MessageReceived(BMessage* message)
 			BView::MessageReceived(message);
 	}
 }
-
 //
 //		StatusDock::Update Status		
-void	StatusDock::UpdateStatus(float delta, char *message)
+void	StatusDock::UpdateStatus(float delta, const char *message)
 {
 	#ifdef DEBUG
 		lfstatusb = fopen(INTF_LOGFILE,"a");	
@@ -79,7 +78,8 @@ void	StatusDock::UpdateStatus(float delta, char *message)
 	#endif
 	if(message)
 		SetStatusMessage(message);
-	statusbar->Update(delta);
+	if(delta > 0)
+		statusbar->Update(delta);
 	Draw(Frame());
 	
 }
@@ -100,6 +100,8 @@ void	StatusDock::Draw(BRect rect)
 	float fStringWidth = 0;
 	BRect statDockRect;
 	BRect picRect;
+	//
+	BView::Draw(Bounds());
 	//
 	SetDrawingMode( B_OP_ALPHA );
 	SetHighColor(ui_color(B_PANEL_BACKGROUND_COLOR));
@@ -198,7 +200,6 @@ void	StatusDock::Draw(BRect rect)
 		}
 	}
 	SetDrawingMode(B_OP_COPY);
-	BView::Draw(Bounds());
 }
 //
 //		StatusDock:: Creation of the status bar	
@@ -276,8 +277,33 @@ void StatusDock::AttachedToWindow()
 		fclose(lfstatusb);
 	#endif
 	BView::AttachedToWindow();
-	SetViewColor(B_TRANSPARENT_COLOR);	
+	SetTarget(Window());
+	SetViewColor(B_TRANSPARENT_COLOR);
 	statusbar->Hide();
+}
+//
+//	StatusDock :: Show
+void StatusDock::Show()
+{
+	#ifdef DEBUG
+		lfstatusb = fopen(INTF_LOGFILE,"a");	
+		fprintf(lfstatusb,"STATUSDOCK - Show Dock\n");
+		fclose(lfstatusb);
+	#endif
+	BView::Show();
+	Invoke(new BMessage(STATDOCK_SHOWED));
+}
+//
+//	StatusDock :: Hide
+void StatusDock::Hide()
+{
+	#ifdef DEBUG
+		lfstatusb = fopen(INTF_LOGFILE,"a");	
+		fprintf(lfstatusb,"STATUSDOCK - Hide Dock\n");
+		fclose(lfstatusb);
+	#endif	
+	BView::Hide();
+	Invoke(new BMessage(STATDOCK_HIDED));
 }
 //
 //	StatusDock :: SetMaxStatusBar

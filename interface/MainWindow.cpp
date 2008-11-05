@@ -16,13 +16,9 @@
 #include "core_global.h"
 #include "PictureLabelButton.h"
 //
-
-//
 // External variables
 bool tbExpanded;
-//#pragma export on
 extern "C" BWindow * instantiate_mainWindow(BLooper *core, int devtype);
-//#pragma export reset
 FILE *lfmainw;
 //
 // Exported function
@@ -71,15 +67,13 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 	// Set the View properties
 	rgb_color bg_color=ui_color(B_PANEL_BACKGROUND_COLOR);
 	becam_view->SetViewColor(bg_color);
-	// Create the Action Dock
-	CreateActionDock();
 	// Create the Status Dock
 	CreateStatusDock();
 	//
 	r.top=0;
 	r.left=0;
-	r.right-=15;
-	r.bottom= becam_view->Bounds().bottom - 71;
+	r.right-= B_V_SCROLL_BAR_WIDTH;
+	r.bottom= becam_view->Bounds().bottom - 70;
 	// Add the Grid View
 	becam_gridview = new GridView(r,"gridview", B_FOLLOW_ALL, B_WILL_DRAW);	
 	becam_scrollview = new BScrollView(
@@ -97,7 +91,6 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 	AddChild(becam_view);
 	//Set the focus to the listview
 	becam_gridview->MakeFocus(true);
-	becam_actionDock->Hide();
 	#ifdef DEBUG
 		lfmainw = fopen(INTF_LOGFILE,"a");	
 		fprintf(lfmainw,"MAINWINDOW - Window created\n");
@@ -118,12 +111,6 @@ void BeCam_MainWindow::addMenuBar ()
 	becam_fileMenu->AddSeparatorItem();
 	becam_fileMenu->AddItem(new BMenuItem(_T("Quit"), new BMessage(QUIT), 'Q'));
 	becam_menubar->AddItem(becam_fileMenu);
-	// Add Extra menu to the menu bar
-	becam_extraMenu = new BMenu(_T("Extra"));
-	becam_extraMenu->AddItem(new BMenuItem(_T("Download") , new BMessage(DOWN_BUTTON), 'S'));
-	becam_extraMenu->AddItem(new BMenuItem(_T("Delete") , new BMessage(DEL_BUTTON),'D'));
-	becam_extraMenu->SetEnabled(false);
-	becam_menubar->AddItem(becam_extraMenu);
 	//	Add extra BDCP menu
 	BMenuItem *disconnect;
 	becam_actionsMenu = new BMenu(_T("Actions"));
@@ -140,16 +127,6 @@ void BeCam_MainWindow::addMenuBar ()
 	#endif	
 	if(devicetype == TYPE_USB)
 		becam_actionsMenu->SetEnabled(false);
-}
-
-//
-// MainWindow:: Create the Action Dock with the action controls
-void BeCam_MainWindow::CreateActionDock ()
-{
-	BRect r = becam_view->Bounds();
-	r.top = r.bottom - 70;
-	becam_actionDock = new ActionDock(r,"actiondock", B_FOLLOW_BOTTOM | B_FOLLOW_LEFT_RIGHT, B_WILL_DRAW | B_FRAME_EVENTS);
-	becam_view->AddChild(becam_actionDock);
 }
 //
 // MainWindow:: Create the Action Bar with the action controls
@@ -189,29 +166,18 @@ void BeCam_MainWindow::clearItems()
 }
 //
 // MainWindow:: Download the selected items
-void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL)
+void BeCam_MainWindow::downloadSelectedItems(entry_ref *copyToDir = NULL, const char *fileName = NULL)
 {
-	float totalpics=0;
-	char	tmpBuffer[100];
 	//
 	if(becam_gridview->CurrentSelection() >= 0)
 	{
-		becam_extraMenu->SetEnabled(false);
-		// create the status bar
-		totalpics = becam_gridview->GetNumberOfSelectedItems();
-		sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)0,(int32)totalpics);
-		ShowStatusDock(totalpics, tmpBuffer);
-		UpdateStatusDock(0, tmpBuffer);
-		// 
 		items_data *data = new items_data();
 		data->statusDock = becam_statusDock;
-		data->totalitems = totalpics;
 		data->downloadDir = copyToDir;
         data->gridview = becam_gridview;
         data->window = this;
+        data->fileName = fileName;
 		resume_thread(spawn_thread((status_t(*)(void*))DownloadItems,"download_items",B_DISPLAY_PRIORITY,data));
-		//
-		becam_extraMenu->SetEnabled(true);
 	}
 	else
 	{
@@ -226,12 +192,24 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data)
 {
 	entry_ref refentry;
 	int count=0,index=0;
+	float totalSelectedItems = 0;
 	char	tmpBuffer[100];
 	BeCam_Item *selectedItem;
-	BMessage *message;
-
+	BMessenger *messenger = NULL;
+	BMessage *message = NULL;
+	//
 	if(data->downloadDir != NULL)
 		refentry = *(data->downloadDir);
+	//
+	totalSelectedItems = data->gridview->GetNumberOfSelectedItems();
+	sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)0,(int32)totalSelectedItems);
+	messenger = new BMessenger(data->window);
+	message = new BMessage(STATDOCK_SHOW);
+	message->AddFloat("numofselecitems",totalSelectedItems);
+	message->AddString("statusmessage",tmpBuffer);
+	messenger->SendMessage(message);
+	delete(message);
+	delete(messenger);
 	while((index = data->gridview->CurrentSelection(index)) >= 0)
 	{
 		selectedItem = (BeCam_Item *)data->gridview->ItemAt(index);
@@ -239,6 +217,7 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data)
 		// to get the selected item
 		message = new BMessage(DOWN_ITEM);
 		message->AddInt32("itemhandle",(int32)selectedItem->GetHandle());
+		message->AddString("name",data->fileName);
 		if(data->downloadDir != NULL)
 			message->AddRef("copyToDir", &refentry);
 		else
@@ -248,27 +227,29 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data)
 			message->AddRef("copyToDir", &refentry);
 		}
 		// Wait untill the item has been downloaded
-		BMessenger messenger(NULL,data->window->systemcore);
+		messenger =  new BMessenger(NULL,data->window->systemcore);
 		BMessage reply;
-		messenger.SendMessage(message,&reply);
+		messenger->SendMessage(message,&reply);
 		if(reply.what == DOWN_ITEM_OK)
 		{
 			count++;
-			sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)count,(int32)(data->totalitems));
-			
-			BMessenger messenger(data->statusDock);
+			sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)count,(int32)totalSelectedItems);
+			delete(messenger);
+			messenger = new BMessenger(data->statusDock);
 			message = new BMessage(UPDATE_STAT);
 			message->AddFloat("count",1);
 			message->AddString("statusmessage",tmpBuffer);
-			messenger.SendMessage(message);
+			messenger->SendMessage(message);
+			delete(messenger);
 		}
 		delete(message);
 		index++;
 	}
-	BMessenger messenger(data->window);
-	message = new BMessage(HIDE_STATUSDOCK);
-	messenger.SendMessage(message);
+	messenger = new BMessenger(data->window);
+	message = new BMessage(STATDOCK_HIDE);
+	messenger->SendMessage(message);
 	delete(message);
+	delete(messenger);
 }
 //
 // MainWindow:: Remove the selected items
@@ -282,20 +263,16 @@ void BeCam_MainWindow::removeSelectedItems()
 	#endif
 	if(becam_gridview->CurrentSelection() >= 0)
 	{
-		becam_extraMenu->SetEnabled(false);
 		// Ask the user if he/she is sure to remove the files.
 		BAlert *myAlert = new BAlert(_T("Remove files"), _T("Are you sure you want to erase the selected files?"),_T("No"), _T("Yes"),NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
 		myAlert->SetShortcut(0, B_ESCAPE);
 		uint32 button_index = myAlert->Go();
 		if(button_index == 1)
 		{
-			//
 			items_data *data = new items_data();
         	data->gridview = becam_gridview;
         	data->window = this;
 			resume_thread(spawn_thread((status_t(*)(void*))RemoveItems,"remove_items",B_DISPLAY_PRIORITY,data));
-			//
-			becam_extraMenu->SetEnabled(true);	
 		}
 	}
 	else
@@ -411,9 +388,8 @@ void BeCam_MainWindow::CreateAboutWindow()
 }
 //
 //	BeCam_MainWindow:: Open the Status Window
-void BeCam_MainWindow::ShowStatusDock(float totalbytes, char *message)
+void BeCam_MainWindow::ShowStatusDock(float totalbytes, const char *message)
 {
-	becam_actionDock->Hide();
 	becam_statusDock->ShowChildren(MODE_DOWNLOAD);
 	becam_statusDock->SetMaxStatusBar(totalbytes);
 	becam_statusDock->UpdateStatus(0,message);
@@ -421,7 +397,7 @@ void BeCam_MainWindow::ShowStatusDock(float totalbytes, char *message)
 }
 //
 //		BeCam_MainWindow::Update the Status Window
-void BeCam_MainWindow::UpdateStatusDock(uint32 delta, char *message)
+void BeCam_MainWindow::UpdateStatusDock(uint32 delta, const char *message)
 {
 	//nothing yet
 }
@@ -431,7 +407,6 @@ void BeCam_MainWindow::HideStatusDock(void)
 {
 	becam_statusDock->Hide();
 	becam_statusDock->ShowChildren(MODE_INIT);
-	becam_actionDock->Show();
 }
 //
 //	BeCam_MainWindow:: Calculate the windowposition
@@ -467,20 +442,25 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			systemcore->PostMessage(B_QUIT_REQUESTED);
 			break;
 		case CAM_CONNECTED:
+		{
 			product = message->FindString("product");
 			becam_connected = true;
-			becam_extraMenu->SetEnabled(true);
-			//becam_downloadPopup->SetEnabled(true);
+			becam_statusDock->ShowChildren(MODE_CONNECTED);
+			BMessenger messenger(becam_statusDock);
+			BMessage *statDockmessage = new BMessage(UPDATE_STAT);
+			statDockmessage->AddFloat("count",-1);
+			statDockmessage->AddString("statusmessage",_T("Processing images..."));
+			messenger.SendMessage(statDockmessage);
+			break;
+		}
+		case GET_ITEMS_DONE:
 			becam_statusDock->Hide();
-			becam_actionDock->Show();
 			break;
 		case CAM_DISCONNECTED:
 			product = message->FindString("product");
 			becam_connected = false;	
-			//becam_downloadPopup->SetEnabled(false);
-			becam_extraMenu->SetEnabled(false);
 			clearItems();
-			becam_actionDock->Hide();
+			becam_statusDock->ShowChildren(MODE_INIT);
 			becam_statusDock->SetStatusMessage(_T("Camera disconnected"));
 			becam_statusDock->Show();
 			break;
@@ -528,30 +508,23 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			disconnect->SetEnabled(false);
 			break;
 		}
-		case DOWN_BUTTON:
-			downloadSelectedItems();
-			break;
 		case B_COPY_TARGET:
 		{
 			entry_ref copyToDirDrag;
+			const char *fileName = NULL;
 			message->FindRef("directory", &copyToDirDrag);
-			downloadSelectedItems(&copyToDirDrag);
+			fileName = message->FindString("name");
+			#ifdef DEBUG
+				lfmainw = fopen(INTF_LOGFILE,"a");	
+				fprintf(lfmainw,"MAINWINDOW - The file name is: %s\n",fileName);
+				fclose(lfmainw);
+			#endif
+			downloadSelectedItems(&copyToDirDrag, fileName);
 			break;
 		}
-		case DEL_BUTTON:
 		case REM_ITEMS:
 		{
 			removeSelectedItems();
-			break;
-		}
-		case NEXT_BUTTON:
-		{
-			becam_gridview->SelectNext();
-			break;
-		}
-		case PREVIOUS_BUTTON:
-		{
-			becam_gridview->SelectPrevious();
 			break;
 		}
 		case OPN_STATUS:
@@ -605,27 +578,34 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			}
 			break;
 		}
-		case HIDE_ACTIONDOCK:
+		case STATDOCK_SHOW:
 		{
-			float height;
-			message->FindFloat("height",&height);
-			becam_gridview->ResizeTo(becam_gridview->Frame().Width(),becam_gridview->Frame().Height() + height);
+			const char *statusmsg;
+			float numSelectedItems;
+			statusmsg = message->FindString("statusmessage");
+			message->FindFloat("numofselecitems",&numSelectedItems);
+			ShowStatusDock((int32)numSelectedItems,statusmsg);
 			break;
 		}
-		case SHOW_ACTIONDOCK:
-		{
-			float height;
-			message->FindFloat("height",&height);
-			becam_gridview->ResizeTo(becam_gridview->Frame().Width(),becam_gridview->Frame().Height() - height);
-			break;
-		}
-		case SHOW_STATUSDOCK:
-		{
-			break;
-		}
-		case HIDE_STATUSDOCK:
+		case STATDOCK_HIDE:
 		{
 			HideStatusDock();
+			break;
+		}
+		case STATDOCK_SHOWED:
+		{
+			becam_gridview->SetEnabled(false);
+			becam_scrollview->ResizeTo(becam_scrollview->Frame().Width(),becam_scrollview->Frame().Height() - becam_statusDock->Frame().Height());
+			BScrollBar *v_scrollbar = becam_scrollview->ScrollBar(B_VERTICAL);
+			v_scrollbar->ResizeTo(v_scrollbar->Frame().Width(),v_scrollbar->Frame().Height() + B_H_SCROLL_BAR_HEIGHT);
+			break;
+		}
+		case STATDOCK_HIDED:
+		{
+			becam_gridview->SetEnabled(true);
+			becam_scrollview->ResizeTo(becam_scrollview->Frame().Width(),becam_scrollview->Frame().Height() + becam_statusDock->Frame().Height());
+			BScrollBar *v_scrollbar = becam_scrollview->ScrollBar(B_VERTICAL);
+			v_scrollbar->ResizeTo(v_scrollbar->Frame().Width(),v_scrollbar->Frame().Height() - B_H_SCROLL_BAR_HEIGHT);
 			break;
 		}
 		default:

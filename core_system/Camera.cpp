@@ -154,17 +154,15 @@ bool Camera::GetCameraInfo()
 }
 // 
 //	Camera::Get the item bitmap
-bool Camera::DownloadItem(uint32 itemhandle, entry_ref *copyToDir)
+bool Camera::DownloadItem(uint32 itemhandle, entry_ref *copyToDir = NULL, const char *fileName = NULL)
 {
-	//int size;
-	//char	tmpBuffer[100];
-	BPath saveDirectory;
+	BPath directory;
 	// Save directory bepalen
 	if(copyToDir != NULL)
-	 	saveDirectory = BPath(copyToDir);
+	 	directory = BPath(copyToDir);
 	else
-		saveDirectory = CameraSavedir;
-	camInterface->downloadItem(itemhandle,saveDirectory);
+		directory = CameraSavedir;
+	camInterface->downloadItem(itemhandle,directory, fileName);
 	return B_OK;
 }
 //
@@ -211,6 +209,8 @@ bool Camera::GetCameraItems()
 				//
 				localItemData = NULL;
 			}
+			message = new BMessage(GET_ITEMS_DONE);
+			app->PostMessage(message,app);
 			return(B_OK);
 		}
 	}
@@ -261,10 +261,12 @@ void Camera::MessageReceived(BMessage *message)
 			int32 handle;
 			entry_ref copyToDir;
 			entry_ref *directory = NULL;
+			const char *fileName = NULL;
 			message->FindInt32("itemhandle",&handle);
 			if(message->FindRef("copyToDir",&copyToDir) >= 0)
 				directory = &copyToDir;
-			if(DownloadItem((uint32)handle,directory) == B_OK)
+			fileName = message->FindString("name");
+			if(DownloadItem((uint32)handle,directory,fileName) == B_OK)
 			{
 				BMessage reply(DOWN_ITEM_OK);
 				message->SendReply(&reply);

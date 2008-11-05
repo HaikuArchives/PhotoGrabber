@@ -42,7 +42,7 @@ class Camera  : public BLooper
 		const char* 	GetVersion();
 		const char* 	GetSerialNumber();
 		int	 			GetNumberOfItems();
-		bool			DownloadItem(uint32 itemhandle,entry_ref *dir);
+		bool			DownloadItem(uint32 itemhandle,entry_ref *dir, const char *fileName);
 		bool			RemoveItem(uint32 itemhandle);
 		bool			GetStorageInfo(void);
 		void 			SetModel(char *model);

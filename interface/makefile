@@ -10,6 +10,8 @@
 # specify the name of the binary 
 NAME := libPGInterface
 
+REVISION:= $(shell svn info 2> /dev/null | perl -lne 'if (/^Revision:\s(\d+)$$/) { print $$1 }')
+
 # specify the type of binary 
 #       APP:    Application 
 #       SHARED: Shared library 
@@ -41,14 +43,10 @@ SRCS := AboutWindow.cpp			\
 		Item.cpp				\
 		MainView.cpp			\
 		MainWindow.cpp			\
-		PictureItem.cpp			\
 		preferences.cpp			\
 		prefsaver.cpp			\
-		Animation.cpp			\
 		GridView.cpp			\
-		PictureLabelButton.cpp		\
-		StatusDock.cpp		\
-		ActionDock.cpp
+		StatusDock.cpp		
 
 
 #       specify the resource files to use 
@@ -98,14 +96,6 @@ LOCAL_INCLUDE_PATHS := "../core_system"
 #       NONE, SOME, FULL 
 OPTIMIZE := FULL
 
-#       specify any preprocessor symbols to be defined.  The symbols will not 
-#       have their values set automatically; you must supply the value (if any) 
-#       to use.  For example, setting DEFINES to "DEBUG=1" will cause the 
-#       compiler option "-DDEBUG=1" to be used.  Setting DEFINES to "DEBUG" 
-#       would pass "-DDEBUG" on the compiler's command line. 
-
-DEFINES :=
-
 #       specify special warning levels 
 #       if unspecified default warnings will be used 
 #       NONE = supress all warnings 
@@ -139,8 +129,17 @@ BISON_FLAGS :=
 #       -app 3 4 0 d 0 -short "340" -long "340 "`echo -n -e '©'`"1999 GNU GPL"
 #       -app 1 0 1 f 0 -short "App 1.0.1" -long "Company App 1.0.1 written by FOO"
 #       This may also be specified in a resource. 
-APP_VERSION := 
+APP_VERSION := "2.2"
 
+#       specify any preprocessor symbols to be defined.  The symbols will not 
+#       have their values set automatically; you must supply the value (if any) 
+#       to use.  For example, setting DEFINES to "DEBUG=1" will cause the 
+#       compiler option "-DDEBUG=1" to be used.  Setting DEFINES to "DEBUG" 
+#       would pass "-DDEBUG" on the compiler's command line. 
+
+DEFINES := 	"REVISION=$(REVISION)"	\
+			"VERSION=$(APP_VERSION)"
+			
 #       (for TYPE == DRIVER only) Specify desired location of driver in the /dev 
 #       hierarchy. Used by the driverinstall rule. E.g., DRIVER_PATH = video/usb will 
 #       instruct the driverinstall rule to place a symlink to your driver's binary in 

@@ -5,6 +5,12 @@
  *****************************************************************/
 
 //
+//
+//
+// Needs to be reviewed! Not used yet!
+//
+//
+//
 //	Local includes
 #include "ActionDock.h"
 #include "debug.h"
@@ -13,6 +19,7 @@
 #include <interface/Window.h>
 #include <TranslationUtils.h>
 #include <Bitmap.h>
+#include <Alert.h>
 //
 //	Globals
 FILE *lfactionbar;
@@ -123,6 +130,33 @@ ActionDock::ActionDock(BRect rect, const char* name, uint32 resize,uint32 flags)
 	AddChild(previousButton);
 	// Create the select view
 	selectDirPanel = new BFilePanel(B_OPEN_PANEL, new BMessenger(this), NULL, B_DIRECTORY_NODE, false,new BMessage(OPEN_FILE_PANEL), NULL, false, true);
+	// Create the default path field
+	r = Bounds();
+	r.top = Bounds().Height()/2 - 5;
+	r.bottom = Bounds().Height()/2 + 5;
+	r.left = deleteButton->Frame().right + 20;
+	r.right = r.left + 300;
+	defaultPath = new BTextControl(r, "defaultpath",NULL,"",new BMessage(-1), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
+	defaultPath->SetEnabled(false);
+	AddChild(defaultPath);
+	// Create the select button
+	r.left = r.right + 5;
+	r.right = r.left + 30;
+	selectButton = new BButton(r, "select","...",new BMessage(SELECT_PATHMENU), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
+	AddChild(selectButton);
+	// Create the accept button
+	r = Bounds();
+	r.left = selectButton->Frame().right + 10;
+	r.right = r.left + 24;
+	onBitmap = BTranslationUtils::GetBitmap('PNG ', "accept");
+	acceptButton = new PictureLabelButton(r, "accept",NULL,onBitmap,NULL,new BMessage(ACCEPT_BUTTON), B_FOLLOW_RIGHT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
+	AddChild(acceptButton);
+	// Create the cancel button
+	r.left = r.right + margin - 10;
+	r.right =r.left + 24;
+	onBitmap = BTranslationUtils::GetBitmap('PNG ', "cancel");
+	cancelButton = new PictureLabelButton(r, "cancel",NULL,onBitmap,NULL,new BMessage(CANCEL_BUTTON), B_FOLLOW_RIGHT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
+	AddChild(cancelButton);
 }
 //
 //	ActionDock :: Destructor
@@ -150,7 +184,7 @@ void ActionDock::MessageReceived(BMessage* message)
 			BPath path(&entry);
 			if(path.Path() != NULL)
 			{
-				// Set the path in the text field
+				defaultPath->SetText(path.Path());
 			}
 			break; 
 		}
@@ -162,7 +196,33 @@ void ActionDock::MessageReceived(BMessage* message)
 			break;
 		}
 		case DOWN_BUTTON:
+		{
+			downloadButton->SetEnabled(false);
+			deleteButton->SetEnabled(false);
+			nextButton->Hide();
+			previousButton->Hide();
+			defaultPath->Show();
+			selectButton->Show();
+			acceptButton->Show();
+			cancelButton->Show();
 			break;
+		}
+		case ACCEPT_BUTTON:
+		{
+			break;
+		}
+		case CANCEL_BUTTON:
+		{
+			downloadButton->SetEnabled(true);
+			deleteButton->SetEnabled(true);
+			nextButton->Show();
+			previousButton->Show();
+			defaultPath->Hide();
+			selectButton->Hide();
+			acceptButton->Hide();
+			cancelButton->Hide();
+			break;
+		}
 		default :
 			BView::MessageReceived(message);	
 			break;	
@@ -178,14 +238,23 @@ void ActionDock::AttachedToWindow()
 		fclose(lfactionbar);
 	#endif
 	BView::AttachedToWindow();
-	SetViewColor( ui_color( B_PANEL_BACKGROUND_COLOR ) );	
+	SetViewColor( ui_color( B_PANEL_BACKGROUND_COLOR ) );
+	acceptButton->Hide();
+	cancelButton->Hide();
+	selectButton->Hide();
+	defaultPath->Hide();
+	downloadButton->SetTarget(this);	
+	selectButton->SetTarget(this);
+	selectDirPanel->SetTarget(this);
+	acceptButton->SetTarget(this);
+	cancelButton->SetTarget(this);
 }
 //
 //	ActionDock :: Draw
 void ActionDock::Draw(BRect frame)
 {
+	BView::Draw(frame);
 	rgb_color color_border = {0x8b, 0x8b, 0x83, 0xff};
-	//rgb_color color_border = {0x00, 0x00, 0x00, 0xff};
 	BRect actionBarFrame = Bounds();
 	BPoint startPoint,endPoint;
 	startPoint.x = actionBarFrame.left;
@@ -197,40 +266,6 @@ void ActionDock::Draw(BRect frame)
 	SetLowColor(color_border);
 	SetPenSize(1);
 	StrokeLine(startPoint,endPoint);
-	SetDrawingMode( B_OP_COPY );
-	BView::Draw(BRect(actionBarFrame.left,actionBarFrame.top,actionBarFrame.right,1));					
+	SetDrawingMode( B_OP_COPY );				
 }
-//
-// ActionDock :: FrameResized
-void ActionDock::FrameResized (float newWidth, float newHeight)
-{
-	//Draw (BRect (0, 0, newWidth, newHeight));	
-	//return BView::FrameResized (newWidth, newHeight);
-}
-//
-// ActionDock :: Hide
-void ActionDock::Hide()
-{	
-	if (!Window() || Window()->IsActive() == false)
-	{
-		float height = Bounds().Height();
-		BMessage *hideMessage = new BMessage(HIDE_ACTIONDOCK);
-		hideMessage->AddFloat("height",height);
-		Window()->PostMessage(hideMessage); 
-	}
-	BView::Hide();	
-}
-//
-// ActionDock :: Show
-void ActionDock::Show()
-{
-	if (!Window() || Window()->IsActive() == false)
-	{
-		float height = Bounds().bottom - Bounds().top;
-		BMessage *showMessage = new BMessage(SHOW_ACTIONDOCK);
-		showMessage->AddFloat("height",height);
-		Window()->PostMessage(showMessage); 
-	}
-	BView::Show();
-	
-}
+

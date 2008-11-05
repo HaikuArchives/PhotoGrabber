@@ -36,7 +36,7 @@ class CamInterface
 		bool			open();
 		bool			close();
 		bool			setCurrentItem(int index);
-		bool			downloadItem(int index,BPath path);
+		bool			downloadItem(int index,BPath path,const char *name);
 		bool			deleteItem(int index);
 		bool			takeItem();
 		char*			getName();
@@ -80,7 +80,7 @@ class CamInterface
 		status_t 	(*closeCamera)();
 		status_t 	(*getNumberofPics)(int &);
 		status_t 	(*setCurrentPicture)(int);
-		status_t 	(*downloadPicture)(BPath);
+		status_t 	(*downloadPicture)(BPath,const char*);
 		// level 2
 		status_t 	(*deletePicture)();
 		status_t 	(*takePicture)();

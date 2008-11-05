@@ -17,7 +17,6 @@
 #include "ConfigWindow.h"
 #include "settings.h"
 #include "debug.h"
-#include "ActionDock.h"
 #include "StatusDock.h"
 //
 //		Includes
@@ -44,6 +43,7 @@ struct items_data
 	entry_ref			*downloadDir;
 	float				totalitems;
 	StatusDock			*statusDock;
+	const char			*fileName;
 };
 
 //		Main window class
@@ -66,7 +66,7 @@ class BeCam_MainWindow : public BWindow
 		void				addItem(class BeCam_Item *item);
 		void				removeItem(class BeCam_Item *item);
 		void				clearItems();
-		void				downloadSelectedItems(entry_ref *copyToDir = NULL);
+		void				downloadSelectedItems(entry_ref *copyToDir = NULL, const char *fileName = NULL);
 		void				removeSelectedItems();
 		static status_t 	RemoveItems(items_data *data);
 		static status_t 	DownloadItems(items_data *data);
@@ -75,8 +75,8 @@ class BeCam_MainWindow : public BWindow
 		void				CreateStatusDock();
 		void                CreateConfigWindow();
 		void                CreateAboutWindow();
-		void                ShowStatusDock(float totalbytes, char *message);
-		void                UpdateStatusDock(uint32 delta, char *message);
+		void                ShowStatusDock(float totalbytes, const char *message);
+		void                UpdateStatusDock(uint32 delta, const char *message);
 		void                HideStatusDock(void);
 		void                CalculatePos(float *xPos,float *yPos,int winType);
 		// GUI components
@@ -85,9 +85,7 @@ class BeCam_MainWindow : public BWindow
 		BMenuBar			*becam_menubar;
 		BMenu				*becam_fileMenu;
 		BMenu				*becam_actionsMenu;
-		BMenu				*becam_extraMenu;
 		BScrollView			*becam_scrollview;
-		ActionDock			*becam_actionDock;
 		StatusDock			*becam_statusDock;
 		int					devicetype;
 		SETTINGS			*pgsettings;
@@ -103,9 +101,6 @@ class BeCam_MainWindow : public BWindow
 #define WINDOW_HEIGHT_MAIN			550
 #define	WINDOW_WIDTH_MAIN			700
 
-//
-#define SHOW_STATUSDOCK					'SSTD'
-#define HIDE_STATUSDOCK					'HSTD'
 
 #endif
 

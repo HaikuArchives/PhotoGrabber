@@ -24,9 +24,7 @@
 
 //
 // Local Includes
-// #include "target_os.h"
 #include "PluginInterface.h"
-//#include "MainWindow.h"
 #include "Camera.h"
 #include "preferences.h"
 
@@ -62,8 +60,6 @@ class BeDiGiCamApp : public BApplication {
 		
 	private:
 		int						LogError(int ErrorMes);
-		void					Usage();
-		void					VersionInfo();
 		
 		
 };

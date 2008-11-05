@@ -46,10 +46,7 @@
 // *** log-file path ***
 
 #define LOGFILE 					"/boot/var/tmp/BeCam.log"
-#define VERSIONNAME					"PhotoGrabber version"
-#define VERSIONNUMBER				"2.1"
-#define AUTHOR						"By Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"
-#define DESCRIPTION					"Digital camera download utility."
+#define VERSIONNUMBER				"2.2"
 
 // Global Messages
 
@@ -71,6 +68,7 @@
 #define DOWN_ITEM					'DOWI'
 #define DOWN_ITEM_OK				'DITO'
 #define GET_ITEMS					'GITM'
+#define GET_ITEMS_DONE				'GITD'
 #define REM_ITEMS					'RITM'
 #define ADD_PTPCAM					'ADDP'
 #define REM_PTPCAM					'REMP'

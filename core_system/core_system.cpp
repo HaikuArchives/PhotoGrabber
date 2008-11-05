@@ -34,8 +34,6 @@ BeDiGiCamApp::~BeDiGiCamApp()
 	delete[] globalPath;
 	delete[] title;
 	delete[] bgcolor;
-	//Jixt: bug 15 - temporary fix
-	//delete camera;
 }
 // 
 // 	BeDiGiCam::The application is running, time to startup the rest
@@ -63,11 +61,14 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
 		{
 			case CAM_CONNECTED:
 				printf("Cam connected app ...\n");
+				mainWindow->PostMessage(message);
 				if(GetDeviceType() == TYPE_USB)
 				{	
 					BMessage *cammessage = new BMessage(GET_ITEMS);
 					camera->PostMessage(cammessage);
 				}
+				break;
+			case GET_ITEMS_DONE:
 				mainWindow->PostMessage(message);
 				break;
 			case CAM_DISCONNECTED:
@@ -370,29 +371,6 @@ int BeDiGiCamApp::LogError(int ErrorMes)
 		fclose(file);
 	}
 	return(ErrorMes);
-}
-//
-// 	BeDiGiCam::Usage
-void BeDiGiCamApp::Usage()
-{
-	printf("BeDiGiCamCLI usage: \n\n");
-	printf("\t -a: Download all files\n");
-	printf("\t -d: Download thumbnails or files (\'1\': files - \'2\': thumbnails)\n");
-	printf("\t -g: Generate a webpage with your pictures\n");
-	printf("\t -h: Help\n");
-	printf("\t -i: Get the info of your Device\n");
-	printf("\t -p: Set the path there where you want your files\n");
-	printf("\t -t: Type of camera (\'1\': type 1 or \'2\': type 2)\n");
-	printf("\t -v: Version info\n");	
-}
-
-//
-//	BeDiGiCam::VersionInfo
-
-void BeDiGiCamApp::VersionInfo()
-{
-	printf("\tVersion: %s %s\n", VERSIONNAME,VERSIONNUMBER);
-	printf("\tAuthor: %s\n", AUTHOR);	
 }
 //
 //	BeDiGiCam::main

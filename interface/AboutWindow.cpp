@@ -3,55 +3,58 @@
 * All rights reserved.											 *
 * Distributed under the terms of the MIT License.                *
  *****************************************************************/
+//
+// 		System includes
 // 
 //		Local Includes
 #include "AboutWindow.h"
 //
 //		Aboutview :: Constructor
-AboutTabView::AboutTabView(BRect r):BView(r, "abouttabview", B_FOLLOW_ALL_SIDES, B_WILL_DRAW)
+AboutBitmapView::AboutBitmapView(BRect r):BView(r, "aboutbitmapview", B_FOLLOW_ALL_SIDES, B_WILL_DRAW)
 {
 	rgb_color bg_color=ui_color(B_PANEL_BACKGROUND_COLOR);
 	SetViewColor(bg_color);
 	BTranslatorRoster *roster = BTranslatorRoster::Default();
-	me_bitmap= BTranslationUtils::GetBitmap("about", roster);
+	about_bitmap= BTranslationUtils::GetBitmap("about", roster);
 }
 
 //
-//		AboutView::~BeCam_AboutView()
-AboutTabView::~AboutTabView(void)
+//		AboutBitmapView::~BeCam_AboutBitmapView()
+AboutBitmapView::~AboutBitmapView(void)
 {
-	if(me_bitmap)
-		delete me_bitmap;	
+	if(about_bitmap)
+		delete about_bitmap;	
 }
 
 //
 //		AboutView :: Draw
-void	AboutTabView::Draw(BRect rect)
+void	AboutBitmapView::Draw(BRect rect)
 {	
-	MovePenTo(2,2);
-	DrawBitmap(me_bitmap);
+	rgb_color color_border = {0x8b, 0x8b, 0x83, 0xff};
+	MovePenTo(0,0);
+	DrawBitmap(about_bitmap);
+	SetPenSize(1);
+	SetHighColor(color_border);
+	SetLowColor(color_border);
+	StrokeLine(BPoint(0,75),BPoint(400,75),B_SOLID_HIGH);
 }
 //
 //		Aboutview :: Constructor
-BeCam_AboutView::BeCam_AboutView(float xPos, float yPos):BView(BRect(0,0,WINDOW_WIDTH_ABOUT- 50 + xPos,WINDOW_HEIGHT_ABOUT - 100 + yPos), "aboutview", B_FOLLOW_LEFT_RIGHT, B_WILL_DRAW)
+BeCam_AboutView::BeCam_AboutView(BRect r):BView(r, "aboutview", B_FOLLOW_LEFT_RIGHT, B_WILL_DRAW)
 {
 	rgb_color bg_color=ui_color(B_PANEL_BACKGROUND_COLOR);
 	SetViewColor(bg_color);
 	BRect r;
 	r = Bounds();
-	r.InsetBy(2,2);
-	tabView = new BTabView(r,"tab_view");
-	tabView->SetViewColor(bg_color);
-	r = tabView->Bounds();
-	r.bottom -=tabView->TabHeight();
-	aboutTab = new BTab();
-	aboutView = new AboutTabView(r);
-	tabView->AddTab(aboutView,aboutTab);
-	aboutTab->SetLabel(_T("About"));
-	creditsTab = new BTab();
-	creditsView = new BView(r, "creditstabview", B_FOLLOW_ALL_SIDES, B_WILL_DRAW);
+	r.bottom = r.top + 75;
+	aboutBitmapView = new AboutBitmapView(r);
+	AddChild(aboutBitmapView);
+	r = Bounds();
+	r.top += 76 ;
+	creditsView = new BView(r, "creditsview", B_FOLLOW_ALL_SIDES, B_WILL_DRAW);
 	creditsView->SetViewColor(bg_color);
 	//
+	r= creditsView->Bounds();
 	r.right -= B_V_SCROLL_BAR_WIDTH;
 	creditsTextView = new BTextView(r, "credits", r.OffsetToCopy(0, 0).InsetByCopy(5, 5), B_FOLLOW_ALL); 
     creditsTextView->SetFlags(creditsTextView->Flags() | B_FRAME_EVENTS );
@@ -70,6 +73,18 @@ BeCam_AboutView::BeCam_AboutView(float xPos, float yPos):BView(BRect(0,0,WINDOW_
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgGreen); 
     creditsTextView->Insert("PhotoGrabber\n");
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange); 
+    creditsTextView->Insert(_T("\tVersion:\n")); 
+    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
+	char version[1024];
+	snprintf(version, sizeof(version),"\t\t%d\n",VERSION);
+	creditsTextView->Insert( "\t\t2.2\n");
+	creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange);
+	creditsTextView->Insert(_T("\tRevision:\n")); 
+    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
+	char revision[1024];
+	snprintf(revision, sizeof(revision),"\t\t%d\n",REVISION);
+	creditsTextView->Insert(revision);
+    creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange); 
     creditsTextView->Insert(_T("\tTeam Lead:\n")); 
     creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
 	creditsTextView->Insert( "\t\tJan-Rixt Van Hoye\n"); 
@@ -87,25 +102,21 @@ BeCam_AboutView::BeCam_AboutView(float xPos, float yPos):BView(BRect(0,0,WINDOW_
     creditsTextView->Insert(
     			"\t\tBernd Korz\n"
     			"\t\tFrancois Revol\n");  
-	//
-	tabView->AddTab(creditsView,creditsTab);
-	creditsTab->SetLabel(_T("Credits"));
-	AddChild(tabView);
+	AddChild(creditsView);
 }
 
 //
 //		AboutView::~BeCam_AboutView()
 BeCam_AboutView::~BeCam_AboutView(void)
 {
-	delete tabView;
+		//nothing yet
 }
-
 //
 //		AboutWindow :: Constructor
 BeCam_AboutWindow::BeCam_AboutWindow(float xPos,float yPos,BeCam_MainWindow *mainWindow) : BWindow(BRect(xPos,yPos,xPos + WINDOW_WIDTH_ABOUT,yPos + WINDOW_HEIGHT_ABOUT), _T("About PhotoGrabber"), B_TITLED_WINDOW, B_WILL_DRAW | B_NOT_MINIMIZABLE | B_NOT_ZOOMABLE | B_NOT_RESIZABLE)
 {
 	parent = mainWindow;
-	view = new BeCam_AboutView(xPos,yPos);
+	view = new BeCam_AboutView(Bounds());
 	AddChild(view);
 }
 

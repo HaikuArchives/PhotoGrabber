@@ -104,7 +104,7 @@ void PictureLabelButton::Draw(BRect frame)
 		picHeight = buttonBitmapOn->Bounds().Height();
 		picWidth = buttonBitmapOn->Bounds().Width();
 	}
-	int margin = 6;
+	int margin = 0;
 	BFont font = be_plain_font;
 	font.SetSize(11);
     font_height fontHeight;
@@ -112,10 +112,11 @@ void PictureLabelButton::Draw(BRect frame)
 	GetFontHeight (&fontHeight);
 	float fFontHeight = 0;
 	float fStringWidth = 0;
-	if(text.String() != NULL)
+	if(text.String() != NULL && StringWidth(text.String()) > 0)
 	{
 		fFontHeight = fontHeight.ascent + fontHeight.descent;
 		fStringWidth = StringWidth(text.String());
+		margin = 6;
 	}
 	BRect picButtonRect = Bounds();
 	BRect picRect;
@@ -137,7 +138,7 @@ void PictureLabelButton::Draw(BRect frame)
 		else
 			StrokeRoundRect(picRect,2,2);
 	}
-	if(text.String() != NULL)
+	if(text.String() != NULL && StringWidth(text.String()) > 0)
 	{
 		MovePenTo(floor((picButtonRect.right - picButtonRect.left)/2) - floor(fStringWidth/2),picButtonRect.bottom - margin);
 		if(IsEnabled())
@@ -153,12 +154,6 @@ void PictureLabelButton::Draw(BRect frame)
 		DrawString(text.String());
 	}
 	SetDrawingMode( B_OP_COPY );			
-}
-//
-//	PictureLabelButton :: Set Target
-void PictureLabelButton::SetTarget (BHandler* target)
-{
-	buttonTargetHandler = target;
 }
 //
 //	PictureLabelButton :: MouseDown

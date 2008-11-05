@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -28,30 +28,27 @@
 // 	External variables
 extern unsigned char my_bitmap[30000];
 //
-//	View of the About tab
-class AboutTabView : public BView
+//	View of the About bitmap
+class AboutBitmapView : public BView
 {
 	public:
-					AboutTabView(BRect r);
-					~AboutTabView(void);
+					AboutBitmapView(BRect r);
+					~AboutBitmapView(void);
 	virtual void	Draw(BRect rect);
 
 private:
-		BBitmap		*me_bitmap;
+		BBitmap		*about_bitmap;
 };
 //
 //		About View class
 class BeCam_AboutView : public BView
 {
 	public:
-					BeCam_AboutView(float xPos,float yPos);
+					BeCam_AboutView(BRect r);
 					~BeCam_AboutView(void);
 
 private:
-		BTabView		*tabView;
-		BTab			*aboutTab;
-		AboutTabView 	*aboutView;
-		BTab			*creditsTab;
+		AboutBitmapView	*aboutBitmapView;
 		BView 			*creditsView;
 		BTextView		*creditsTextView;
 };
@@ -71,8 +68,8 @@ class BeCam_AboutWindow : public BWindow
 };
 
 #define ABOUT_WINDOW				1
-#define WINDOW_HEIGHT_ABOUT			249
-#define	WINDOW_WIDTH_ABOUT			487
+#define WINDOW_HEIGHT_ABOUT			350
+#define	WINDOW_WIDTH_ABOUT			400
 
 #endif
 

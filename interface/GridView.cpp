@@ -29,7 +29,8 @@ float GridView::fMinVertItemMargin = 20;	// vertical margin
 //
 //	GridView :: Constructor
 GridView::GridView (BRect rect, const char* name, uint32 resize,uint32 flags)
-: BView (rect, name, resize, flags | B_FRAME_EVENTS)
+: BControl (rect, name, NULL, NULL,resize, flags | B_FRAME_EVENTS )
+//: BView (rect, name, resize, flags | B_FRAME_EVENTS)
 	,fCachedColumnCount (-1)
 	,fSelectedItemIndex (-1)
 	,fSelectionRadius (4)
@@ -275,7 +276,7 @@ int32 GridView::CountRows () const
 //	GridView :: KeyDown
 void GridView::KeyDown (const char* bytes, int32 numBytes)
 {
-	if (!Window() || Window()->IsActive() == false)
+	if (!Window() || Window()->IsActive() == false || !IsEnabled())
 		return;
 
 	bool keyHandled = HandleKeyMovement (bytes, numBytes);
@@ -298,7 +299,7 @@ void GridView::MouseDown (BPoint point)
 		fprintf(lfgridv,"GRIDVIEW - Mouse Down\n");
 		fclose(lfgridv);
 	#endif
-	if (!Window() || Window()->IsActive() == false)
+	if (!Window() || Window()->IsActive() == false || !IsEnabled())
 		return;
 	
 	BMessage* msg = Window()->CurrentMessage();

@@ -231,18 +231,17 @@ status_t setCurrentPicture(int picturenum)
 	return(B_NO_ERROR);
 }
 
-status_t downloadPicture(BPath savedir)
+status_t downloadPicture(BPath savedir, const char *name)
 {
 	char *image = NULL;
-	//char filename[512];
 	char *filename;
 	long int size=0;
 	int ret=0;
 	
 	#ifdef DEBUG
-	lflevel1 = fopen(LOGFILE,"a");
-	fprintf(lflevel1,"PTP - Download pictures\n");
-	fclose(lflevel1);
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - Download pictures\n");
+		fclose(lflevel1);
 	#endif
 	if(savedir != NULL)
 	{
@@ -255,8 +254,16 @@ status_t downloadPicture(BPath savedir)
 			filename = new char[pathLength + fileNameLength + 1];
 			strcpy(filename,savedir.Path());
 			strcat(filename,"/");
-			strcat(filename,(*params).objectinfo[currentpicturenumber].Filename);
-			if(saveCamPicture(image,size,filename))
+			#ifdef DEBUG
+				lflevel1 = fopen(LOGFILE,"a");
+				fprintf(lflevel1,"PTP - File name is: %s\n",name);
+				fclose(lflevel1);
+			#endif
+			if(name != NULL)
+				strcat(filename,name);
+			else
+				strcat(filename,(*params).objectinfo[currentpicturenumber].Filename);
+			if(saveCamPicture(image,size,(*params).objectinfo[currentpicturenumber].ObjectFormat,filename))
 			{	
 				image = NULL;
 				return(B_NO_ERROR);
@@ -266,7 +273,7 @@ status_t downloadPicture(BPath savedir)
 	return(B_ERROR);
 }
 
-bool saveCamPicture (char *data, long int size, const char *filename)
+bool saveCamPicture (char *data, long int size, uint16_t type,const char *filename)
 {
 	int					systemresult;
 	BFile				*fh;
@@ -285,7 +292,108 @@ bool saveCamPicture (char *data, long int size, const char *filename)
 			return(B_ERROR);
 		if((ni=new BNodeInfo(fh)))
 		{
-			ni->SetType("image/jpeg");
+			// This has to be changed. It should set the correct type.
+			#ifdef DEBUG
+				lflevel1 = fopen(LOGFILE,"a");
+				fprintf(lflevel1,"PTP - Object format%d\n",type);
+				fclose(lflevel1);
+			#endif
+			switch(type)
+			{
+				case PTP_OFC_AIFF:
+				{
+					ni->SetType("audio/aiff");
+					break;
+				}
+				case PTP_OFC_WAV:
+				{
+					ni->SetType("audio/wav");
+					break;
+				}
+				case PTP_OFC_MP3:
+				{
+					ni->SetType("audio/mpeg3");
+					break;
+				}
+				case PTP_OFC_AVI:
+				{
+					ni->SetType("video/avi");
+					break;
+				}
+				case PTP_OFC_MPEG:
+				{
+					ni->SetType("video/mpeg");
+					break;
+				}
+				case PTP_OFC_ASF:
+				{
+					ni->SetType("video/x-ms-asf");
+					break;
+				}
+				case PTP_OFC_QT:
+				{
+					ni->SetType("video/quicktime");
+					break;
+				}
+				case PTP_OFC_EXIF_JPEG:
+				case PTP_OFC_CIFF:
+				case PTP_OFC_JFIF:
+				{
+					ni->SetType("image/jpeg");
+					break;
+				}
+				case PTP_OFC_TIFF:
+				case PTP_OFC_TIFF_EP:
+				case PTP_OFC_TIFF_IT:
+				{
+					ni->SetType("image/tiff");
+					break;
+				}
+				case PTP_OFC_FlashPix:
+				{
+					ni->SetType("image/vnd.fpx");
+					break;
+				}
+				case PTP_OFC_BMP:
+				{
+					ni->SetType("image/bmp");
+					break;
+				}
+				case PTP_OFC_GIF:
+				{
+					ni->SetType("image/gif");
+					break;
+				}
+				case PTP_OFC_PCD:
+				{
+					ni->SetType("image/pcd");
+					break;
+				}
+				case PTP_OFC_PICT:
+				{
+					ni->SetType("image/pict");
+					break;
+				}
+				case PTP_OFC_PNG:
+				{
+					ni->SetType("image/png");
+					break;
+				}
+				case PTP_OFC_JP2:
+				{
+					ni->SetType("image/jp2");
+					break;
+				}
+				case PTP_OFC_JPX:
+				{
+					ni->SetType("image/jpx");
+					break;
+				}
+				default:
+				{
+					ni->SetType("image/jpeg");
+				}
+			}
 			delete ni;
 		}
 		if(( (fherr = fh->Write(data, size)) != size))

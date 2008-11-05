@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <interface/View.h>
 #include <interface/Button.h>
-#include <interface/TextView.h>
+#include <interface/TextControl.h>
 #include <app/Messenger.h>
 #include <FilePanel.h>
 #include <Path.h>
@@ -28,6 +28,8 @@
 #define	DOWN_BUTTON 		'DOWN'
 #define	NEXT_BUTTON 		'NBTN'
 #define	PREVIOUS_BUTTON		'BBTN'
+#define	ACCEPT_BUTTON		'ABTN'
+#define	CANCEL_BUTTON		'CBTN'
 #define	SELECT_PATHMENU		'SPME'
 #define OPEN_FILE_PANEL		'OFPA'
 
@@ -43,9 +45,6 @@ class ActionDock : public BView
 		virtual	void	MessageReceived(BMessage* message);
 		virtual	void	AttachedToWindow();
 		virtual	void	Draw(BRect frame);
-		virtual void	FrameResized (float newWidth, float newHeight);
-				void	Hide();
-				void	Show();
 	
 	private:
 		PictureLabelButton			*downloadButton;
@@ -55,7 +54,7 @@ class ActionDock : public BView
 		PictureLabelButton			*acceptButton;
 		PictureLabelButton			*cancelButton;
 		BButton						*selectButton;
-		BTextView					*defaultPath;
+		BTextControl				*defaultPath;
 		BFilePanel 					*selectDirPanel;
 };
 

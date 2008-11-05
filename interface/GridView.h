@@ -12,6 +12,7 @@
 #include <interface/View.h>
 #include <interface/ScrollView.h>
 #include <interface/Region.h>
+#include <interface/Control.h>
 //
 // Local Includes
 #include "Item.h"
@@ -31,7 +32,7 @@ struct list_tracking_data
 	BPoint		start;
 };
 
-class GridView : public BView
+class GridView : public /*BView,*/ BControl
 {
 	public:
 								GridView (BRect rect, const char* name, 

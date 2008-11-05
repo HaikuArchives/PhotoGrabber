@@ -41,7 +41,6 @@ class PictureLabelButton : public BControl
 		virtual	void	Draw(BRect frame);
 		virtual void	MouseUp(BPoint point);
 		virtual void	MouseDown(BPoint point);
-		void			SetTarget(BHandler* target);
 							
 	private:
 		float			buttonHeight;

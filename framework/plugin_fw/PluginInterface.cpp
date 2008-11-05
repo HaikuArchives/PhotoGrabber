@@ -239,12 +239,12 @@ bool CamInterface::setCurrentItem(int index)
 }
 //
 //		Interface: Download picture
-bool CamInterface::downloadItem(int index,BPath path)
+bool CamInterface::downloadItem(int index,BPath path, const char *name)
 {
 	if(check_downloadPicture)
 	{
 		setCurrentItem(index);
-		(*downloadPicture)(path);
+		(*downloadPicture)(path,name);
 		return true;
 	}
 	return false;
