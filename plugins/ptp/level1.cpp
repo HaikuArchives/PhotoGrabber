@@ -251,22 +251,36 @@ status_t downloadPicture(BPath savedir, const char *name)
 		{
 			int32 pathLength = strlen(savedir.Path());
 			int32 fileNameLength = strlen((*params).objectinfo[currentpicturenumber].Filename);
-			filename = new char[pathLength + fileNameLength + 1];
-			strcpy(filename,savedir.Path());
-			strcat(filename,"/");
-			#ifdef DEBUG
-				lflevel1 = fopen(LOGFILE,"a");
-				fprintf(lflevel1,"PTP - File name is: %s\n",name);
-				fclose(lflevel1);
-			#endif
-			if(name != NULL)
-				strcat(filename,name);
-			else
-				strcat(filename,(*params).objectinfo[currentpicturenumber].Filename);
-			if(saveCamPicture(image,size,(*params).objectinfo[currentpicturenumber].ObjectFormat,filename))
-			{	
-				image = NULL;
-				return(B_NO_ERROR);
+			off_t file_size = 0;
+			status_t err;
+			BFile *fh;
+			int numberOfCopies = 1;
+			while(numberOfCopies <= 100)
+			{
+				filename = new char[pathLength + fileNameLength + 3];
+				strcpy(filename,savedir.Path());
+				strcat(filename,"/");
+				if(name != NULL)
+					strcat(filename,name);
+				else
+					strcat(filename,(*params).objectinfo[currentpicturenumber].Filename);
+				if(numberOfCopies > 1)
+					sprintf(filename,"%s %d",filename,numberOfCopies);
+				// Check if the file exists. If it exists, check if it is empty or not.
+				fh = new BFile(filename, B_WRITE_ONLY | B_CREATE_FILE);
+				err = fh->GetSize(&file_size);
+				if(err == B_OK && file_size == 0)
+				{
+					delete fh;
+					if(saveCamPicture(image,size,(*params).objectinfo[currentpicturenumber].ObjectFormat,filename) == B_NO_ERROR)
+					{	
+						image = NULL;
+						return(B_NO_ERROR);
+					}
+				}
+				else
+					delete fh;
+				numberOfCopies++;	
 			}
 		}	
 	}
@@ -280,9 +294,9 @@ bool saveCamPicture (char *data, long int size, uint16_t type,const char *filena
 	BNodeInfo			*ni;
 	
 	#ifdef DEBUG
-	lflevel1 = fopen(LOGFILE,"a");
-	fprintf(lflevel1,"PTP - Save picture @ %s with size %d\n", filename,size);
-	fclose(lflevel1);
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - Save picture @ %s with size %d\n", filename,size);
+		fclose(lflevel1);
 	#endif
 	if((fh=new BFile(filename, B_WRITE_ONLY | B_CREATE_FILE )))
 	{
