@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -13,7 +13,6 @@
 extern int currentitemhandle;
 extern int *handles;
 extern bool haveigotfilenames;
-//extern PTPParams		*params;
 extern map<int, char*> imagenames;
 extern map<int, int> imagesizes;
 extern map<int, char*> imagedates;

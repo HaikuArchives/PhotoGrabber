@@ -1,10 +1,11 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
  
-//	Includes
+//
+//	System includes
 #include <Errors.h> // For Return Type
 #include <AppFileInfo.h> // For Version Info
 #include <String.h>
@@ -14,13 +15,10 @@
 #include <vector>
 #include <map>
 #include <Looper.h>
+#include <USBKit.h>
+//
+//	Locale includes
 #include "MSInterface.h"
-#ifdef _ZETA_OS_
-	#include <usb/USBKit.h>
-#else
-	#include "USBKit.h"
-#endif
-
 
 const int32 MSG_UPDATEBAR			= 0x01012001;
 

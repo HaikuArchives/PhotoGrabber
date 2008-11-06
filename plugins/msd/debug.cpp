@@ -68,9 +68,6 @@ int logError(int ErrorMes)
 		case MSCAM_INIT_FAIL:
 			errorMessage = "CAM: Initialisation of the PTP device failed\n";
 			break;
-		/*case MSCAM_NO_HANDLES:
-			errorMessage = "CAM: There are no handles\n";
-			break;*/
 		case MSCAM_GETPIC_FAIL:
 			errorMessage = "CAM: Could not get pictures\n";
 			break;

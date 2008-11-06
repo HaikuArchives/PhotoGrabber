@@ -33,16 +33,11 @@
 #include <scsi.h>
 #include <TranslationUtils.h>
 #include <TranslatorRoster.h>
+#include <TranslatorFormats.h>
 #include <Picture.h>
 #include <Bitmap.h>
 #include <CAM.h>
-#ifdef _ZETA_OS_
-	#include <usb/USBKit.h>
-#else
-	#include "USBKit.h"
-#endif
-
-
+#include <USBKit.h>
 
 //
 //		CameraInterface class
@@ -66,16 +61,14 @@ class MSDInterface
 			char *			getDeviceName();
 			char*			getVersion();
 			bool			cameraConnected(); 
-			bool			SCSIMount(const char *path,BUSBDevice *device);
-			bool 			SCSIUnmount();
-			bool			IsSCSIDisk(uchar data[36], BUSBDevice *usbdev);
+			bool			Mount();
+			bool 			Unmount();
 
 	private:
 			bool					camConnected;
 			char					*msdDeviceName;
 			char					*msdVersion;
 			char					*msdMountPoint;
-			bool					SCSIProbeMount(const char *device_path, BUSBDevice *usbdev);
 			bool					setCurrentItem(int index);
 			void					getMSDItems(const char *path);
 			bool					removeMSDItem(int handle);
