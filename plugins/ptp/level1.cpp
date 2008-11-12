@@ -40,9 +40,9 @@ virtual status_t DeviceAdded(BUSBDevice *dev)
 					if(ifc->Class() == 6)
 					{
 						#ifdef DEBUG
-						lflevel1 = fopen(LOGFILE,"a");
-						fprintf(lflevel1,"Device %s found and attached!\n",dev->ProductString());
-						fclose(lflevel1);
+							lflevel1 = fopen(LOGFILE,"a");
+							fprintf(lflevel1,"Device %s found and attached!\n",dev->ProductString());
+							fclose(lflevel1);
 						#endif
 						appDev = dev;
 						if(appDev->InitCheck() || appDev->SetConfiguration(appDev->ConfigurationAt(0)))
@@ -60,9 +60,9 @@ virtual status_t DeviceAdded(BUSBDevice *dev)
 								if(msgtarget != NULL)
 								{
 									#ifdef DEBUG
-									lflevel1 = fopen(LOGFILE,"a");
-									fprintf(lflevel1,"PTP: Send message to the system core\n");
-									fclose(lflevel1);
+										lflevel1 = fopen(LOGFILE,"a");
+										fprintf(lflevel1,"PTP: Send message to the system core\n");
+										fclose(lflevel1);
 									#endif
 									msgtarget->PostMessage(core_msg);
 								}
@@ -76,23 +76,43 @@ virtual status_t DeviceAdded(BUSBDevice *dev)
 	return B_OK;
 }
 virtual void DeviceRemoved(BUSBDevice *dev)
+{
+	// Initialize the USB device
+	int i,j;
+	const BUSBConfiguration *conf;
+	const BUSBInterface *ifc;
+	
+	for(i=0;i<(int)dev->CountConfigurations();i++)
 	{
-		fprintf(stderr,"removed %s @ '%s'\n",dev->IsHub() ? "hub" : "device", dev->Location());
-		appDev = NULL;
-		// send a message to the system core
-		BMessage *core_msg;
-		core_msg = new BMessage(CAM_DISCONNECTED);
-		core_msg->AddString("product",dev->ProductString());
-		if(msgtarget != NULL)
+		conf = dev->ConfigurationAt(i);
+		if(conf)
 		{
-			#ifdef DEBUG
-			lflevel1 = fopen(LOGFILE,"a");
-			fprintf(lflevel1,"PTP: Send message to the system core\n");
-			fclose(lflevel1);
-			#endif
-			msgtarget->PostMessage(core_msg);
+			for(j=0;j<(int)conf->CountInterfaces();j++)
+			{
+				ifc = conf->InterfaceAt(j);	
+				if(ifc)
+					if(ifc->Class() == 6)
+					{ 
+						appDev = NULL;
+						// send a message to the system core
+						BMessage *core_msg;
+						core_msg = new BMessage(CAM_DISCONNECTED);
+						core_msg->AddString("product",dev->ProductString());
+						if(msgtarget != NULL)
+						{
+							#ifdef DEBUG
+								lflevel1 = fopen(LOGFILE,"a");
+								fprintf(lflevel1,"PTP: Removed %s @ '%s'\n",dev->IsHub() ? "hub" : "device", dev->Location());
+								fprintf(lflevel1,"PTP: Send message to the system core\n");
+								fclose(lflevel1);
+							#endif
+							msgtarget->PostMessage(core_msg);
+						}
+					}
+			}
 		}
-;	}
+	}
+}
 };
 
 int get_BDCP_API_Revision(void)
@@ -240,7 +260,7 @@ status_t downloadPicture(BPath savedir, const char *name)
 	
 	#ifdef DEBUG
 		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"PTP - Download pictures\n");
+		fprintf(lflevel1,"PTP - Download picture\n");
 		fclose(lflevel1);
 	#endif
 	if(savedir != NULL)
@@ -283,6 +303,14 @@ status_t downloadPicture(BPath savedir, const char *name)
 				numberOfCopies++;	
 			}
 		}	
+	}
+	else
+	{
+		#ifdef DEBUG
+			lflevel1 = fopen(LOGFILE,"a");
+			fprintf(lflevel1,"PTP - Save directory is empty!\n");
+			fclose(lflevel1);
+		#endif
 	}
 	return(B_ERROR);
 }

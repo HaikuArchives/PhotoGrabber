@@ -40,7 +40,7 @@ struct items_data
 {
 	BeCam_MainWindow	*window;
 	GridView			*gridview;
-	entry_ref			*downloadDir;
+	entry_ref			downloadDir;
 	float				totalitems;
 	StatusDock			*statusDock;
 	const char			*fileName;
@@ -66,7 +66,7 @@ class BeCam_MainWindow : public BWindow
 		void				addItem(class BeCam_Item *item);
 		void				removeItem(class BeCam_Item *item);
 		void				clearItems();
-		void				downloadSelectedItems(entry_ref *copyToDir = NULL, const char *fileName = NULL);
+		void				downloadSelectedItems(entry_ref copyToDir, const char *fileName = NULL);
 		void				removeSelectedItems();
 		static status_t 	RemoveItems(items_data *data);
 		static status_t 	DownloadItems(items_data *data);

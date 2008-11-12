@@ -14,6 +14,7 @@
 #include <Path.h>
 #include <FindDirectory.h>
 #include <View.h>
+#include <Volume.h>
 
 //
 // External variables
@@ -281,18 +282,130 @@ bool MSDInterface::cameraConnected()
 	return camConnected;
 }
 //
-//	MSDInterface : Mount()
+//		MSDInterface : IsMounted()
 bool
-MSDInterface::Mount()
+MSDInterface::IsMounted() const
 {
-       return false;
+        return _PartitionData()->mounted;
 }
 //
-//	MSDInterface : Unmount()
-bool
-MSDInterface::Unmount()
+// 		MSDInterface : GetMountPoint
+status_t
+MSDInterface::GetMountPoint(BPath* mountPoint) const
 {
-        return false;
+        /*if (!mountPoint || !ContainsFileSystem())
+                return B_BAD_VALUE;
+
+        // if the partition is mounted, return the actual mount point
+        BVolume volume;
+        if (GetVolume(&volume) == B_OK) {
+                BDirectory dir;
+                status_t error = volume.GetRootDirectory(&dir);
+                if (error == B_OK)
+                        error = mountPoint->SetTo(&dir, NULL);
+                return error;
+        }
+
+        // partition not mounted
+        // get the volume name
+        const char* volumeName = ContentName();
+        if (!volumeName || strlen(volumeName) == 0)
+                volumeName = Name();
+        if (!volumeName || strlen(volumeName) == 0)
+                volumeName = "unnamed volume";
+
+        // construct a path name from the volume name
+        // replace '/'s and prepend a '/'
+        BString mountPointPath(volumeName);
+        mountPointPath.ReplaceAll('/', '-');
+        mountPointPath.Insert("/", 0);
+
+        // make the name unique
+        BString basePath(mountPointPath);
+        int counter = 1;
+        while (true) {
+                BEntry entry;
+                status_t error = entry.SetTo(mountPointPath.String());
+                if (error != B_OK)
+                        return error;
+
+                if (!entry.Exists())
+                        break;
+                mountPointPath = basePath;
+                mountPointPath << counter;
+                counter++;
+        }
+
+        return mountPoint->SetTo(mountPointPath.String());*/ return B_OK;
+}
+//
+// 	MSDInterface : Mount
+dev_t
+MSDInterface::Mount(const char* mountPoint, uint32 mountFlags,const char* parameters)
+{
+        /*if (IsMounted() || !ContainsFileSystem())
+                return B_BAD_VALUE;*/
+
+        // get the partition path
+        BPath partitionPath;
+        status_t error;// = GetPath(&partitionPath);
+        //if (error != B_OK)
+        //        return error;
+
+        // create a mount point, if none is given
+        bool deleteMountPoint = false;
+        BPath mountPointPath;
+        /*if (!mountPoint) {
+                // get a unique mount point
+                error = GetMountPoint(&mountPointPath);
+                if (error != B_OK)
+                        return error;
+
+                mountPoint = mountPointPath.Path();
+
+                // create the directory
+                if (mkdir(mountPoint, S_IRWXU | S_IRWXG | S_IRWXO) < 0)
+                        return errno;
+
+                deleteMountPoint = true;
+        }*/
+
+        // mount the partition
+        dev_t device = fs_mount_volume(mountPoint, partitionPath.Path(), NULL,
+                mountFlags, parameters);
+
+        // delete the mount point on error, if we created it
+        if (device < B_OK && deleteMountPoint)
+                rmdir(mountPoint);
+
+        // update object, if successful
+        //if (device >= 0)
+        //        error = Device()->Update();
+
+        return device;
+}
+//
+// 	MSDInterface : Unmount
+status_t
+MSDInterface::Unmount(uint32 unmountFlags)
+{
+        //if (!IsMounted())
+        //       return B_BAD_VALUE;
+
+        // get the partition path
+        BPath path;
+        status_t status; // = GetMountPoint(&path);
+        if (status != B_OK)
+                return status;
+
+        // unmount
+        status = fs_unmount_volume(path.Path(), unmountFlags);
+
+        // update object, if successful
+        //if (status == B_OK)
+        //        status = Device()->Update();
+
+        return status;
 }
 //
 //		MSDInterface: get MSD Item

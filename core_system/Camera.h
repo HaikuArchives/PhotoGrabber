@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/ 
@@ -29,7 +29,6 @@
 class Camera  : public BLooper
 {
 	public:
-						//Camera(char *name,char *manufacturer,char *version,char *serialnumber);
 						Camera(char *libName,char *looperName);
 						~Camera();
 		virtual void	MessageReceived(BMessage *message);
@@ -66,7 +65,6 @@ class Camera  : public BLooper
 		// Functions
 		bool			GetCameraInfo();
 		bool			SaveCameraItem(char *data, long int size, const char filename[255]);
-		/*BBitmap*		GetItemThumbnail(uint32 index);*/
 		int				logCamError(int ErrorMes);
 
 };

@@ -38,7 +38,6 @@ Camera::~Camera()
 //	Camera:: Open Camera
 bool Camera::OpenCamera()
 {
-	//Run();
 	// Give the system core looper to the plugin. 
 	// Then the plugin is able to send messages to the core system
 	camInterface->setCoreSystemLoop(app); 
@@ -176,7 +175,6 @@ bool Camera::RemoveItem(uint32 itemhandle)
 //	Camera::get the data of all the items of the camera
 bool Camera::GetCameraItems()
 {	
-	//CameraItem *localItem;
 	ItemData *localItemData;
 	BMessage *message;
 	if(CheckCameraConnection())
@@ -223,12 +221,6 @@ bool Camera::SaveCameraItem (char *data, long int size, const char filename[255]
 {	
 	return (B_NO_ERROR);
 }
-// 
-//	Camera::Get the item thumbnail bitmap
-/*BBitmap* Camera::GetItemThumbnail (uint32 index)
-{
-	return(camInterface->getThumb());
-}*/
 // 
 //	Camera::open the camera storage info
 bool Camera::GetStorageInfo(void)

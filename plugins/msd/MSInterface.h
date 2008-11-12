@@ -30,7 +30,6 @@
 #include <File.h>
 #include <NodeInfo.h>
 #include <Path.h>
-#include <scsi.h>
 #include <TranslationUtils.h>
 #include <TranslatorRoster.h>
 #include <TranslatorFormats.h>
@@ -38,6 +37,12 @@
 #include <Bitmap.h>
 #include <CAM.h>
 #include <USBKit.h>
+#include <fs_volume.h>
+
+struct user_partition_data
+{
+	bool mounted;
+};
 
 //
 //		CameraInterface class
@@ -60,9 +65,11 @@ class MSDInterface
 			BBitmap*		getThumb(int index);
 			char *			getDeviceName();
 			char*			getVersion();
-			bool			cameraConnected(); 
-			bool			Mount();
-			bool 			Unmount();
+			bool			cameraConnected();
+			bool			IsMounted() const; 
+			status_t		GetMountPoint(BPath* mountPoint) const;
+			dev_t			Mount(const char* mountPoint, uint32 mountFlags,const char* parameters);
+			status_t		Unmount(uint32 unmountFlags);
 
 	private:
 			bool					camConnected;
@@ -76,6 +83,7 @@ class MSDInterface
 			void					RescaleBitmap(char *srcfilename, BBitmap *dest);
 			map<uint32,MSD_Item*> 	MSDItems;
 			int						numberOfItems;
+			user_partition_data		msdPartitionData;
 };
 
 #define MS_OFFSET								1055

@@ -171,7 +171,6 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
             {
             	const char *camerastring;
             	BPoint interfacepoint;
-            	//BMessage reply;
             	camerastring = message->FindString("camerastring");
             	message->FindPoint("point",&interfacepoint);
             	OpenPluginConfig((char *)camerastring,&interfacepoint);
