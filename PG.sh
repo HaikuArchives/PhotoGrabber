@@ -43,6 +43,6 @@ cp ./plugins/ptp/obj.x86/libbdcp_ptp ./build/PhotoGrabber/plugins/
 
 # 	Make the package
 cd build
-zip "PhotoGrabber_V${VERSION}_R${REVISION}.zip" PhotoGrabber
+zip -r "PhotoGrabber_V${VERSION}_R${REVISION}.zip" PhotoGrabber
 cd ..
 
