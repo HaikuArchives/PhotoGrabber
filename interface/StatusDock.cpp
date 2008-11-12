@@ -80,7 +80,7 @@ void	StatusDock::UpdateStatus(float delta, const char *message)
 		SetStatusMessage(message);
 	if(delta > 0)
 		statusbar->Update(delta);
-	Draw(Frame());
+	Draw(Bounds());
 	
 }
 //		
@@ -101,12 +101,12 @@ void	StatusDock::Draw(BRect rect)
 	BRect statDockRect;
 	BRect picRect;
 	//
-	BView::Draw(Bounds());
+	BView::Draw(rect);
 	//
 	SetDrawingMode( B_OP_ALPHA );
 	SetHighColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	SetLowColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-	FillRect(Bounds());
+	FillRect(rect);
 	//
 	SetFont(&font);
 	GetFontHeight (&fontHeight);
@@ -116,7 +116,7 @@ void	StatusDock::Draw(BRect rect)
 	float picHeight = SD_MIN_BITMAP_HEIGHT;
 	float picWidth = SD_MIN_BITMAP_WIDTH;
 	int margin = 15;
-	statDockRect = Bounds();
+	statDockRect = rect;
 	picRect = statDockRect;
 	//
 	switch(modus)

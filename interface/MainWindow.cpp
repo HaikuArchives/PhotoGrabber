@@ -134,9 +134,9 @@ void BeCam_MainWindow::CreateStatusDock ()
 {
 	
 	BRect r = becam_view->Bounds();
-	r.top = r.bottom - 70;
+	r.top = r.bottom - 68;
 	becam_statusDock = new StatusDock(r,"statusdock", B_FOLLOW_BOTTOM | B_FOLLOW_LEFT_RIGHT, B_WILL_DRAW | B_FRAME_EVENTS);
-	becam_statusDock->SetStatusMessage("Please connect your camera.");
+	becam_statusDock->SetStatusMessage("Please connect your digital camera.");
 	becam_statusDock->ShowChildren(MODE_INIT);
 	becam_view->AddChild(becam_statusDock);
 }
@@ -466,13 +466,19 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			becam_statusDock->Hide();
 			break;
 		case CAM_DISCONNECTED:
+		{
 			product = message->FindString("product");
 			becam_connected = false;	
 			clearItems();
 			becam_statusDock->ShowChildren(MODE_INIT);
-			becam_statusDock->SetStatusMessage(_T("Camera disconnected"));
+			BMessenger messenger(becam_statusDock);
+			BMessage *statDockmessage = new BMessage(UPDATE_STAT);
+			statDockmessage->AddFloat("count",-1);
+			statDockmessage->AddString("statusmessage",_T("Please connect your digital camera."));
+			messenger.SendMessage(statDockmessage);
 			becam_statusDock->Show();
 			break;
+		}
 		case ADD_ITEM:
 		{
 			ItemData  *localItemData;
@@ -607,17 +613,17 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 		case STATDOCK_SHOWED:
 		{
 			becam_gridview->SetEnabled(false);
-			becam_scrollview->ResizeTo(becam_scrollview->Frame().Width(),becam_scrollview->Frame().Height() - becam_statusDock->Frame().Height());
+			becam_scrollview->ResizeTo(becam_scrollview->Frame().Width(),becam_scrollview->Bounds().Height() - becam_statusDock->Bounds().Height());
 			BScrollBar *v_scrollbar = becam_scrollview->ScrollBar(B_VERTICAL);
-			v_scrollbar->ResizeTo(v_scrollbar->Frame().Width(),v_scrollbar->Frame().Height() + B_H_SCROLL_BAR_HEIGHT);
+			v_scrollbar->ResizeTo(v_scrollbar->Frame().Width(),v_scrollbar->Frame().Height() + B_H_SCROLL_BAR_HEIGHT - 2);
 			break;
 		}
 		case STATDOCK_HIDED:
 		{
 			becam_gridview->SetEnabled(true);
-			becam_scrollview->ResizeTo(becam_scrollview->Frame().Width(),becam_scrollview->Frame().Height() + becam_statusDock->Frame().Height());
+			becam_scrollview->ResizeTo(becam_scrollview->Frame().Width(),becam_scrollview->Bounds().Height() + becam_statusDock->Bounds().Height());
 			BScrollBar *v_scrollbar = becam_scrollview->ScrollBar(B_VERTICAL);
-			v_scrollbar->ResizeTo(v_scrollbar->Frame().Width(),v_scrollbar->Frame().Height() - B_H_SCROLL_BAR_HEIGHT);
+			v_scrollbar->ResizeTo(v_scrollbar->Frame().Width(),v_scrollbar->Frame().Height() - B_H_SCROLL_BAR_HEIGHT + 2);
 			break;
 		}
 		default:
