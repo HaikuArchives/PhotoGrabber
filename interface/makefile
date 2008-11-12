@@ -10,7 +10,7 @@
 # specify the name of the binary 
 NAME := libPGInterface
 
-REVISION:= $(shell svn info 2> /dev/null | perl -lne 'if (/^Revision:\s(\d+)$$/) { print $$1 }')
+REVISION:= $(shell svn info 2> /dev/null | grep 'Revision:' | cut -f 2 -d ' ')
 
 # specify the type of binary 
 #       APP:    Application 
@@ -129,7 +129,8 @@ BISON_FLAGS :=
 #       -app 3 4 0 d 0 -short "340" -long "340 "`echo -n -e '©'`"1999 GNU GPL"
 #       -app 1 0 1 f 0 -short "App 1.0.1" -long "Company App 1.0.1 written by FOO"
 #       This may also be specified in a resource. 
-APP_VERSION := "2.2"
+#APP_VERSION := "2.2"
+APP_VERSION := $(shell cat ../PG.sh 2> /dev/null | grep 'VERSION=' | cut -f 2 -d '=')
 
 #       specify any preprocessor symbols to be defined.  The symbols will not 
 #       have their values set automatically; you must supply the value (if any) 

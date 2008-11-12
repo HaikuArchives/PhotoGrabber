@@ -13,40 +13,15 @@
 #include <File.h>
 #include <NodeInfo.h>
 
-
 // defenitions
-
 #define DEBUG_SCREEN			0
 #define DEBUG_LOGFILE			1
-#define USBBULK_BUFFER			512
-
-// *** Nikon Coolpix 2000 ***
-#define VENDOR_ID_NIKON				0x04b0
-#define PRODUCT_ID_COOLPIX2000_M	0x0301
-#define PRODUCT_ID_COOLPIX2000_P	0x0302
-// *** HP PS 318 ***
-#define VENDOR_ID_HP				0x03f0
-#define PRODUCT_ID_PS_318			0x6302
-// *** SONY DSC P8
-#define VENDOR_ID_SONY				0x054c
-#define PRODUCT_ID_DSC_P8			0x004e
-// *** KODAK EASYSHARE LS443
-#define VENDOR_ID_KODAK				0x0000
-#define PRODUCT_ID_LS443			0x0000
-
-//Jan-Rixt *** Belkin usb 8-in-1 Media Reader & Writer
-#define VENDOR_ID_BELKIN			0x55aa
-#define PRODUCT_ID_BELKINREADER		0xb012
-
-#define USB_CLASS_PTP	6
-#define USB_CLASS_MASS	8
 
 #define APP_SIG           			 "application/x-vnd.Jixt.PhotoGrabber"
 
 // *** log-file path ***
 
-#define LOGFILE 					"/boot/var/tmp/BeCam.log"
-#define VERSIONNUMBER				"2.2"
+#define LOGFILE 					"/boot/var/tmp/photograbber.log"
 
 // Global Messages
 
