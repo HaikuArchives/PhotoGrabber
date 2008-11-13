@@ -64,33 +64,37 @@ BeCam_AboutView::BeCam_AboutView(BRect r):BView(r, "aboutview", B_FOLLOW_LEFT_RI
     BScrollView *creditsScroller = new BScrollView("creditsScroller", creditsTextView, B_FOLLOW_ALL, B_WILL_DRAW | B_FRAME_EVENTS, false, true, B_FANCY_BORDER); 
     creditsView->AddChild(creditsScroller);
     //
-    rgb_color darkgrey = { 100, 100, 100, 255 }; 
+    rgb_color pgDarkgrey = { 100, 100, 100, 255 }; 
     rgb_color pgGreen = { 42, 131, 36, 255 }; 
-    rgb_color pgOrange = { 255, 69, 0, 255 }; 
+    rgb_color pgOrange = { 255, 69, 0, 255 };
+   	rgb_color pgYellow = { 255, 176, 0, 255 };
+	rgb_color pgBlue = { 80, 80, 200, 255 }; 
 	//
 	BFont font(be_bold_font); 
     font.SetSize(font.Size() + 4); 
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgGreen); 
     creditsTextView->Insert("PhotoGrabber\n");
-    creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange); 
+    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &pgBlue);
+    creditsTextView->Insert("\thttp://dev.osdrawer.net/projects/show/photograbber\n\n");
+    creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange);
     creditsTextView->Insert(_T("\tVersion:\n")); 
-    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
+    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &pgDarkgrey);
 	char version[1024];
 	snprintf(version, sizeof(version),"\t\t%d\n",VERSION);
 	creditsTextView->Insert( "\t\t2.2\n");
 	creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange);
 	creditsTextView->Insert(_T("\tRevision:\n")); 
-    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
+    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &pgDarkgrey);
 	char revision[1024];
 	snprintf(revision, sizeof(revision),"\t\t%d\n",REVISION);
 	creditsTextView->Insert(revision);
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange); 
     creditsTextView->Insert(_T("\tTeam Lead:\n")); 
-    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
+    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &pgDarkgrey);
 	creditsTextView->Insert( "\t\tJan-Rixt Van Hoye\n"); 
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange); 
     creditsTextView->Insert(_T("\tDevelopers:\n")); 
-    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
+    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &pgDarkgrey);
     creditsTextView->Insert( 
                 "\t\tJan-Rixt Van Hoye\n"
                 "\t\tLuc Schrijvers\n"
@@ -98,10 +102,27 @@ BeCam_AboutView::BeCam_AboutView(BRect r):BView(r, "aboutview", B_FOLLOW_LEFT_RI
                 "\t\tTim de Jong\n");
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange);
     creditsTextView->Insert(_T("\tSpecial Thanks To:\n"));
-    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &darkgrey);
+    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &pgDarkgrey);
     creditsTextView->Insert(
     			"\t\tBernd Korz\n"
-    			"\t\tFrancois Revol\n");  
+    			"\t\tFrancois Revol\n");
+    // Copyrights
+    font.SetSize(be_bold_font->Size() + 4);
+	font.SetFace(B_BOLD_FACE);
+	creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgGreen);
+	creditsTextView->Insert("\nCopyrights\n\n"); 
+    // libexif copyright
+	font.SetFace(B_BOLD_FACE | B_ITALIC_FACE);
+    creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgYellow);
+    creditsTextView->Insert("\tlibexif\n");
+    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &pgDarkgrey);
+    creditsTextView->Insert("\tCopyright " B_UTF8_COPYRIGHT " 2001 Lutz Müller\n\t<lutz@users.sourceforge.net>\n"); 
+	// libptp2 copyright
+	font.SetFace(B_BOLD_FACE | B_ITALIC_FACE);
+    creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgYellow);
+    creditsTextView->Insert("\tlibptp2\n");
+    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &pgDarkgrey);
+    creditsTextView->Insert("\tCopyright " B_UTF8_COPYRIGHT " 2001-2004 Mariusz Woloszyn\n\t<emsi@ipartners.pl>\n");
 	AddChild(creditsView);
 }
 
