@@ -18,7 +18,7 @@
 #include <USBKit.h>
 //	Local Includes
 extern "C" {
-#include "ptp.h"
+#include "libptp/ptp.h"
 }
 
 

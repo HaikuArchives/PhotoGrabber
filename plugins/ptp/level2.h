@@ -10,7 +10,7 @@
 #include <Looper.h>
 // user includes
 extern "C" {
-#include "ptp.h"
+#include "libptp/ptp.h"
 }
 #include "PTPInterface.h"
 

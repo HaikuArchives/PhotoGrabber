@@ -12,7 +12,7 @@
 #include <USBKit.h>
 #include "global.h"
 extern "C" {
-#include "ptp.h"
+#include "libptp/ptp.h"
 }
 
 

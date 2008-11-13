@@ -68,7 +68,7 @@ RDEFS :=
 #               and it's name 
 #               library: my_lib.a entry: my_lib.a or path/my_lib.a 
 
-LIBS :=  stdc++.r4	be libptp2.a translation device
+LIBS :=  stdc++.r4	be ./libptp/libptp2.a ./libexif/libexif.a translation device
 
 #       specify additional paths to directories following the standard 
 #       libXXX.so or libXXX.a naming scheme.  You can specify full paths 
@@ -86,7 +86,7 @@ SYSTEM_INCLUDE_PATHS :=
 #       additional paths to look for local headers 
 #       thes use the form: #include "header.h" 
 #       source file directories are automatically included 
-LOCAL_INCLUDE_PATHS := "../../core_system" "../../ptp"
+LOCAL_INCLUDE_PATHS := "../../core_system" "../../ptp" "./libexif" "./libptp"
 
 #       specify the level of optimization that you desire 
 #       NONE, SOME, FULL 

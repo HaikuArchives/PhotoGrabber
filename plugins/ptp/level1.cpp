@@ -15,6 +15,8 @@
 #include "level1.h"
 #include "level2.h"
 #include "debug.h"
+#include "libexif/exif-data.h"
+#include "libexif/exif-entry.h"
 //
 FILE *lflevel1;
 //		USB Roster class
@@ -445,11 +447,49 @@ bool saveCamPicture (char *data, long int size, uint16_t type,const char *filena
 		}
 		else
 		{
+			// Create the EXIF data as attributes
+			FILE *file = fopen(filename, "rb");
+			unsigned char buf[0x7fff];
+			ssize_t bufsize = fread(buf, 1, sizeof(buf), file);
+			if (bufsize == 0) 
+			{
+				fprintf (stderr, "Error reading file\n");
+				fclose(file);
+				delete fh;
+				return (B_ERROR);
+			}
+			ExifData *data = exif_data_new_from_data(buf, bufsize);
+			if (!data)
+			{ 
+				fclose(file);
+				delete fh;
+				return (B_ERROR);
+			}
+			// Read EXIF tags.
+			BString ident;
+			char value[256];
+			int count = 0;
+			for (int i = 0; i < EXIF_IFD_COUNT; i++) 
+			{
+				if (i != 1 && data->ifd[i] && data->ifd[i]->count) 
+				{
+					for (unsigned int j = 0; j < data->ifd[i]->count; j++)
+					{
+						ExifEntry *e = data->ifd[i]->entries[j];
+						exif_entry_get_value(e, value, sizeof(value));
+						ident = "EXIF:";
+						ident += exif_tag_get_name(e->tag);
+						fh->WriteAttr(ident.String(), B_STRING_TYPE, 0, (const void *)&value, strlen(value) + 1);
+						count++;
+					}
+				}
+			}
+			exif_data_unref(data);
+			fclose(file);
 			delete fh;
 		}
 	}
 	systemresult=-1;
-	
 	return (B_NO_ERROR);
 }
 
