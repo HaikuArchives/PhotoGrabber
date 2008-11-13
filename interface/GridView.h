@@ -32,7 +32,7 @@ struct list_tracking_data
 	BPoint		start;
 };
 
-class GridView : public /*BView,*/ BControl
+class GridView : public BControl
 {
 	public:
 								GridView (BRect rect, const char* name, 
@@ -69,11 +69,9 @@ class GridView : public /*BView,*/ BControl
 		int32					CurrentSelection(int32 index = 0);
 		bool					IsItemSelected(int32 index);
 		void					MakeEmpty();
-		int						GetNumberOfSelectedItems();
-		
+		int						GetNumberOfSelectedItems();	
 		BeCam_Item*		 		ItemAt(int32 index) const;
 		BeCam_Item				*SelectedItem() const;
-
 		int32					CountColumns() const;
 		int32					CountColumnsWithMinHorizItemMargin () const;
 		int32					CountRows() const;
@@ -86,6 +84,8 @@ class GridView : public /*BView,*/ BControl
 		friend class			Item;
 		
 		void					DrawContent(BRect updateRect);
+		float 					GetTop(int32 rowCount,int32 columnCount);
+		float 					GetRowHeight(int32 rowCount,int32 columnCount);
 		bool					HandleKeyMovement(const char* bytes, int32 numBytes);
 		float					ItemHeight() const;
 		float					ItemWidth() const;
@@ -98,16 +98,13 @@ class GridView : public /*BView,*/ BControl
 	 	void					ActionCopy(BMessage * request);
 	 	float					CalculateHorizMargin(float gridWidth) const;
 		
-		static float			fItemHeight;	// max height of bmp
-		static float			fItemWidth;		// max width of bmp
+		float					fItemHeight;	// height of item
+		float					fItemWidth;		// width of item
 		static float			fMinHorizItemMargin; // min horizontal margin
 		static float			fMinVertItemMargin; // min vertical margin
 		float					fHorizItemMargin;	// horizontal margin
 		float					fVertItemMargin;	// vertical margin
-		
-		int32					fCachedColumnCount,
-								fSelectedItemIndex,
-								fLastSelectedItemIndex;
+		int32					fCachedColumnCount,fSelectedItemIndex,fLastSelectedItemIndex;
 		int8					fSelectionRadius;
 		BList*					fItemList;
 		BeCam_Item*				fSelectedItem;

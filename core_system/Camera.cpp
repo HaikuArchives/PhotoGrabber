@@ -200,6 +200,16 @@ bool Camera::GetCameraItems()
 				localItemData->ItemYres = camInterface->getHeight();
 				localItemData->ItemDate = camInterface->getDate();
 				localItemData->ItemThumbBitmap = camInterface->getThumb();
+				if(localItemData->ItemThumbBitmap != NULL)
+				{
+					localItemData->ItemThumbXres = (uint32)localItemData->ItemThumbBitmap->Bounds().Width();
+					localItemData->ItemThumbYres = (uint32)localItemData->ItemThumbBitmap->Bounds().Height();
+				}
+				else
+				{
+					localItemData->ItemThumbXres = THUMBWIDTH;
+					localItemData->ItemThumbYres = THUMBHEIGHT;
+				}
 				// send a message to insert a item in the list
 				message = new BMessage(ADD_ITEM);
 				message->AddPointer("item",localItemData);
@@ -296,20 +306,15 @@ int Camera::logCamError(int ErrorMes)
 			errorMessage = "BDCPCAM: There are no handles\n";
 			break;
 		default:
-			errorMessage = "BDCPCAM:An unexpected error occured\n";
+			errorMessage = "BDCPCAM: An unexpected error occured\n";
 	}
-	// write the errorMessage on the screen
-	if(DEBUG_SCREEN || app->pgsettings.debugTerminal)
-		printf(errorMessage);
 	// write the errorMessage into the logfile
-	if(DEBUG_LOGFILE || app->pgsettings.debugFile)
-	{
+	#ifdef DEBUG
 		FILE	*file;
-		
 		file = fopen(LOGFILE,"a");
 		fprintf(file,errorMessage);
 		fclose(file);
-	}
+	#endif
 	return(ErrorMes);
 }
 

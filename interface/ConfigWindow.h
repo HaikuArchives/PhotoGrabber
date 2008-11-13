@@ -64,10 +64,6 @@ class BeCam_ConfigWindow : public BWindow
 		BStringView			*becam_pluginSource;
 		BStringView			*becam_pluginVersion;
 		BButton				*becam_pluginConfig;
-		//	Debug section
-		BBox				*becam_debugbox;
-		BCheckBox			*becam_checkTerminal;
-		BCheckBox			*becam_checkFile;
 		//	Screen section
 		BButton				*becam_savebutton;
 		BButton				*becam_cancelbutton;
@@ -87,7 +83,7 @@ class BeCam_ConfigWindow : public BWindow
 
 // Size
 #define CONFIG_WINDOW				4
-#define WINDOW_HEIGHT_CONFIG		330
+#define WINDOW_HEIGHT_CONFIG		215
 #define	WINDOW_WIDTH_CONFIG			350
 
 #endif

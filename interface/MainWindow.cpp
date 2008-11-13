@@ -342,20 +342,15 @@ int BeCam_MainWindow::logMainWindowError(int ErrorMes)
 			errorMessage = "MAIN WINDOW: No PTP device is present\n";	
 			break;
 		default:
-			errorMessage = "MAIN WINDOW:An unexpected error occured\n";
+			errorMessage = "MAIN WINDOW: An unexpected error occured\n";
 	}
-	// write the errorMessage on the screen
-	if(DEBUG_SCREEN)
-		printf(errorMessage);
 	// write the errorMessage into the logfile
-	if(DEBUG_LOGFILE)
-	{
+	#ifdef DEBUG
 		FILE	*file;
-		
 		file = fopen(INTF_LOGFILE,"a");
 		fprintf(file,errorMessage);
 		fclose(file);
-	}
+	#endif
 	return(ErrorMes);
 }
 

@@ -405,18 +405,13 @@ int CamInterface::logError(int ErrorMes)
 		default:
 			errorMessage = "BDCP: An unexpected error occured\n";
 	}
-	// write the errorMessage on the screen
-	if(DEBUG_SCREEN || app->pgsettings.debugTerminal)
-		printf(errorMessage);
 	// write the errorMessage into the logfile
-	if(DEBUG_LOGFILE || app->pgsettings.debugFile)
-	{
+	#ifdef DEBUG
 		FILE	*file;
-		
 		file = fopen(LOGFILE,"a");
 		fprintf(file,errorMessage);
 		fclose(file);
-	}
+	#endif
 	return(ErrorMes);
 }
 
@@ -431,16 +426,10 @@ void CamInterface::logValue(int ValueMes, int Value)
 		default:
 			valueMessage = "BDCP: An unexpected error occured\n";
 	}
-	// write the value on the screen
-	if(DEBUG_SCREEN || app->pgsettings.debugTerminal)
-		printf(valueMessage,Value);
-	// write the errorMessage into the logfile
-	if(DEBUG_LOGFILE || app->pgsettings.debugFile)
-	{
+	#ifdef DEBUG
 		FILE	*file;
-		
 		file = fopen(LOGFILE,"a");
 		fprintf(file,valueMessage,Value);
 		fclose(file);
-	}
+	#endif
 }

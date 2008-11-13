@@ -14,17 +14,11 @@
 #include <NodeInfo.h>
 
 // defenitions
-#define DEBUG_SCREEN			0
-#define DEBUG_LOGFILE			1
-
-#define APP_SIG           			 "application/x-vnd.Jixt.PhotoGrabber"
-
-// *** log-file path ***
-
+#define APP_SIG           			"application/x-vnd.Jixt.PhotoGrabber"
 #define LOGFILE 					"/boot/var/tmp/photograbber.log"
-
+#define	THUMBHEIGHT					120
+#define THUMBWIDTH					160
 // Global Messages
-
 #define UPDATE_STAT					'UPST'
 #define ABOUT						'ABOU'
 #define QUIT						'QUIT'

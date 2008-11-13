@@ -1,5 +1,5 @@
 /*****************************************************************
-* Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
 * All rights reserved.											 *
 * Distributed under the terms of the MIT License.                *
  *****************************************************************/
@@ -23,33 +23,6 @@ SETTINGS LoadSettingsFromFile(void)
 	BeCam_PrefSaver prefs("photograbber.prefs",10);	
 	SETTINGS pgsettings;
     char tempbuf[10];
-	//	Get the debugging information
-	//	Debugging to terminal
-	if (prefs.GetString("terminal", tempbuf, 10))
-	{
-		if(!strcmp(tempbuf,"true"))
-			pgsettings.debugTerminal = true;
-		else
-			pgsettings.debugTerminal = false;
-	}
-	else
-	{
-		printf("PREF - problem load debug terminal setting: %s\n",tempbuf);
-		pgsettings.debugTerminal = false;
-	}
-	//	Debugging to a file	
-	if (prefs.GetString("file", tempbuf, 10))
-	{
-		if(!strcmp(tempbuf,"true"))
-            pgsettings.debugFile = true;
-		else
-			pgsettings.debugFile = false;
-	}
-	else
-	{
-		printf("PREF - problem load debug file setting: %s\n",tempbuf);
-		pgsettings.debugFile = false;
-	}
 	//	Default download path
 	char tempbufName[B_FILE_NAME_LENGTH];
 	if (prefs.GetString("defaultdownpath", tempbufName, B_FILE_NAME_LENGTH))
@@ -88,15 +61,6 @@ SETTINGS LoadSettingsFromFile(void)
 void SaveSettingsToFile(SETTINGS pgsettings)
 {
 	BeCam_PrefSaver prefs("photograbber.prefs",10); 
-	// save the debug options
-	if(pgsettings.debugTerminal)
-		prefs.AddField("terminal","true");
-	else
-		prefs.AddField("terminal","false");
-	if(pgsettings.debugFile)
-		prefs.AddField("file","true");
-	else
-		prefs.AddField("file","false");
 	// save the default download path
 	prefs.AddField("defaultdownpath",pgsettings.defaultDownloadPath);
 	//	save the plugin name for bdcp cameras

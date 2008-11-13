@@ -27,7 +27,6 @@ class BeCam_Item : public BListItem
 						~BeCam_Item();
 		virtual void 	DrawItem(BView *owner, BRect frame, bool complete = false);
 		virtual void 	Update(BView *owner, const BFont *font);
-		void 			Rotate(int angle);
 		const char* 	GetName();
 		const char*		GetDate();
 		uint32			GetHandle();
@@ -38,13 +37,16 @@ class BeCam_Item : public BListItem
 		uint32			GetOrientation();
 		float			Height() const;
 		float			Width() const;
+		float			ThumbHeight() const;
+		float			ThumbWidth() const;
 		virtual bool	IsClickableFrame (BPoint point) const;
+		void 			RotateThumb(uint32 angle);
 		
 	private:
 		ItemData		*itemdata;
 		BRegion			fRegion;
-		float			fHeight;
-		float			fWidth;	
+		//float			fHeight;
+		//float			fWidth;	
 };
 
 #endif

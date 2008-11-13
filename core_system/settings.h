@@ -13,8 +13,6 @@
 //
 // Structure
 typedef struct {
- bool debugTerminal;    // Debug to the terminal
- bool debugFile;        // Debug to a file
  char defaultDownloadPath[B_FILE_NAME_LENGTH]; // Default path to download the pictures
  char deviceName[B_FILE_NAME_LENGTH];      // Camera name
  char pluginName[B_FILE_NAME_LENGTH];      // Plugin name 

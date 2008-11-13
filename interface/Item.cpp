@@ -18,8 +18,6 @@ FILE *lfitem;
 BeCam_Item::BeCam_Item(ItemData *data) : BListItem()
 {
 	itemdata = data;
-	fHeight = 160;
-	fWidth = 120;
 }
 
 //
@@ -57,6 +55,8 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 	BRect thumbRect;
 	BRect itemRect = BRect(0,0,(frame.right - frame.left),(frame.bottom - frame.top));
 	BBitmap* thumbnail = GetThumbBitmap();
+	float thumbWidth = ThumbWidth();
+	float thumbHeight = ThumbHeight();
 	BBitmap *itemBitmap;
 	BView *itemView;
 	
@@ -73,8 +73,6 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 	if(thumbnail)
 	{
 		thumbRect=thumbnail->Bounds();
-		float thumbWidth = thumbRect.right - thumbRect.left;
-		float thumbHeight = thumbRect.bottom - thumbRect.top;
 		int8 radius = 3;
 		
 		BRect selectionRect;
@@ -132,10 +130,10 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 		// Move the pen to draw
 		owner->MovePenTo(frame.left,frame.top);
 		
-		thumbRect.left=0;
-		thumbRect.right=159;
-		thumbRect.top=0;
-		thumbRect.bottom=119;
+		thumbRect.left = 0;
+		thumbRect.right = ThumbWidth();
+		thumbRect.top = 0;
+		thumbRect.bottom = ThumbHeight();
 		//	Draw a string	
 		owner->DrawString("No thumbnail");
 	}
@@ -145,7 +143,6 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 
 //
 //	Item::Update
-
 void BeCam_Item::Update(BView *owner, const BFont *font)
 {
 	BRect	rect;
@@ -206,13 +203,25 @@ uint32 BeCam_Item::GetOrientation()
 //	Item::Height
 float BeCam_Item::Height() const
 {
-	return fHeight;
+	return itemdata->ItemYres;
 }
 //
 //	Item::Width
 float BeCam_Item::Width() const
 {
-	return fWidth;
+	return itemdata->ItemXres;
+}
+//
+//	Item::ThumbHeight
+float BeCam_Item::ThumbHeight() const
+{
+	return itemdata->ItemThumbYres;
+}
+//
+//	Item::ThumbWidth
+float BeCam_Item::ThumbWidth() const
+{
+	return itemdata->ItemThumbXres;
 }
 //
 //	Item:: Is Clickable Frame
@@ -223,4 +232,82 @@ bool BeCam_Item::IsClickableFrame (BPoint point) const
 			return true;
 	
 	return false;
+}
+//
+//	Item:: RotateThumb
+void BeCam_Item::RotateThumb(uint32 angle)
+{
+	BRect 			tmpRect, bounds;
+	BBitmap			*tmpBitmap;
+	unsigned char	*srcBits, *dstBits;
+	uint32			sRow, dRow, sCol, dCol;
+	uint32			sWidth, dWidth, sHeight, dHeight;
+	uint32			sbpRow, dbpRow, sbpPix, dbpPix;
+
+	if(itemdata->ItemThumbBitmap)
+		tmpRect = itemdata->ItemThumbBitmap->Bounds();
+	else
+		return;
+	
+	bounds.left = tmpRect.left;
+	bounds.right = tmpRect.bottom; 
+	bounds.top = tmpRect.top;
+	bounds.bottom = tmpRect.right; 
+
+	sWidth = (uint32)tmpRect.right;
+	sHeight = (uint32)tmpRect.bottom;
+	dWidth = (uint32)bounds.right;
+	dHeight = (uint32)bounds.bottom;
+
+		
+	if(!(tmpBitmap = new BBitmap(bounds, itemdata->ItemThumbBitmap->ColorSpace())))
+		return;
+
+	srcBits = (unsigned char *)itemdata->ItemThumbBitmap->Bits();
+	dstBits =( unsigned char *)tmpBitmap->Bits();
+	sbpRow = itemdata->ItemThumbBitmap->BytesPerRow();
+	dbpRow = tmpBitmap->BytesPerRow();
+		
+	// Assume that bytes per pixel is 4 (RGBA) - should check against colorspace
+	dbpPix = 4;
+	sbpPix = 4;
+	
+	// Flip to the right
+	if(angle == 90)
+	{
+		for(sRow=0, dCol = dWidth; sRow <= sHeight; sRow++, dCol--)
+		{
+			for(sCol = 0, dRow = 0; sCol <= sWidth; sCol++, dRow++)
+			{
+				// Should loop for [bytes per pixel] iterations instead of hardcoded to 4 bytes
+				dstBits[(dbpRow * dRow) + (dCol * dbpPix) + 0] = srcBits[(sbpRow * sRow) + (sCol * sbpPix) + 0];
+				dstBits[(dbpRow * dRow) + (dCol * dbpPix) + 1] = srcBits[(sbpRow * sRow) + (sCol * sbpPix) + 1];
+				dstBits[(dbpRow * dRow) + (dCol * dbpPix) + 2] = srcBits[(sbpRow * sRow) + (sCol * sbpPix) + 2];
+				dstBits[(dbpRow * dRow) + (dCol * dbpPix) + 3] = srcBits[(sbpRow * sRow) + (sCol * sbpPix) + 3];
+			}
+		}
+	}
+
+	// Flip to the left
+	if(angle == 270)
+	{
+		for(sRow = 0, dCol = 0; sRow <= sHeight; sRow++, dCol++)
+		{
+			for(sCol = 0, dRow = dHeight; sCol <= sWidth; sCol++, dRow--)
+			{
+				// should loop for [bytes per pixel] iterations instead of hardcoded to 4 bytes
+				dstBits[(dbpRow * dRow) + (dCol * dbpPix) + 0] = srcBits[(sbpRow * sRow) + (sCol * sbpPix) + 0];
+				dstBits[(dbpRow * dRow) + (dCol * dbpPix) + 1] = srcBits[(sbpRow * sRow) + (sCol * sbpPix) + 1];
+				dstBits[(dbpRow * dRow) + (dCol * dbpPix) + 2] = srcBits[(sbpRow * sRow) + (sCol * sbpPix) + 2];
+				dstBits[(dbpRow * dRow) + (dCol * dbpPix) + 3] = srcBits[(sbpRow * sRow) + (sCol * sbpPix) + 3];
+			}
+		}
+	}
+
+	// Replace the old bitmap and change width and height
+	delete(itemdata->ItemThumbBitmap);
+	itemdata->ItemThumbBitmap = tmpBitmap;
+	itemdata->ItemThumbXres = (uint32)itemdata->ItemThumbBitmap->Bounds().Width();
+	itemdata->ItemThumbYres = (uint32)itemdata->ItemThumbBitmap->Bounds().Height();
+	itemdata->ItemOrientation = angle;
 }

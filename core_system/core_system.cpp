@@ -357,18 +357,13 @@ int BeDiGiCamApp::LogError(int ErrorMes)
 		default:
 			errorMessage = "MAIN: An unexpected error occured\n";
 	}
-	// write the errorMessage on the screen
-	if(DEBUG_SCREEN || pgsettings.debugTerminal)
-		printf(errorMessage);
 	// write the errorMessage into the logfile
-	if(DEBUG_LOGFILE || pgsettings.debugFile)
-	{
+	#ifdef DEBUG
 		FILE	*file;
-		
 		file = fopen(LOGFILE,"a");
 		fprintf(file,errorMessage);
 		fclose(file);
-	}
+	#endif
 	return(ErrorMes);
 }
 //

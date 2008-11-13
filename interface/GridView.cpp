@@ -22,8 +22,8 @@ FILE *lfgridv;
 
 #define kDRAG_SLOP		4
 
-float GridView::fItemWidth	= 160;	// max width of a bitmap
-float GridView::fItemHeight	= 120;	// max height of a bitmap
+//float GridView::fItemWidth	= 160;	// max width of a bitmap
+//float GridView::fItemHeight	= 120;	// max height of a bitmap
 float GridView::fMinHorizItemMargin = 20;	// horizontal margin
 float GridView::fMinVertItemMargin = 20;	// vertical margin
 //
@@ -44,6 +44,8 @@ GridView::GridView (BRect rect, const char* name, uint32 resize,uint32 flags)
 	fItemList = new BList();
 	fHorizItemMargin = fMinHorizItemMargin;
 	fVertItemMargin = fMinVertItemMargin;
+	fItemWidth = 160;
+	fItemHeight = 120;
 	fSelectedItemIndex = -1;
 	fLastSelectedItemIndex = -1;
 }
@@ -88,6 +90,11 @@ void GridView::AddItem (BeCam_Item* item)
 //	GridView :: Add Item Fast
 inline void GridView::AddItemFast (BeCam_Item* item)
 {
+	if(fItemList->IsEmpty())
+	{
+		fItemHeight = item->ThumbHeight();
+		fItemWidth = item->ThumbWidth();
+	}
 	fItemList->AddItem (reinterpret_cast<void*>(item));
 }
 //
@@ -155,7 +162,6 @@ void GridView::DrawContent (BRect /*notused*/)
 	}
 	
 	BRect bounds = Frame();
-	//int32 columnCount = CountColumns();
 	int32 columnCount = CountColumnsWithMinHorizItemMargin();
 	
 	BRect toEraseRect;
@@ -186,8 +192,8 @@ void GridView::DrawContent (BRect /*notused*/)
 	float horizMargin = CalculateHorizMargin(Bounds().Width());
 	SetHorizItemMargin(horizMargin);
 	
-	int32 x = 0;
-	int32 y = 0;
+	int32 column = 0;
+	int32 row = 0;
 	BRegion *updateRegion = new BRegion(Bounds());
 	
 	for (int32 i = 0; i < fItemList->CountItems(); i++)
@@ -197,24 +203,59 @@ void GridView::DrawContent (BRect /*notused*/)
 			break;	
 		
 		BRect itemRect;
-		//
-		itemRect.left = x * (ItemWidth() + ItemHorizMargin());
-		itemRect.top = y * (ItemHeight() + ItemVertMargin()); 	
+		// Set the dimensions
+		itemRect.left = column * (ItemWidth() + ItemHorizMargin());	
+		itemRect.top = GetTop(row,columnCount); 
 		itemRect.right = itemRect.left + ItemWidth() + ItemHorizMargin();
-		itemRect.bottom = itemRect.top + ItemHeight() + ItemVertMargin();
-		
+		itemRect.bottom = itemRect.top + GetRowHeight(row,columnCount) + ItemVertMargin();
+		//
 		if(updateRegion->Intersects(itemRect))
 			item->DrawItem(this, itemRect, true);
 		//
-		x++;
-		if (x >= columnCount)
+		column++;
+		if (column >= columnCount)
 		{
-			x = 0;
-			y++;
+			column = 0;
+			row++;
 		}
 	}
 }
+//
+// GridView :: GetTop
+float GridView::GetTop(int32 rowCount,int32 columnCount)
+{
+	float top = 0;
 
+	for(int32 x = 0; x < rowCount; x++)
+	{
+		float maxRowHeight = 0;
+		
+		for(int32 y = 0; y < columnCount; y++)
+		{
+			BeCam_Item *item = (BeCam_Item*)(fItemList->ItemAt ((x * columnCount) + y));
+			if(item && item->ThumbHeight() > maxRowHeight)
+				maxRowHeight = item->ThumbHeight();
+		}
+		
+		top += (maxRowHeight + ItemVertMargin());
+	}
+	return top;
+}
+//
+//	GridView :: GetRowHeight
+float GridView::GetRowHeight(int32 rowCount,int32 columnCount)
+{
+	float rowHeight = 0;
+	
+	for(int32 x = 0; x < columnCount; x++)
+	{
+		BeCam_Item *item = (BeCam_Item*)(fItemList->ItemAt ((rowCount * columnCount) + x));
+		if(item && item->ThumbHeight() > rowHeight)
+			rowHeight = item->ThumbHeight();
+	}
+	
+	return rowHeight;
+}
 //
 // GridView :: FrameResized
 void GridView::FrameResized (float newWidth, float newHeight)
@@ -240,15 +281,17 @@ BRect GridView::ItemRect (int32 index)
 	#endif
 	
 	int32 columnCount = CountColumnsWithMinHorizItemMargin();
-	int32 x = (index % columnCount);
-	int32 y = index / columnCount;
+	int32 column = (index % columnCount);
+	int32 row = index / columnCount;
 
 	BRect itemRect;
 	
-	itemRect.left = x * (ItemWidth () + ItemHorizMargin());
-	itemRect.top = y * (ItemHeight () + ItemVertMargin());
+	itemRect.left = column * (ItemWidth () + ItemHorizMargin());
+	//itemRect.top = row * (ItemHeight () + ItemVertMargin());
+	itemRect.top = GetTop(row,columnCount);
 	itemRect.right = itemRect.left + ItemWidth() + ItemHorizMargin();
-	itemRect.bottom = itemRect.top + ItemHeight() + ItemVertMargin();
+	//itemRect.bottom = itemRect.top + ItemHeight() + ItemVertMargin();
+	itemRect.bottom = itemRect.top + GetRowHeight(row,columnCount) + ItemVertMargin();
 	return itemRect;
 }
 
@@ -351,6 +394,13 @@ void GridView::MouseDown (BPoint point)
         resume_thread(spawn_thread((status_t(*)(void*))TrackItem,"list_tracking",B_DISPLAY_PRIORITY,data));
         //return;
     }
+    else if(clickCount == 1 && button == B_SECONDARY_MOUSE_BUTTON)
+    {
+    	Select(index);
+    	fSelectedItem->RotateThumb(90);
+    	Draw(Bounds());
+    	UpdateScrollView();
+    }
 	previousPoint = point;
 	ScrollToSelection ();
 	return BView::MouseDown (point);
@@ -419,7 +469,11 @@ void GridView::UpdateScrollView ()
 		BScrollBar *vertbar = fScrollView->ScrollBar (B_VERTICAL);
 		if (vertbar)
 		{
-			float maxV = CountRows() * (ItemHeight() + ItemVertMargin());
+			float row = CountRows();
+			float columnCount = CountColumnsWithMinHorizItemMargin();
+			
+			//float maxV = CountRows() * (ItemHeight() + ItemVertMargin());
+			float maxV = GetTop(row,columnCount) + GetRowHeight(row,columnCount) + ItemVertMargin();
 
 			if (maxV - Bounds().Height() > 0)
 				vertbar->SetRange (0, maxV - Bounds().Height());

@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/ 
@@ -22,6 +22,8 @@ typedef struct  {
 	uint32		ItemOrientation; 
 	BString		ItemName;
 	BBitmap		*ItemThumbBitmap;
+	uint32		ItemThumbXres;
+	uint32		ItemThumbYres;
 	char		*ItemPath;
 }ItemData;
 
