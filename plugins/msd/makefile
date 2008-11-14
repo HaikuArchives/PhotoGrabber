@@ -36,14 +36,14 @@ TYPE := SHARED
 #       in folder names do not work well with this makefile. 
 #		If you leave this blank, then all *.c *.cpp *.S *.s *.asm files
 #		in the top level local directory are automatically included.
-SRCS := MSDItem.cpp			\
-		MSInterface.cpp			\
+SRCS := MSInterface.cpp			\
 		debug.cpp			\
 		level2.cpp			\
 		prefsaver.cpp			\
 		preferences.cpp			\
 		level1.cpp			\
 		configplugin.cpp			\
+		scale.cpp					\
 		BitMapView.cpp
 
 
@@ -70,7 +70,7 @@ RDEFS :=
 #               and it's name 
 #               library: my_lib.a entry: my_lib.a or path/my_lib.a 
 
-LIBS :=  stdc++.r4 be translation
+LIBS :=  stdc++.r4 be translation device ../shared/libexif/libexif.a
 
 #       specify additional paths to directories following the standard 
 #       libXXX.so or libXXX.a naming scheme.  You can specify full paths 
@@ -78,12 +78,12 @@ LIBS :=  stdc++.r4 be translation
 #       be recursive, so include all of the paths where libraries can 
 #       be found.  Directories where source files are found are 
 #       automatically included. 
-LIBPATHS := 
+LIBPATHS := "../shared/libexif"
 
 #       additional paths to look for system headers 
 #       these use the form: #include <header.h> 
 #       source file directories are NOT auto-included here 
-SYSTEM_INCLUDE_PATHS := 
+SYSTEM_INCLUDE_PATHS := "./storage" "./shared" "../shared"
 
 #       additional paths to look for local headers 
 #       thes use the form: #include "header.h" 

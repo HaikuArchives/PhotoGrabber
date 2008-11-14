@@ -10,13 +10,14 @@
 #include <stdlib.h>
 #include <iostream.h>
 #include <NodeInfo.h>
+#include <libexif/exif-data.h>
+#include <libexif/exif-entry.h>
 
 //		User Includes
 #include "level1.h"
 #include "level2.h"
 #include "debug.h"
-#include "libexif/exif-data.h"
-#include "libexif/exif-entry.h"
+
 //
 FILE *lflevel1;
 //		USB Roster class
@@ -136,8 +137,6 @@ void getPluginVersion(version_info &ver)
 void getSupportedCameras(vector<string> & listofcams)
 {
 	listofcams.push_back("PTP(Picture Transfer Protocol) camera");
-	listofcams.push_back("Nikon Coolpix 2000");
-	listofcams.push_back("Nikon Coolpix SQ");
 }
 
 status_t openCamera(void)
@@ -239,16 +238,16 @@ status_t getNumberofPics(int &number)
 status_t setCurrentPicture(int picturenum)
 {
 	#ifdef DEBUG
-	lflevel1 = fopen(LOGFILE,"a");
-	fprintf(lflevel1,"PTP - Set current picture\n");
-	fclose(lflevel1);
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - Set current picture\n");
+		fclose(lflevel1);
 	#endif
 	currentpicturenumber = handles[picturenum];
 	#ifdef DEBUG
-	lflevel1 = fopen(LOGFILE,"a");
-	fprintf(lflevel1,"PTP - Current picnumber is: %d\n",picturenum);
-	fprintf(lflevel1,"PTP - Current picnumber(handle) is: %d\n",currentpicturenumber);
-	fclose(lflevel1);
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - Current picnumber is: %d\n",picturenum);
+		fprintf(lflevel1,"PTP - Current picnumber(handle) is: %d\n",currentpicturenumber);
+		fclose(lflevel1);
 	#endif
 	return(B_NO_ERROR);
 }

@@ -26,10 +26,8 @@ BLooper* msgtarget;
 class BUSBDevice *appDev;
 class Roster	*roster;
 int				*handles;
-//PTPParams		*params;
 MSDInterface	*mscam;
 
-int currentitemhandle;
 bool haveigotfilenames;
 map<int, char*> imagenames;
 map<int, int> imagesizes;
@@ -42,7 +40,7 @@ extern "C" status_t openCamera(void);
 extern "C" status_t closeCamera(void);
 extern "C" status_t getNumberofPics(int &);
 extern "C" status_t setCurrentPicture(int picturenumber);
-extern "C" status_t downloadPicture(BPath savedir);
+extern "C" status_t downloadPicture(BPath savedir, const char *name);
 extern "C" void getSupportedCameras(vector<string> &);
 
 // Messages

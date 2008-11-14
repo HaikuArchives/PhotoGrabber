@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2004-2007,	Jan-Rixt Van Hoye					 *
+ * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
  * All rights reserved.											 *
  * Distributed under the terms of the MIT License.               *
  *****************************************************************/
@@ -14,6 +14,15 @@
 #include "global.h"
 #include "MSDItem.h"
 #include "BitMapView.h"
+#include "scale.h"
+//
+//		Experimental Includes
+#include <DiskDevice.h>
+#include <DiskDevicePrivate.h>
+#include <DiskDeviceRoster.h>
+#include <DiskDeviceTypes.h>
+#include <DiskDeviceList.h>
+#include <Partition.h>
 
 //
 //		Includes
@@ -38,12 +47,9 @@
 #include <CAM.h>
 #include <USBKit.h>
 #include <fs_volume.h>
-
-struct user_partition_data
-{
-	bool mounted;
-};
-
+//
+#define	THUMBHEIGHT					120
+#define THUMBWIDTH					160
 //
 //		CameraInterface class
 class MSDInterface
@@ -55,35 +61,35 @@ class MSDInterface
 			void			MSD_logValue(int ValueMes, int Value);
 			//
 			int				getNumberOfItems();
-			bool			downloadItem(int index,BPath path);
-			bool			deleteItem(int index);
-			char*			getName(int index);
-			int				getSize(int index);
-			int				getXRes(int index);
-			int				getYRes(int index);
-			char*			getDate(int index);
-			BBitmap*		getThumb(int index);
+			bool			downloadItem(BPath path, const char *name);
+			bool			deleteItem();
+			char*			getName();
+			int				getSize();
+			int				getXRes();
+			int				getYRes();
+			char*			getDate();
+			BBitmap*		getThumb();
 			char *			getDeviceName();
 			char*			getVersion();
 			bool			cameraConnected();
 			bool			IsMounted() const; 
-			status_t		GetMountPoint(BPath* mountPoint) const;
-			dev_t			Mount(const char* mountPoint, uint32 mountFlags,const char* parameters);
-			status_t		Unmount(uint32 unmountFlags);
+			bool			Mount();
+			bool			Unmount();
+			bool			setCurrentItem(int index);
 
 	private:
 			bool					camConnected;
 			char					*msdDeviceName;
 			char					*msdVersion;
 			char					*msdMountPoint;
-			bool					setCurrentItem(int index);
+			
 			void					getMSDItems(const char *path);
-			bool					removeMSDItem(int handle);
-			MSD_Item* 				getMSDItem(int handle);
-			void					RescaleBitmap(char *srcfilename, BBitmap *dest);
-			map<uint32,MSD_Item*> 	MSDItems;
+			bool					removeMSDItem();
+			MSDItem* 				getMSDItem();
+			map<uint32,MSDItem*> 	MSDItems;
 			int						numberOfItems;
-			user_partition_data		msdPartitionData;
+			BDiskDevice				*device;
+			int 					currentItemHandle;
 };
 
 #define MS_OFFSET								1055

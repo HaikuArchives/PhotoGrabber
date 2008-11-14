@@ -16,9 +16,9 @@ void debug(BString debugstring);
 void debug(BString debugstring1, BString debugstring2);
 void debug(BString debugstring1, int debugval2);
 // defenitions
-//#define	DEBUG
+#define	DEBUG
 // log-file
-#define LOGFILE "/boot/var/tmp/ms.log"
+#define LOGFILE "/boot/var/tmp/msd.log"
 // error messages
 #define	MSCAM_OFFSET				155
 #define MSCAM_DEV_NO_FIND			MSCAM_OFFSET + 1

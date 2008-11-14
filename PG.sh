@@ -28,8 +28,11 @@ make
 # 	Build the ptp plugin
 cd ../plugins/ptp
 make
+cd ../
+# 	Build the msd plugin
+cd ./msd
+make
 cd ../..
-
 # 	Creating target dirs
 mkdir build
 mkdir ./build/PhotoGrabber
@@ -40,6 +43,7 @@ mkdir ./build/PhotoGrabber/plugins
 cp ./obj.x86/PhotoGrabber ./build/PhotoGrabber/
 cp ./interface/obj.x86/libPGInterface ./build/PhotoGrabber/interface/
 cp ./plugins/ptp/obj.x86/libbdcp_ptp ./build/PhotoGrabber/plugins/
+cp ./plugins/msd/obj.x86/libbdcp_msd ./build/PhotoGrabber/plugins/
 
 # 	Make the package
 cd build
