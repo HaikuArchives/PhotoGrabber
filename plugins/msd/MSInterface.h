@@ -13,7 +13,6 @@
 //		Local Includes
 #include "global.h"
 #include "MSDItem.h"
-#include "BitMapView.h"
 #include "scale.h"
 //
 //		Experimental Includes

@@ -36,16 +36,14 @@ TYPE := SHARED
 #       in folder names do not work well with this makefile. 
 #		If you leave this blank, then all *.c *.cpp *.S *.s *.asm files
 #		in the top level local directory are automatically included.
-SRCS := MSInterface.cpp			\
+SRCS := MSInterface.cpp		\
 		debug.cpp			\
 		level2.cpp			\
-		prefsaver.cpp			\
-		preferences.cpp			\
+		prefsaver.cpp		\
+		preferences.cpp		\
 		level1.cpp			\
-		configplugin.cpp			\
-		scale.cpp					\
-		BitMapView.cpp
-
+		configplugin.cpp	\
+		scale.cpp					
 
 #       specify the resource files to use 
 #       full path or a relative path to the resource file can be used. 
@@ -83,7 +81,7 @@ LIBPATHS := "../shared/libexif"
 #       additional paths to look for system headers 
 #       these use the form: #include <header.h> 
 #       source file directories are NOT auto-included here 
-SYSTEM_INCLUDE_PATHS := "./storage" "./shared" "../shared"
+SYSTEM_INCLUDE_PATHS := "./private/storage" "./private/shared" "../shared"
 
 #       additional paths to look for local headers 
 #       thes use the form: #include "header.h" 
