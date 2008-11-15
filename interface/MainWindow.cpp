@@ -498,7 +498,11 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 				disconnect = becam_actionsMenu->FindItem(_T("Disconnect"));	
 				disconnect->SetEnabled(true);
 				//
-				becam_statusDock->SetStatusMessage(_T("Connecting to camera..."));
+				BMessenger messenger(becam_statusDock);
+				BMessage *statDockmessage = new BMessage(UPDATE_STAT);
+				statDockmessage->AddFloat("count",-1);
+				statDockmessage->AddString("statusmessage",_T("Connecting to the digital camera..."));
+				//becam_statusDock->SetStatusMessage(_T("Connecting to camera..."));
 			}
 			else
 			{	

@@ -31,6 +31,14 @@ make
 cd ../
 # 	Build the msd plugin
 cd ./msd
+PRIVATEDIR="./private"
+if [ ! -d "$PRIVATEDIR" ] ; then
+	mkdir private
+	cd ./private
+	svn checkout svn://svn.berlios.de/haiku/haiku/trunk/headers/private/storage storage
+	svn checkout svn://svn.berlios.de/haiku/haiku/trunk/headers/private/shared shared
+	cd ..
+fi
 make
 cd ../..
 # 	Creating target dirs

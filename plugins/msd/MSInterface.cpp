@@ -398,8 +398,7 @@ bool MSDInterface::Mount()
 					fclose(file);
 			#endif
 			int32 usbPresent = strlen("/dev/disk/usb/");
-			if(device && device->IsRemovableMedia() 
-					&& !device->IsMounted() 
+			if(device && device->IsRemovableMedia()  
 					&& !strncmp(path.Path(), "/dev/disk/usb/", usbPresent))
 			{
 				#ifdef DEBUG
@@ -408,6 +407,20 @@ bool MSDInterface::Mount()
 					fprintf(file,"MS - Mount :: There are %d partitions on device %d.\n", device->CountDescendants(), i + 1);
 					fclose(file);
 				#endif
+				if(device->CountDescendants() == 1/* && !device->IsMounted()*/)
+				{
+					#ifdef DEBUG
+						FILE	*file;
+						file = fopen(LOGFILE,"a");
+						fprintf(file,"MS - Mount :: Device already mounted. Continue getting items.\n");
+						fclose(file);
+					#endif
+					BPath mountPoint;
+					device->GetMountPoint(&mountPoint);
+					// Get the items
+					getMSDItems(mountPoint.Path());
+					return B_OK;
+				}
 				for(int j = 0; j < device->CountDescendants(); j++)
 				{
 					BPartition *partition = device->ChildAt(j);
@@ -416,7 +429,7 @@ bool MSDInterface::Mount()
 						#ifdef DEBUG
 							FILE	*file;
 							file = fopen(LOGFILE,"a");
-							fprintf(file,"MS - Mount :: Partitions already mounted. Continue getting items.\n");
+							fprintf(file,"MS - Mount :: Partition already mounted. Continue getting items.\n");
 							fclose(file);
 						#endif
 						BPath mountPoint;
