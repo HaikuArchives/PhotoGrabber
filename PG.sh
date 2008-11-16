@@ -18,8 +18,10 @@ make clean
 cd ../plugins/ptp
 make clean
 cd ../..
-rm -r build
-
+BUILDDIR="./build"
+if [ -d "$BUILDDIR" ] ; then
+	rm -r build
+fi
 # 	Build the core
 make
 # 	Build the interface
