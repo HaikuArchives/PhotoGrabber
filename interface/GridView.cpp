@@ -1,9 +1,10 @@
-/*****************************************************************
-* Copyright (c) 2004-2008,	Ramshankar, Jan-Rixt Van Hoye		 *
-* All rights reserved.											 *
-* Distributed under the terms of the MIT License.                *
- *****************************************************************/
-
+/*
+****************************************************************
+* Copyright (c) 2004-2008,	Ramshankar, Jan-Rixt Van Hoye	   *
+* All rights reserved.										   *
+* Distributed under the terms of the MIT License.              *
+****************************************************************
+*/
 #include <app/Messenger.h>
 #include <app/Looper.h>
 #include <app/Handler.h>

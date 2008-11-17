@@ -1,12 +1,14 @@
-/*****************************************************************
- * Copyright (c) 2004-2008,	PhotoGrabber-team					 *
- * All rights reserved.											 *
- * Distributed under the terms of the MIT License.               *
- *****************************************************************
- *																 *																 *
- *  Description: A View that draws an animation		     		 *   	 								 *
- *																 *	
- *****************************************************************/
+/*
+****************************************************************
+* Copyright (c) 2004-2008,	PhotoGrabber-team				   *
+* All rights reserved.										   *
+* Distributed under the terms of the MIT License.              *
+****************************************************************
+*															   *																 *
+*  Description: A View that draws an animation		     	   *   	 								 *
+*															   *	
+****************************************************************
+*/
 //
 // File defenition
 #ifndef ANIMATION_H

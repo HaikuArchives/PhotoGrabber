@@ -1,9 +1,11 @@
-/*****************************************************************
- * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
- * All rights reserved.											 *
- * Distributed under the terms of the MIT License.               *
- *****************************************************************/
- //
+/*
+****************************************************************
+* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+* All rights reserved.										   *
+* Distributed under the terms of the MIT License.              *
+****************************************************************
+*/
+//
 //		Local Includes
 #include "MSInterface.h"
 #include "global.h"

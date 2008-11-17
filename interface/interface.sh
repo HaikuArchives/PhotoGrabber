@@ -1,14 +1,12 @@
 ## *****************************************************************
 ## * Copyright (c) 2004-2008, Jan-Rixt Van Hoye aka'Jixt'		   *
-##,* 							and Luc Schrijvers aka 'Begasus'   *
+## * 							and Luc Schrijvers aka 'Begasus'   *
 ## * All rights reserved.										   *
 ## * Distributed under the terms of the MIT License.               *
 ## *****************************************************************
 
 ## Buildfile for PhotoGrabber Interface
 
-# Cleaning the build system
-#make clean
 # Build the interface
 make
 # Copy the binaries to the build directory

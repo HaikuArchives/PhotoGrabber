@@ -1,11 +1,12 @@
-/*****************************************************************
- * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye					 *
- * All rights reserved.											 *
- * Distributed under the terms of the MIT License.               *
- *****************************************************************/
- 
+/*
+****************************************************************
+* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+* All rights reserved.										   *
+* Distributed under the terms of the MIT License.              *
+****************************************************************
+*/
+//
 // includes
-
 #include <stdio.h>
 #include <string.h>
 #include "PTPInterface.h"
