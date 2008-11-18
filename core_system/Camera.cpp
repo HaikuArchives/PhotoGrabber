@@ -141,6 +141,8 @@ bool Camera::GetCameraItems()
 				fprintf(lfcam,"CAM - There are no items on the camera.\n");
 				fclose(lfcam);
 			#endif
+			message = new BMessage(GET_ITEMS_DONE);
+			app->PostMessage(message,app);
 			return(B_ERROR);
 		}
 		else

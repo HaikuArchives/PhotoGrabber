@@ -377,7 +377,7 @@ char*	MSDInterface::getVersion()
 }
 //
 //
-void MSDInterface::getMSDItems(const char *path)
+void MSDInterface::getMSDItems(const char* path)
 {
 	// TODO :: 	Surfing in the file structure of the mass storage device
 	//			and create a MSD_Item when we find a picture.
@@ -385,6 +385,12 @@ void MSDInterface::getMSDItems(const char *path)
 	BNodeInfo fileInfo;
 	char type[256];
 	status_t status;
+	#ifdef DEBUG
+		FILE	*logFile;
+		logFile = fopen(LOGFILE,"a");
+		fprintf(logFile,"MS - GetMSDItems :: Searching in path  '%s'.\n", path);
+		fclose(logFile);
+	#endif
 	BDirectory dir(path);
 	MSDItem *localItem;
   	if(dir.InitCheck() == B_OK)
@@ -442,6 +448,7 @@ MSDInterface::IsMounted() const
 // 	MSDInterface : Mount
 bool MSDInterface::Mount()
 {
+		char *imgDir = "DCIM";
 		BDiskDeviceList deviceList;
 		status_t error = deviceList.Fetch();
 		if (error != B_OK) 
@@ -449,7 +456,7 @@ bool MSDInterface::Mount()
 			#ifdef DEBUG
 				FILE	*file;
 				file = fopen(LOGFILE,"a");
-				fprintf(file,"MS - Mount :: Failed to get the list of disk devices: %s", strerror(error));
+				fprintf(file,"MS - Mount :: Failed to get the list of disk devices: %s\n", strerror(error));
 				fclose(file);
 			#endif
 			return B_ERROR;
@@ -483,18 +490,50 @@ bool MSDInterface::Mount()
 					fprintf(file,"MS - Mount :: There are %d partitions on device %d.\n", device->CountDescendants(), i + 1);
 					fclose(file);
 				#endif
-				if(device->CountDescendants() == 1 && !device->IsMounted())
+				BPath mountPoint;
+				// Mount device when there is only 1 partition
+				if(device->CountDescendants() == 1)
 				{
-					#ifdef DEBUG
-						FILE	*file;
-						file = fopen(LOGFILE,"a");
-						fprintf(file,"MS - Mount :: Device already mounted. Continue getting items.\n");
-						fclose(file);
-					#endif
-					BPath mountPoint;
-					device->GetMountPoint(&mountPoint);
-					return B_OK;
+					if(device->IsMounted())
+					{
+						#ifdef DEBUG
+							FILE	*file;
+							file = fopen(LOGFILE,"a");
+							fprintf(file,"MS - Mount :: Device already mounted. Continue getting items.\n");
+							fclose(file);
+						#endif
+						device->GetMountPoint(&mountPoint);
+						mountPoint.Append(imgDir);
+						getMSDItems(mountPoint.Path());
+						return B_OK;
+					}		
+					status_t error = device->Mount(NULL,B_MOUNT_READ_ONLY);
+					if (error >= B_OK) 
+					{
+						device->GetMountPoint(&mountPoint);
+						#ifdef DEBUG
+							FILE	*file;
+							file = fopen(LOGFILE,"a");
+							fprintf(file,"MS - Mount :: Volume `%s' mounted successfully at '%s'.\n", device->Name(), mountPoint.Path());
+							fclose(file);
+						#endif
+						// Get the items
+						mountPoint.Append(imgDir);
+						getMSDItems(mountPoint.Path());
+						return B_OK;
+					} 
+					else 
+					{	
+						#ifdef DEBUG
+							FILE	*file;
+							file = fopen(LOGFILE,"a");
+							fprintf(file,"MS - Mount :: Volume `%s' mounted failed!.\n", device->Name());
+							fclose(file);
+						#endif
+						return B_ERROR;
+					}
 				}
+				// Mount the right partition when there are more then 1
 				for(int j = 0; j < device->CountDescendants(); j++)
 				{
 					BPartition *partition = device->ChildAt(j);
@@ -508,13 +547,13 @@ bool MSDInterface::Mount()
 						#endif
 						BPath mountPoint;
 						partition->GetMountPoint(&mountPoint);
+						mountPoint.Append(imgDir);
 						getMSDItems(mountPoint.Path());
 						return B_OK;
 					}
 					status_t error = partition->Mount(NULL,B_MOUNT_READ_ONLY);
 					if (error >= B_OK) 
 					{
-						BPath mountPoint;
 						partition->GetMountPoint(&mountPoint);
 						#ifdef DEBUG
 							FILE	*file;
@@ -523,6 +562,7 @@ bool MSDInterface::Mount()
 							fclose(file);
 						#endif
 						// Get the items
+						mountPoint.Append(imgDir);
 						getMSDItems(mountPoint.Path());
 						return B_OK;
 					} 
