@@ -127,12 +127,12 @@ int get_BDCP_API_Revision(void)
 void getPluginVersion(version_info &ver)
 {
 	ver.major = 2;
-	ver.middle = 0;
-	ver.minor = 2;
+	ver.middle = 2;
+	ver.minor = 0;
 	ver.variety = 0;
 	ver.internal = 0;
 	sprintf(ver.short_info,"Jan-Rixt Van Hoye 2008");
-	sprintf(ver.long_info,"BDCP PTP Cameras Plugin");
+	sprintf(ver.long_info,"PTP Cameras Plugin");
 }
 
 void getSupportedCameras(vector<string> & listofcams)
@@ -145,16 +145,16 @@ status_t openCamera(void)
 	// Check USB Devices
 	params = new PTPParams;
 	#ifdef DEBUG
-	lflevel1 = fopen(LOGFILE,"a");
-	fprintf(lflevel1,"PTP - Start the roster\n");
-	fclose(lflevel1);
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - Start the roster\n");
+		fclose(lflevel1);
 	#endif
 	roster = new Roster;
 	roster->Start();
 	#ifdef DEBUG
-	lflevel1 = fopen(LOGFILE,"a");
-	fprintf(lflevel1,"PTP - Roster started\n");
-	fclose(lflevel1);
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - Roster started\n");
+		fclose(lflevel1);
 	#endif
 	return(B_NO_ERROR);
 }
@@ -163,13 +163,24 @@ status_t closeCamera(void)
 {
 	// Close the camera
 	#ifdef DEBUG
-	lflevel1 = fopen(LOGFILE,"a");
-	fprintf(lflevel1,"PTP - Close camera\n");
-	fclose(lflevel1);
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - Close PTP plugin\n");
+		fclose(lflevel1);
 	#endif
 	if(appDev != NULL)
 		ptp_closesession(params);
+	#ifdef DEBUG
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - Stopping USB Roster\n");
+		fclose(lflevel1);
+	#endif
 	roster->Stop();
+	delete(roster);
+	#ifdef DEBUG
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - USB Roster stopped\n");
+		fclose(lflevel1);
+	#endif
 	return(B_NO_ERROR);
 }
 
@@ -178,15 +189,15 @@ status_t getNumberofPics(int &number)
 	int i=0;
 	number = 0;
 	#ifdef DEBUG
-	lflevel1 = fopen(LOGFILE,"a");
-	fprintf(lflevel1,"PTP - Get number of pictures\n");
-	fclose(lflevel1);
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - Get number of pictures\n");
+		fclose(lflevel1);
 	#endif
 	ptp_getobjecthandles(params, 0xffffffff, 0x000000, 0x000000,&params->handles);
 	#ifdef DEBUG
-	lflevel1 = fopen(LOGFILE,"a");
-	fprintf(lflevel1,"PTP - Got objecthandles\n");
-	fclose(lflevel1);
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - Got objecthandles\n");
+		fclose(lflevel1);
 	#endif
 	if((*params).handles.n == 0)
 	{
@@ -196,24 +207,24 @@ status_t getNumberofPics(int &number)
 	else
 	{
 		#ifdef DEBUG
-		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"PTP - Part1\n");
-		fclose(lflevel1);
+			lflevel1 = fopen(LOGFILE,"a");
+			fprintf(lflevel1,"PTP - Part1\n");
+			fclose(lflevel1);
 		#endif
 		handles = new int[(*params).handles.n];
 		(*params).objectinfo =(PTPObjectInfo*)malloc(sizeof(PTPObjectInfo)* (*params).handles.n);
 		#ifdef DEBUG
-		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"PTP - Part2\n");
-		fclose(lflevel1);
+			lflevel1 = fopen(LOGFILE,"a");
+			fprintf(lflevel1,"PTP - Part2\n");
+			fclose(lflevel1);
 		#endif
 		for (uint32 j = 0; j < (*params).handles.n;j++)
 		{
 			ptp_getobjectinfo(params,(*params).handles.Handler[j],&params->objectinfo[j]);
 			#ifdef DEBUG
-			lflevel1 = fopen(LOGFILE,"a");
-			fprintf(lflevel1,"PTP - Part2 - %d\n",j);
-			fclose(lflevel1);
+				lflevel1 = fopen(LOGFILE,"a");
+				fprintf(lflevel1,"PTP - Part2 - %d\n",j);
+				fclose(lflevel1);
 			#endif
 			if((*params).objectinfo[j].ObjectFormat != PTP_OFC_Undefined && (*params).objectinfo[j].ObjectFormat != PTP_OFC_Association && (*params).objectinfo[j].ObjectFormat != PTP_OFC_DPOF)
 			{
@@ -223,15 +234,15 @@ status_t getNumberofPics(int &number)
 		}
 		number = i;
 		#ifdef DEBUG
-		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"PTP - Get part3\n");
-		fclose(lflevel1);
+			lflevel1 = fopen(LOGFILE,"a");
+			fprintf(lflevel1,"PTP - Get part3\n");
+			fclose(lflevel1);
 		#endif
 	}
 	#ifdef DEBUG
-	lflevel1 = fopen(LOGFILE,"a");
-	fprintf(lflevel1,"PTP - Number of pictures is: %d\n",number);
-	fclose(lflevel1);
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - Number of pictures is: %d\n",number);
+		fclose(lflevel1);
 	#endif	
 	return(B_NO_ERROR);
 }
@@ -448,20 +459,20 @@ bool saveCamPicture (char *data, long int size, uint16_t type,const char *filena
 		else
 		{
 			// Create the EXIF data as attributes
-			FILE *file = fopen(filename, "rb");
+			FILE *exifFile = fopen(filename, "rb");
 			unsigned char buf[0x7fff];
-			ssize_t bufsize = fread(buf, 1, sizeof(buf), file);
+			ssize_t bufsize = fread(buf, 1, sizeof(buf), exifFile);
 			if (bufsize == 0) 
 			{
 				fprintf (stderr, "Error reading file\n");
-				fclose(file);
+				fclose(exifFile);
 				delete fh;
 				return (B_ERROR);
 			}
 			ExifData *data = exif_data_new_from_data(buf, bufsize);
 			if (!data)
 			{ 
-				fclose(file);
+				fclose(exifFile);
 				delete fh;
 				return (B_ERROR);
 			}
@@ -485,7 +496,7 @@ bool saveCamPicture (char *data, long int size, uint16_t type,const char *filena
 				}
 			}
 			exif_data_unref(data);
-			fclose(file);
+			fclose(exifFile);
 			delete fh;
 		}
 	}

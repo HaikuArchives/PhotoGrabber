@@ -22,14 +22,7 @@
 //
 typedef struct {
 		int32			ItemHandle;
-		BString			ItemDate;
-		uint32			ItemSize;
-		uint32			ItemXres;
-		uint32			ItemYres;
 		BString			ItemName;
-		BBitmap			*ItemThumbBitmap;
-		uint32			ItemThumbXres;
-		uint32			ItemThumbYres;
 		BString			ItemPath;
 }MSDItem;
 

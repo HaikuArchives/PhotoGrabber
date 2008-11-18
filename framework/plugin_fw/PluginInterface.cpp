@@ -187,10 +187,9 @@ bool CamInterface::open()
 	if (check_openCamera == true)
 		err = (*openCamera)();
 	
-	if (err < B_OK)
+	if (err != B_NO_ERROR)
 	{
 		camConnected = false;
-		//unload_add_on(addonId);
 		logError(CAMI_OPEN_CAMERA);
 		return false;
 	}

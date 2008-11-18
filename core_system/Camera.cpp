@@ -14,144 +14,94 @@
 //
 //		External variables
 extern class BeDiGiCamApp *app;
+FILE *lfcam;
 //
 // Camera::constructor
-Camera::Camera(char *libName, char *looperName) : BLooper(looperName)
+Camera::Camera(char *libName = NULL) : BLooper("cameralooper")
 {
-	CameraModel = "Not Available";
-	CameraManufacturer = "Not Available";
-	CameraVersion = "No Version";
-	CameraSerialNumber = "No Serial Number";
 	// First create the temporary directory
 	BDirectory tmpDir("/boot");
 	tmpDir.CreateDirectory("var/tmp",&tmpDir);
+	#ifdef DEBUG
+		lfcam = fopen(LOGFILE,"a");
+		fprintf(lfcam,"CAM - Plugin name is: %s.\n",libName);
+		fclose(lfcam);
+	#endif
 	// Create the interface
-	camInterface = new CamInterface(libName);
-	looperRunning = false;
+	if(libName != NULL)
+		camInterface = new CamInterface(libName);
 }
 //
 // Camera::destructor
 Camera::~Camera()
 {
-//	delete camInterface;
-	camInterface = NULL;
+	delete(camInterface);
 }
 //
-//	Camera:: Open Camera
-bool Camera::OpenCamera()
+//	Camera:: Start the camera looper
+bool Camera::Start()
 {
 	// Give the system core looper to the plugin. 
 	// Then the plugin is able to send messages to the core system
-	camInterface->setCoreSystemLoop(app); 
-	if(camInterface->open())
+	#ifdef DEBUG
+		lfcam = fopen(LOGFILE,"a");
+		fprintf(lfcam,"CAM - Start listening to connecting digital cameras.\n");
+		fclose(lfcam);
+	#endif
+	BLooper::Run();
+	return B_OK;
+}
+//
+//	Camera:: Stop the camera looper
+bool Camera::Stop()
+{
+	#ifdef DEBUG
+		lfcam = fopen(LOGFILE,"a");
+		fprintf(lfcam,"CAM - Stop listening to connecting digital cameras.\n");
+		fclose(lfcam);
+	#endif
+	BLooper::Lock();
+	BLooper::Quit();
+	return B_OK;
+}
+//
+//	Camera:: Open Device
+bool Camera::OpenDevice()
+{
+	#ifdef DEBUG
+		lfcam = fopen(LOGFILE,"a");
+		fprintf(lfcam,"CAM - Open the digital camera.\n");
+		fclose(lfcam);
+	#endif
+	if(camInterface)
 	{
-		Run();
-		looperRunning = true;
+		camInterface->setCoreSystemLoop(app);
+		camInterface->open();
+		return camInterface->cameraConnected();
 	}
-	return camInterface->cameraConnected(); 
-	
+	return false;
 }
 //
-//	Camera:: Close Camera
-bool Camera::CloseCamera()
+//	Camera:: Close Device
+bool Camera::CloseDevice()
 {
-	if(camInterface->cameraConnected())
+	#ifdef DEBUG
+		lfcam = fopen(LOGFILE,"a");
+		fprintf(lfcam,"CAM - Close the digital camera.\n");
+		fclose(lfcam);
+	#endif
+	if(camInterface)
+	{
 		camInterface->close();
-	looperRunning = false;
-	Lock();
-	Quit();
-	return looperRunning;
-}
-//
-//	Camera:: Has the camera been opened?
-bool Camera::IsOpen()
-{
-	return looperRunning;
-}
-//
-//	Camera:: Quit requested
-bool Camera::QuitRequested()
-{
-	return BLooper::QuitRequested();
-}
-//
-//	Camera:: Check Connection
-bool Camera::CheckCameraConnection()
-{
-	return(camInterface->cameraConnected());
-}
-//
-//	Camera::Get Model
-const char* Camera::GetModel()
-{
-	return CameraModel.String();
-}
-//
-//	Camera::Get Manufacturer
-const char* Camera::GetManufacturer()
-{
-	return CameraManufacturer.String();
-}//
-//	Camera::Get Version
-const char* Camera::GetVersion()
-{
-	return CameraVersion.String();
-}//
-//	Camera::Get Serial Number
-const char* Camera::GetSerialNumber()
-{
-	return CameraSerialNumber.String();
-}
-//
-//	Camera::set Model
-void Camera::SetModel(char *model)
-{
-	if(model != "")
-		CameraModel=model;
-}
-//
-//	Camera::set Manufacturer
-void Camera::SetManufacturer(char *manufac)
-{
-	if(manufac != "")
-		CameraManufacturer=manufac;
-}
-//
-//	Camera::set Version
-void Camera::SetVersion(char *version)
-{
-	if(version != "")
-		CameraVersion=version;
-}
-//
-//	Camera::set Serial Number
-void Camera::SetSerialNumber(char *serialnumber)
-{
-	if(serialnumber != "")
-		CameraSerialNumber=serialnumber;
+		return !camInterface->cameraConnected();
+	}
+	return false;
 }
 //
 // Camera:: get number of pictures
 int	Camera::GetNumberOfItems()
 {	
 	return camInterface->getNumberOfItems();		
-}
-// 
-//	Camera:: open the camera info
-bool Camera::GetCameraInfo()
-{	
-	version_info deviceVersion;
-	char *versionString;
-	// print the information of the camera on the screen
-	SetModel("Camera");
-	deviceVersion = camInterface->getVersion();
-	SetManufacturer(deviceVersion.long_info);
-	versionString = new char[100];
-	sprintf(versionString,"%ld.%ld.%ld",deviceVersion.major,deviceVersion.middle,deviceVersion.minor);
-	SetVersion(versionString);
-	SetSerialNumber("000-000");
-	return(true);
-		
 }
 // 
 //	Camera::Get the item bitmap
@@ -163,14 +113,16 @@ bool Camera::DownloadItem(uint32 itemhandle, entry_ref *copyToDir = NULL, const 
 	 	directory = BPath(copyToDir);
 	else
 		directory = CameraSavedir;
-	camInterface->downloadItem(itemhandle,directory, fileName);
+	if(camInterface && camInterface->cameraConnected())
+		camInterface->downloadItem(itemhandle,directory, fileName);
 	return B_OK;
 }
 //
 // 	Camera:: delete an item
 bool Camera::RemoveItem(uint32 itemhandle)
 {
-	camInterface->deleteItem(itemhandle);
+	if(camInterface && camInterface->cameraConnected())	
+		camInterface->deleteItem(itemhandle);
 	return B_OK;
 }
 // 
@@ -179,12 +131,16 @@ bool Camera::GetCameraItems()
 {	
 	ItemData *localItemData;
 	BMessage *message;
-	if(CheckCameraConnection())
+	if(camInterface && camInterface->cameraConnected())
 	{
 		uint32 numberOfItems = camInterface->getNumberOfItems();
 		if(numberOfItems == 0)
 		{
-			logCamError(CAM_NO_HANDLES);
+			#ifdef DEBUG
+				lfcam = fopen(LOGFILE,"a");
+				fprintf(lfcam,"CAM - There are no items on the camera.\n");
+				fclose(lfcam);
+			#endif
 			return(B_ERROR);
 		}
 		else
@@ -227,18 +183,6 @@ bool Camera::GetCameraItems()
 	else
 		return(B_ERROR);	
 }
-// 
-//	Camera::Save the item
-bool Camera::SaveCameraItem (char *data, long int size, const char filename[255])
-{	
-	return (B_NO_ERROR);
-}
-// 
-//	Camera::open the camera storage info
-bool Camera::GetStorageInfo(void)
-{	
-	return(B_OK);
-}
 //
 // 	Camera:: Set the Download Properties
 bool Camera::SetDownloadProps(BPath savedir)
@@ -252,7 +196,16 @@ bool Camera::SetDownloadProps(BPath savedir)
 // 	Camera:: Get the type of the device
 int Camera::GetDeviceType()
 {
-	return camInterface->getDevType();
+	if(camInterface)
+		return camInterface->getDevType();
+	else 
+		return 0;
+}
+//
+//	Camera::Get Device Properties
+void Camera::GetDeviceProperties()
+{
+	return;
 }
 //
 //  Camera:: Receive message
@@ -291,32 +244,62 @@ void Camera::MessageReceived(BMessage *message)
 		case GET_ITEMS:
 			GetCameraItems();
 			break;
+		case GET_ITEM_COUNT:
+		{
+			#ifdef DEBUG
+				lfcam = fopen(LOGFILE,"a");
+				fprintf(lfcam,"CAM - Get item count.\n");
+				fclose(lfcam);
+			#endif
+			int numberOfItems = GetNumberOfItems();
+			BMessage reply(GET_ITEM_COUNT);
+			reply.AddInt32("numofitems", (int32)numberOfItems);
+			message->SendReply(&reply);
+			break;
+		}
+		case GET_DEVICE_TYPE:
+		{
+			int type = GetDeviceType();
+			#ifdef DEBUG
+				lfcam = fopen(LOGFILE,"a");
+				fprintf(lfcam,"CAM - Device type is: %d.\n",type);
+				fclose(lfcam);
+			#endif
+			BMessage reply(GET_DEVICE_TYPE);
+			reply.AddInt32("type", (int32)type);
+			message->SendReply(&reply);
+			break;
+		}
+		case OPEN_DEVICE:
+		{
+			bool open = OpenDevice();
+			BMessage reply(OPEN_DEVICE);
+			reply.AddBool("open", open);
+			message->SendReply(&reply);
+			break;
+		}
+		case CLOSE_DEVICE:
+		{
+			bool closed = CloseDevice();
+			BMessage reply(CLOSE_DEVICE);
+			reply.AddBool("closed", closed);
+			message->SendReply(&reply);
+			break;
+		}
+		case RELOAD_CONFIGURATION:
+		{
+			const char *libName = NULL;
+			
+			if(camInterface)
+				delete(camInterface);
+			libName = message->FindString("libname");
+			if(libName != NULL)
+				camInterface = new CamInterface((char *)libName);
+			break;
+		}
 		default: 
 			BLooper::MessageReceived(message);
 			break;
 	}
-}
-//
-//	Camera:: Logging
-int Camera::logCamError(int ErrorMes)
-{
-	char 				*errorMessage;
-	
-	switch(ErrorMes)
-	{
-		case CAM_NO_HANDLES:
-			errorMessage = "BDCPCAM: There are no handles\n";
-			break;
-		default:
-			errorMessage = "BDCPCAM: An unexpected error occured\n";
-	}
-	// write the errorMessage into the logfile
-	#ifdef DEBUG
-		FILE	*file;
-		file = fopen(LOGFILE,"a");
-		fprintf(file,errorMessage);
-		fclose(file);
-	#endif
-	return(ErrorMes);
 }
 

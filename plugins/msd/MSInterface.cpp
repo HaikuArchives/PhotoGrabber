@@ -61,7 +61,7 @@ bool MSDInterface::downloadItem(BPath path,const char *name)
 	#ifdef DEBUG
 		FILE	*file;
 		file = fopen(LOGFILE,"a");
-		fprintf(file,"Donwload file: %s to %s\n",item->ItemPath.String(),path.Path());
+		fprintf(file,"MS - Download file: %s to %s\n",item->ItemPath.String(),path.Path());
 		fclose(file);
 	#endif
 	BFile *fromfile = new BFile(item->ItemPath.String(), B_READ_ONLY);
@@ -69,7 +69,7 @@ bool MSDInterface::downloadItem(BPath path,const char *name)
 	BNodeInfo *ni;
 	#ifdef DEBUG
 		file = fopen(LOGFILE,"a");
-		fprintf(file,"Create tofilename");
+		fprintf(file,"MS - Create To-filename.\n");
 		fclose(file);
 	#endif
 	char filename[B_FILE_NAME_LENGTH];
@@ -78,7 +78,7 @@ bool MSDInterface::downloadItem(BPath path,const char *name)
 	strcat(filename,item->ItemName.String());
 	#ifdef DEBUG
 		file = fopen(LOGFILE,"a");
-		fprintf(file,"tofilename created");
+		fprintf(file,"MS - To-filename created.\n");
 		fclose(file);
 	#endif 
 	if((tofile=new BFile(filename, B_WRITE_ONLY | B_CREATE_FILE )))
@@ -94,9 +94,10 @@ bool MSDInterface::downloadItem(BPath path,const char *name)
 		}
 		// read the data from the fromfile and write it to the tofile
 		char buf[READ_BUFFER];
-		int32 size = item->ItemSize;
-		int32 remainsize = size;
-		int32 writesize = 0;
+		off_t size;
+		fromfile->GetSize(&size);
+		uint32 remainsize = (uint32)size;
+		uint32 writesize = 0;
 		while(remainsize > 0)
 		{
 			writesize = fromfile->Read((void *)buf,READ_BUFFER);
@@ -110,9 +111,9 @@ bool MSDInterface::downloadItem(BPath path,const char *name)
 		}
 		delete fromfile;
 		// Create the EXIF data as attributes
-		FILE *file = fopen(filename, "rb");
+		FILE *exifFile = fopen(filename, "rb");
 		unsigned char exifBuf[0x7fff];
-		ssize_t bufsize = fread(exifBuf, 1, sizeof(buf), file);
+		ssize_t bufsize = fread(exifBuf, 1, sizeof(buf), exifFile);
 		if (bufsize == 0) 
 		{
 			fprintf (stderr, "Error reading file\n");
@@ -123,7 +124,7 @@ bool MSDInterface::downloadItem(BPath path,const char *name)
 		ExifData *data = exif_data_new_from_data(exifBuf, bufsize);
 		if (!data)
 		{ 
-			fclose(file);
+			fclose(exifFile);
 			delete tofile;
 			return (B_ERROR);
 		}
@@ -147,7 +148,7 @@ bool MSDInterface::downloadItem(BPath path,const char *name)
 			}
 		}
 		exif_data_unref(data);
-		fclose(file);
+		fclose(exifFile);
 		delete tofile;
 	}
 	return B_OK;
@@ -168,27 +169,102 @@ char* MSDInterface::getName()
 }
 //
 //		MSDInterface: get Size
-int MSDInterface::getSize()
+uint32 MSDInterface::getSize()
 {
 	MSDItem *item;
 	item = getMSDItem();
-	return item->ItemSize;
+	//
+	BFile file;
+	off_t size;
+	status_t status = file.SetTo(item->ItemPath.String(),B_READ_ONLY);
+    if(status == B_OK)
+    {
+		file.GetSize(&size);
+		return (uint32)size;
+    }
+    return 0;
 }
 //
 //		MSDInterface: get X Res
-int MSDInterface::getXRes()
+uint32 MSDInterface::getXRes()
 {
 	MSDItem *item;
 	item = getMSDItem();
-	return item->ItemXres;
+	uint32 intValue = 0;
+	FILE *exifFile = fopen(item->ItemPath.String(), "rb");
+	unsigned char buf[0x7fff];
+	ssize_t bufsize = fread(buf, 1, sizeof(buf), exifFile);
+	if (bufsize != 0) 
+	{
+		ExifData *data = exif_data_new_from_data(buf, bufsize);
+		if (data)
+		{ 
+			// Get X resolution.
+			char value[256];
+			int count = 0;
+			for (int i = 0; i < EXIF_IFD_COUNT; i++) 
+			{
+				if (i != 1 && data->ifd[i] && data->ifd[i]->count) 
+				{
+					ExifEntry* entry = exif_content_get_entry(data->ifd[i],EXIF_TAG_PIXEL_X_DIMENSION);
+					if(entry)
+					{
+						exif_entry_get_value(entry, value, sizeof(value));
+						intValue = atoi(value);
+						#ifdef DEBUG
+							FILE *file = fopen(LOGFILE,"a");
+							fprintf(file,"MS - GetXRes :: Resolution is %d.\n",intValue);
+							fclose(file);
+						#endif
+					}
+				}
+			}
+			exif_data_unref(data);	
+			fclose(exifFile);
+		}
+	}
+	return intValue;
 }
 //
 //		MSDInterface: get Y Res
-int MSDInterface::getYRes()
+uint32 MSDInterface::getYRes()
 {
 	MSDItem *item;
 	item = getMSDItem();
-	return item->ItemYres;
+	uint32 intValue = 0;
+	FILE *exifFile = fopen(item->ItemPath.String(), "rb");
+	unsigned char buf[0x7fff];
+	ssize_t bufsize = fread(buf, 1, sizeof(buf), exifFile);
+	if (bufsize != 0) 
+	{
+		ExifData *data = exif_data_new_from_data(buf, bufsize);
+		if (data)
+		{ 
+			// Get X resolution.
+			char value[256];
+			int count = 0;
+			for (int i = 0; i < EXIF_IFD_COUNT; i++) 
+			{
+				if (i != 1 && data->ifd[i] && data->ifd[i]->count) 
+				{
+					ExifEntry* entry = exif_content_get_entry(data->ifd[i],EXIF_TAG_PIXEL_Y_DIMENSION);
+					if(entry)
+					{
+						exif_entry_get_value(entry, value, sizeof(value));
+						intValue = atoi(value);
+						#ifdef DEBUG
+							FILE *file = fopen(LOGFILE,"a");
+							fprintf(file,"MS - GetYRes :: Resolution is %d.\n",intValue);
+							fclose(file);
+						#endif
+					}
+				}
+			}
+			exif_data_unref(data);	
+			fclose(exifFile);
+		}
+	}
+	return intValue;
 }
 //
 //		MSDInterface: get Date
@@ -196,7 +272,21 @@ char* MSDInterface::getDate()
 {
 	MSDItem *item;
 	item = getMSDItem();
-	return (char *)item->ItemDate.String();
+	BFile file;
+	off_t size;
+	status_t status = file.SetTo(item->ItemPath.String(),B_READ_ONLY);
+    if(status == B_OK)
+    {
+		time_t captureDate;
+		file.GetCreationTime(&captureDate);
+		struct tm *ptr;
+		char* itemDate;
+		itemDate = new char[10];
+		ptr = gmtime(&captureDate);
+		strftime(itemDate,100,"%d/%m/%Y",ptr);
+		return itemDate;
+    }
+	return NULL;	
 }
 //
 //		MSDInterface: get Thumbnail
@@ -230,7 +320,11 @@ BBitmap* MSDInterface::getThumb()
 			// Check EXIF image preview.
 			if (data->data && data->size > 4) 
 			{
-				PRINT(("EXIF thumbnail, %d bytes.\n", data->size));
+				#ifdef DEBUG
+					file = fopen(LOGFILE,"a");
+					fprintf(file,"MS - GetThumb :: EXIF thumbnail, %d bytes.\n",data->size);
+					fclose(file);
+				#endif
 				BMemoryIO in(data->data, data->size);
 				thumb = BTranslationUtils::GetBitmap(&in);
 			}
@@ -319,28 +413,8 @@ void MSDInterface::getMSDItems(const char *path)
 							localItem->ItemHandle = numberOfItems;
 							// set the path
 							localItem->ItemPath = name.Path();
-							off_t size;
-							file.GetSize(&size);
-							localItem->ItemSize = (uint32)size;
-							// set the name
+							// set the file name
 							localItem->ItemName = name.Leaf();
-							// set the resolution
-							BBitmap *image;
-							image = BTranslationUtils::GetBitmapFile(name.Path());
-							BRect bounds;
-							bounds = image->Bounds();
-							localItem->ItemXres = (uint32)bounds.Width();
-							localItem->ItemYres = (uint32)bounds.Height();
-							delete(image);
-							// set the capture date
-							time_t captureDate;
-							file.GetCreationTime(&captureDate);
-							struct tm *ptr;
-							char *tmpdate;
-							tmpdate = new char[10];
-							ptr = gmtime(&captureDate);
-							strftime(tmpdate,100,"%d/%m/%Y",ptr);
-							localItem->ItemDate = tmpdate;
 							// Insert the Item in the list
 							MSDItems.insert(pair<uint32,MSDItem*>(numberOfItems,localItem));
 							numberOfItems++;
@@ -409,7 +483,7 @@ bool MSDInterface::Mount()
 					fprintf(file,"MS - Mount :: There are %d partitions on device %d.\n", device->CountDescendants(), i + 1);
 					fclose(file);
 				#endif
-				if(device->CountDescendants() == 1/* && !device->IsMounted()*/)
+				if(device->CountDescendants() == 1 && !device->IsMounted())
 				{
 					#ifdef DEBUG
 						FILE	*file;
@@ -419,8 +493,6 @@ bool MSDInterface::Mount()
 					#endif
 					BPath mountPoint;
 					device->GetMountPoint(&mountPoint);
-					// Get the items
-					getMSDItems(mountPoint.Path());
 					return B_OK;
 				}
 				for(int j = 0; j < device->CountDescendants(); j++)
@@ -436,7 +508,6 @@ bool MSDInterface::Mount()
 						#endif
 						BPath mountPoint;
 						partition->GetMountPoint(&mountPoint);
-						// Get the items
 						getMSDItems(mountPoint.Path());
 						return B_OK;
 					}

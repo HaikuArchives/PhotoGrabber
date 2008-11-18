@@ -64,12 +64,12 @@ class MSDInterface
 			bool			downloadItem(BPath path, const char *name);
 			bool			deleteItem();
 			char*			getName();
-			int				getSize();
-			int				getXRes();
-			int				getYRes();
+			uint32			getSize();
+			uint32			getXRes();
+			uint32			getYRes();
 			char*			getDate();
 			BBitmap*		getThumb();
-			char *			getDeviceName();
+			char*			getDeviceName();
 			char*			getVersion();
 			bool			cameraConnected();
 			bool			IsMounted() const; 

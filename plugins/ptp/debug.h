@@ -17,7 +17,7 @@ void debug(BString debugstring);
 void debug(BString debugstring1, BString debugstring2);
 void debug(BString debugstring1, int debugval2);
 // defenitions
-//#define	DEBUG
+#define	DEBUG
 // log-file
 #define LOGFILE "/boot/var/tmp/ptp.log"
 // error messages

@@ -448,7 +448,7 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			break;
 		case CAM_CONNECTED:
 		{
-			product = message->FindString("product");
+			//product = message->FindString("product");
 			becam_connected = true;
 			becam_statusDock->ShowChildren(MODE_CONNECTED);
 			BMessenger messenger(becam_statusDock);
@@ -463,7 +463,7 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			break;
 		case CAM_DISCONNECTED:
 		{
-			product = message->FindString("product");
+			//product = message->FindString("product");
 			becam_connected = false;	
 			clearItems();
 			becam_statusDock->ShowChildren(MODE_INIT);
@@ -503,7 +503,7 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 				BMessage *statDockmessage = new BMessage(UPDATE_STAT);
 				statDockmessage->AddFloat("count",-1);
 				statDockmessage->AddString("statusmessage",_T("Connecting to the digital camera..."));
-				//becam_statusDock->SetStatusMessage(_T("Connecting to camera..."));
+				messenger.SendMessage(statDockmessage);
 			}
 			else
 			{	
@@ -574,26 +574,9 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 		}
 		case RELOAD_CONFIGURATION:
 		{
-			//	Add extra BDCP menu
-			BMessage reply;
-			int32 devtype;
-			BMessage message(GET_DEVTYPE);
-			BMessenger messenger(NULL,systemcore);
-			messenger.SendMessage(&message,&reply);
-			reply.FindInt32("devtype",&devtype);
-			#ifdef DEBUG
-				lfmainw = fopen(INTF_LOGFILE,"a");	
-				fprintf(lfmainw,"MAINWINDOW - device type is: %ld\n",devtype);
-				fclose(lfmainw);
-			#endif
-			if(devtype == TYPE_PAR)
-			{
-				becam_actionsMenu->SetEnabled(true);
-			}
-			else
-			{
-				becam_actionsMenu->SetEnabled(false);
-			}
+			becam_connected = false;	
+			clearItems();
+			becam_actionsMenu->SetEnabled(false);
 			break;
 		}
 		case STATDOCK_SHOW:

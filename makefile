@@ -143,7 +143,7 @@ DRIVER_PATH :=
 
 #       Specify if you want the object files to be somewhere besides the default location. 
 
-OBJ_DIR := interface/_objects
+OBJ_DIR := 
 
 #       Specify a non default placement for the target 
 TARGET_DIR := .
@@ -178,7 +178,7 @@ DODEPS :=
 
 #	Set this variable if you have an svg text file you wish to use as 
 #   your target's icon.
-SVG_ICON := ./extra/cam.svg
+SVG_ICON := 
 
 #	If you have some fancy custom build steps to do, specify them here
 EXTRA_BUILD_STEPS := 

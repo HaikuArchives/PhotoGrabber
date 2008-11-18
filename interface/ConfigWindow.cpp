@@ -139,6 +139,7 @@ void BeCam_ConfigWindow::MessageReceived(BMessage* message)
 				BMessage *appmessage = new BMessage(SAVE_CONFIGURATION);
 				parent->systemcore->PostMessage(appmessage);
 				appmessage = new BMessage(RELOAD_CONFIGURATION);
+				appmessage->AddString("libname",pgsettings->pluginName);
 				parent->systemcore->PostMessage(appmessage);
 				delete(appmessage);
 			}

@@ -134,7 +134,7 @@ status_t getDeviceType(int &type)
 {
 	#ifdef DEBUG
 		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"MS - Get get the type of device\n");
+		fprintf(lflevel2,"MS - Get the type of device\n");
 		fclose(lflevel2);
 	#endif
 	type =  TYPE_USB;

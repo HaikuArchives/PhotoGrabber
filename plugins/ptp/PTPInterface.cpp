@@ -15,7 +15,7 @@
 
 int globalEndpoint;
 short verbose = 0;
-unsigned int USBBULK_BUFFER = 512;
+unsigned int USBBULK_BUFFER = 1024;
 FILE *lfptpi;
 
 // initialize a PTP camera via the USB protocol
@@ -79,42 +79,42 @@ PTP_ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 		unsigned int	index;
 	
 		buf = new unsigned char[USBBULK_BUFFER];
-		
+		#ifdef DEBUG
+			lfptpi = fopen(LOGFILE,"a");
+			fprintf(lfptpi,"PTP - Total file size: %d k.\n",size);
+			fclose(lfptpi);
+		#endif
 		length = size;
 		index = 0;
 		while(length > 0)
 		{
-			#ifdef DEBUG
-				lfptpi = fopen(LOGFILE,"a");
-				fprintf(lfptpi,"PTP: Transfer begin: %d \n",length);
-				fclose(lfptpi);
-			#endif
-			
 			result = iept->BulkTransfer(buf,USBBULK_BUFFER);
 			#ifdef DEBUG
 				lfptpi = fopen(LOGFILE,"a");
-				fprintf(lfptpi,"PTP: Transfer: %d /%d\n",length,size);
+				fprintf(lfptpi,"PTP - Transfered %d k.\n",(int)result);
 				fclose(lfptpi);
 			#endif
-
 			if(result > 0)
 			{
 				unsigned int i = 0;
-				#ifdef DEBUG
-					lfptpi = fopen(LOGFILE,"a");
-					fprintf(lfptpi,"Transfer data : %d\n",(int)strlen((char *)buf));
-					fclose(lfptpi);
-				#endif
-				while(i < USBBULK_BUFFER && index < size)
+				while(i < result && index < size)
 				{
 					*bytes = buf[i];
 					bytes++;
 					i++;index++;				
 				}
-				if(length > USBBULK_BUFFER)
-					length -= USBBULK_BUFFER;
-				else
-					length = 0;
+				//if(length > USBBULK_BUFFER)
+				//	length -= USBBULK_BUFFER;
+				//else
+				//	length = 0;
+				length -= result;
+				delete(buf);
+				buf = new unsigned char[USBBULK_BUFFER];
+				#ifdef DEBUG
+					lfptpi = fopen(LOGFILE,"a");
+					fprintf(lfptpi,"PTP - Still %d k to go\n",length);
+					fclose(lfptpi);
+				#endif
 			}
 			else
 			{

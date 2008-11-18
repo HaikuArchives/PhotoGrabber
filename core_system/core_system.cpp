@@ -17,6 +17,7 @@
 //
 // External variables
 class BeDiGiCamApp *app;
+FILE *lfcore;
 //
 //BeDiGiCam::Application Constructor
 BeDiGiCamApp::BeDiGiCamApp()
@@ -45,7 +46,21 @@ void BeDiGiCamApp::ReadyToRun()
 	// Create a camera object if a plugin has been chosen
 	if(pgsettings.pluginName != NULL)
 	{
-		camera = new Camera(pgsettings.pluginName,"cameralooper");
+		#ifdef DEBUG
+			lfcore = fopen(LOGFILE,"a");
+			fprintf(lfcore,"CORE - Create camera looper.\n");
+			fclose(lfcore);
+		#endif
+		camera = new Camera(pgsettings.pluginName);
+		if(camera)
+		{
+			camera->Start();
+			// Open the device
+			if(GetDeviceType() == TYPE_USB)
+			{
+				camera->PostMessage(new BMessage(OPEN_DEVICE));
+			}
+		}
 	}
 	CreateGUI();
 }
@@ -62,31 +77,61 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
 	switch(message->what)
 		{
 			case CAM_CONNECTED:
-				printf("Cam connected app ...\n");
+			{
+				#ifdef DEBUG
+					lfcore = fopen(LOGFILE,"a");
+					fprintf(lfcore,"CORE - Camera connected.\n");
+					fclose(lfcore);
+				#endif
 				mainWindow->PostMessage(message);
 				if(GetDeviceType() == TYPE_USB)
 				{	
 					BMessage *cammessage = new BMessage(GET_ITEMS);
-					camera->PostMessage(cammessage);
+					if(camera)
+						camera->PostMessage(cammessage);
 				}
 				break;
+			}
 			case GET_ITEMS_DONE:
 				mainWindow->PostMessage(message);
 				break;
 			case CAM_DISCONNECTED:
-				printf("Cam disconnected app ...\n");
+			{	
+				#ifdef DEBUG
+					lfcore = fopen(LOGFILE,"a");
+					fprintf(lfcore,"CORE - Camera disconnected.\n");
+					fclose(lfcore);
+				#endif
 				mainWindow->PostMessage(message);
 				break;
+			}
 			case CAM_CONNECT:
 			{
-				if(camera && camera->OpenCamera())
+				if(camera)
 				{
 					BMessage reply(CAM_CONNECT_OK);
 					message->SendReply(&reply);
 					if(GetDeviceType() == TYPE_PAR)
 					{	
 						BMessage *cammessage = new BMessage(GET_ITEMS);
-						camera->PostMessage(cammessage);
+						if(camera)
+						{
+							// Open the device
+							bool open;
+   							BMessage reply;
+    						BMessenger messenger(NULL,camera);
+							messenger.SendMessage(new BMessage(OPEN_DEVICE),&reply);
+							if(reply.what == OPEN_DEVICE)
+								reply.FindBool("open", &open);
+							if(open)
+								camera->PostMessage(cammessage);
+							else
+							{
+								BMessage reply(CAM_CONNECT_FAIL);
+								message->SendReply(&reply);
+							}
+								
+						}
 					}
 				}
 				else
@@ -97,9 +142,14 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
 				break;
 			}
 			case CAM_DISCON:
+			{
 				if (camera)
-					camera->CloseCamera();
+				{
+					camera->PostMessage(new BMessage(CLOSE_DEVICE));
+					camera->Stop();
+				}
 				break;
+			}
 			case ADD_ITEM:
 			case B_COPY_TARGET:
 				mainWindow->PostMessage(message);
@@ -111,16 +161,23 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
 				break;
 			case RELOAD_CONFIGURATION:
             {
+                #ifdef DEBUG
+					lfcore = fopen(LOGFILE,"a");
+					fprintf(lfcore,"CORE - Reloading the new plugin.\n");
+					fclose(lfcore);
+				#endif
+                // Close the old plugin
                 if(camera)
                 {
-                	if(camera->IsOpen())
-                		camera->CloseCamera();
-                	delete(camera);
-                	camera = NULL;
-                	camera = new Camera(pgsettings.pluginName,"cameralooper");
-                	if(camera->GetDeviceType() == TYPE_USB)
-                		camera->OpenCamera();
+                	camera->PostMessage(new BMessage(CLOSE_DEVICE));
+                	camera->PostMessage(message);
+                	// Open the device
+					if(GetDeviceType() == TYPE_USB)
+					{
+						camera->PostMessage(new BMessage(OPEN_DEVICE));
+					}	
                 }
+                // Change the action menu items in the interface
                 mainWindow->PostMessage(message);
                 break;
             }
@@ -133,6 +190,11 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
             }
             case SAVE_CONFIGURATION:
             {
+            	#ifdef DEBUG
+					lfcore = fopen(LOGFILE,"a");
+					fprintf(lfcore,"CORE - Saving the new settings.\n");
+					fclose(lfcore);
+				#endif
             	SaveSettingsToFile(pgsettings);
             	break;
             }
@@ -195,10 +257,21 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
 //	BeDiGiCam:: MainWindow of the Application
 bool BeDiGiCamApp::CreateGUI()
 {
+	#ifdef DEBUG
+		lfcore = fopen(LOGFILE,"a");
+		fprintf(lfcore,"CORE - Create GUI.\n");
+		fclose(lfcore);
+	#endif
 	BEntry appentry; 
 	BPath path;
 	BWindow* (*instantiate_mainWindow)(BLooper*,int);
 	// get the path of the application
+	int32 devType = GetDeviceType();
+	#ifdef DEBUG
+		lfcore = fopen(LOGFILE,"a");
+		fprintf(lfcore,"CORE - Device type is: %d.\n",devType);
+		fclose(lfcore);
+	#endif
 	app_info info; 
   	app->GetAppInfo(&info); 
   	appentry.SetTo(&info.ref); 
@@ -207,12 +280,11 @@ bool BeDiGiCamApp::CreateGUI()
 	path.Append("interface/");
 	path.Append("libPGInterface");
 	addonId = load_add_on(path.Path());
-	int devtype = GetDeviceType();
     if (addonId >= 0)
 	{
 		if (get_image_symbol(addonId, "instantiate_mainWindow", B_SYMBOL_TYPE_TEXT, (void **)&instantiate_mainWindow) == B_OK)
 	    {
-	 	   mainWindow = (*instantiate_mainWindow)(this,devtype);
+	 	   mainWindow = (*instantiate_mainWindow)(this,devType);
 	 	   BMessage message(GET_CONFIGURATION);
 	 	   mainWindow->PostMessage(&message);     
         }
@@ -221,15 +293,28 @@ bool BeDiGiCamApp::CreateGUI()
 	{
 		LogError(CAMI_LOAD_LIB);
 	}
-	if(devtype == TYPE_USB)
-		camera->OpenCamera();
 	return B_OK;
 }
 //
 //	BeDiGiCam:: Check the device type
 int BeDiGiCamApp::GetDeviceType()
 {
-	return camera->GetDeviceType();
+	#ifdef DEBUG
+		lfcore = fopen(LOGFILE,"a");
+		fprintf(lfcore,"CORE - Get device type.\n");
+		fclose(lfcore);
+	#endif
+	int32 type;
+    BMessage reply;
+    if(camera)
+    {
+    	BMessenger messenger(NULL,camera);
+		messenger.SendMessage(new BMessage(GET_DEVICE_TYPE),&reply);
+		if(reply.what == GET_DEVICE_TYPE)
+			reply.FindInt32("type", &type);
+		return type;
+    }
+    return 0;	
 }
 //
 //	BeDiGiCam:: Check the device type
@@ -351,20 +436,19 @@ int BeDiGiCamApp::LogError(int ErrorMes)
 	switch(ErrorMes)
 	{
 		case CLI_WRONG_ARGUMENT:
-			errorMessage = "MAIN: Wrong argument\n";	
+			errorMessage = "CORE - Wrong argument\n";	
 			break;
 		case CLI_NO_ARGUMENT:
-			errorMessage = "MAIN: No argument\n";	
+			errorMessage = "CORE - No argument\n";	
 			break;
 		default:
-			errorMessage = "MAIN: An unexpected error occured\n";
+			errorMessage = "CORE - An unexpected error occured\n";
 	}
 	// write the errorMessage into the logfile
 	#ifdef DEBUG
-		FILE	*file;
-		file = fopen(LOGFILE,"a");
-		fprintf(file,errorMessage);
-		fclose(file);
+		lfcore = fopen(LOGFILE,"a");
+		fprintf(lfcore,errorMessage);
+		fclose(lfcore);
 	#endif
 	return(ErrorMes);
 }

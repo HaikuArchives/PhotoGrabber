@@ -156,11 +156,22 @@ status_t closeCamera(void)
 	// Close the camera
 	#ifdef DEBUG
 		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"MS - Close camera\n");
+		fprintf(lflevel1,"MS - Close MSD plugin\n");
 		fclose(lflevel1);
 	#endif
 	delete(mscam);
+	#ifdef DEBUG
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"MS - Stopping USB Roster\n");
+		fclose(lflevel1);
+	#endif
 	roster->Stop();
+	delete(roster);
+	#ifdef DEBUG
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"MS - USB Roster stopped\n");
+		fclose(lflevel1);
+	#endif
 	return(B_NO_ERROR);
 }
 

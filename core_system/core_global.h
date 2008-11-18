@@ -19,6 +19,7 @@
 #define LOGFILE 					"/boot/var/tmp/photograbber.log"
 #define	THUMBHEIGHT					120
 #define THUMBWIDTH					160
+#define DEBUG						1
 // Global Messages
 #define UPDATE_STAT					'UPST'
 #define ABOUT						'ABOU'
@@ -61,6 +62,10 @@
 #define OPEN_PLUG_WINDOW			'OPWI'
 #define SHOW_MAINWINDOW				'SMWI'
 #define PLUG_CONFIG_PRESENT			'PCRE'
+#define GET_ITEM_COUNT				'GITC'
+#define GET_DEVICE_TYPE				'GDET'
+#define OPEN_DEVICE					'OPND'
+#define CLOSE_DEVICE				'CLSD'
 //
 //		Item status
 #define	ITEM_NOT_DOWNLOADED			0
