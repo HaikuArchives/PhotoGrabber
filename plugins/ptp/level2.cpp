@@ -108,10 +108,8 @@ status_t getImageDate(char* &date)
 status_t getThumbnail(BBitmap* & bitmap)
 {
 	int 		ret = 0;
-	char 		*image = NULL;
+	unsigned char	*image = NULL;
 	long int 	size=0,width=0,height=0;
-	char		filename[40] = "/boot/var/tmp/thumb.tmp";
-	BFile *file;
 	
 	#ifdef DEBUG
 		lflevel2 = fopen(LOGFILE,"a");	
@@ -122,9 +120,9 @@ status_t getThumbnail(BBitmap* & bitmap)
 	if(ret == PTP_RC_OK)
 	{
 		#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"PTP - ptp_getthumb function went ok\n");
-		fclose(lflevel2);
+			lflevel2 = fopen(LOGFILE,"a");	
+			fprintf(lflevel2,"PTP - ptp_getthumb function went ok\n");
+			fclose(lflevel2);
 		#endif
 		size = (*params).objectinfo[currentpicturenumber].ThumbCompressedSize;
 		width = (*params).objectinfo[currentpicturenumber].ThumbPixWidth;
@@ -134,92 +132,15 @@ status_t getThumbnail(BBitmap* & bitmap)
 			fprintf(lflevel2,"PTP - conversion OK\n");
 			fclose(lflevel2);
 		#endif
-		if((file =  new BFile(filename, B_WRITE_ONLY | B_CREATE_FILE | B_ERASE_FILE)))
-		{
-			if(( (ret = file->Write(image, size)) != size))
-			{
-				delete file;
-				#ifdef DEBUG
-					lflevel2 = fopen(LOGFILE,"a");
-					fprintf(lflevel2,"PTP - File write problem: %d\n", ret);
-					fclose(lflevel2);
-				#endif
-				return(B_ERROR);			
-			}
-			else
-			{
-				delete(file);
-				file = new BFile(filename,B_READ_ONLY);
-			}
-			BTranslatorRoster *proster = BTranslatorRoster::Default();
-			if (!proster)
-			{
-				#ifdef DEBUG
-					lflevel2 = fopen(LOGFILE,"a");
-					fprintf(lflevel2,"PTP - TranslationRoster problem\n");
-					fclose(lflevel2);
-				#endif
-				delete(file);
-				return(B_ERROR);
-			}
-			translator_info info;
-			memset(&info, 0, sizeof(translator_info));
-			BMessage ioExtension;
-			ret = proster->Identify(file, &ioExtension, &info, 0, NULL,B_TRANSLATOR_BITMAP);
-			if(ret == B_NO_TRANSLATOR)
-			{
-				#ifdef DEBUG
-					lflevel2 = fopen(LOGFILE,"a");
-					fprintf(lflevel2,"PTP - No Translator found\n");
-					fclose(lflevel2);
-				#endif
-				return(B_ERROR);
-			}
-			else if(ret == B_NOT_INITIALIZED)
-			{
-				#ifdef DEBUG
-					lflevel2 = fopen(LOGFILE,"a");
-					fprintf(lflevel2,"PTP - Not Initialized found\n");
-					fclose(lflevel2);
-				#endif
-				return(B_ERROR);	
-			}
-			// Translate image data and create a new ShowImage window
-			BBitmapStream outstream;
-			if (proster->Translate(file, &info, &ioExtension, &outstream,B_TRANSLATOR_BITMAP) != B_OK)
-			{
-				#ifdef DEBUG
-					lflevel2 = fopen(LOGFILE,"a");
-					fprintf(lflevel2,"PTP - Translate problem\n");
-					fclose(lflevel2);
-				#endif
-				delete(file);
-				return(B_ERROR);
-			}	
-			if (outstream.DetachBitmap(&bitmap) != B_OK)
-			{	
-				#ifdef DEBUG
-					lflevel2 = fopen(LOGFILE,"a");
-					fprintf(lflevel2,"PTP - Detach problem\n");
-					fclose(lflevel2);
-				#endif
-				delete(file);
-				return(B_ERROR);
-			}
-		}
-		else
-		{
-			logError(PTPCAM_NEW_FILE_FAIL);
-			return(B_ERROR);
-		}
-		//
+		BMemoryIO in(image,size);
+		bitmap = BTranslationUtils::GetBitmap(&in);
 		#ifdef DEBUG
 			lflevel2 = fopen(LOGFILE,"a");
 			fprintf(lflevel2,"PTP - insert into bitmap OK\n");
 			fclose(lflevel2);
 		#endif
+		delete(image);
 		image = NULL;
-		delete(file);
 		return(B_NO_ERROR);
 	}
 	else if(ret == PTP_RC_NoThumbnailPresent)

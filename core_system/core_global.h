@@ -19,7 +19,7 @@
 #define LOGFILE 					"/boot/var/tmp/photograbber.log"
 #define	THUMBHEIGHT					120
 #define THUMBWIDTH					160
-#define DEBUG						1
+//#define DEBUG						1
 // Global Messages
 #define UPDATE_STAT					'UPST'
 #define ABOUT						'ABOU'

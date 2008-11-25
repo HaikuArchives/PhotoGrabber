@@ -68,7 +68,7 @@ RDEFS :=
 #               and it's name 
 #               library: my_lib.a entry: my_lib.a or path/my_lib.a 
 
-LIBS :=  stdc++.r4	be ./libptp/libptp2.a ../shared/libexif/libexif.a translation device
+LIBS :=  stdc++.r4	be ./libptp/libptp2.a ../shared/libexif/libexif.a translation device iconv
 
 #       specify additional paths to directories following the standard 
 #       libXXX.so or libXXX.a naming scheme.  You can specify full paths 
@@ -76,7 +76,7 @@ LIBS :=  stdc++.r4	be ./libptp/libptp2.a ../shared/libexif/libexif.a translation
 #       be recursive, so include all of the paths where libraries can 
 #       be found.  Directories where source files are found are 
 #       automatically included. 
-LIBPATHS := "../shared/libexif"
+LIBPATHS := "../shared/libexif" "/boot/home/config/lib"
 
 #       additional paths to look for system headers 
 #       these use the form: #include <header.h> 

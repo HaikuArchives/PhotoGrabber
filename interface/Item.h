@@ -46,8 +46,6 @@ class BeCam_Item : public BListItem
 	private:
 		ItemData		*itemdata;
 		BRegion			fRegion;
-		//float			fHeight;
-		//float			fWidth;	
 };
 
 #endif

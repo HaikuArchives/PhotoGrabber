@@ -16,32 +16,27 @@
 extern "C" {
 #include "libptp/ptp.h"
 }
+//
+typedef struct  {
+	BUSBDevice 	*device;
+	uint32		configuration;
+	uint32		interface;
+	uint32		interruptInput;
+	uint32		bulkInput;
+	uint32		bulkOutput;
+} USBCameraDevice;
+//
 
-
-//int					PTP_findendpoint(int type, int &interface, int &endpoint);
-bool 				PTP_init_ptp_usb(PTPParams* params, BUSBDevice* dev);
-short		 		PTP_ptp_read_func (unsigned char *bytes, unsigned int size, void *data);
-short		 		PTP_ptp_write_func (unsigned char *bytes, unsigned int size, void *data);
-void 				PTP_debug (void *data, const char *format, va_list args);
-void				PTP_error (void *data, const char *format, va_list args);
-int 				PTP_logError(int ErrorMes);
-void				PTP_logValue(int ValueMes, int Value);
+uint16_t 			ptp_init_usb (PTPParams* params, USBCameraDevice* cameraDevice);
+uint16_t 			ptp_exit_usb (PTPParams* params, BUSBDevice* device);
+int					ptp_read_func (unsigned char *bytes, unsigned int size, void *data);
+int		 			ptp_write_func (unsigned char *bytes, unsigned int size, void *data);
+int					ptp_check_int(unsigned char *bytes, unsigned int size, void *data);
+int 				ptp_clear_read_halt(void *data);
+void 				ptp_debug (void *data, const char *format, va_list args);
+void				ptp_error (void *data, const char *format, va_list args);
 
 #define PTP_OFFSET							255
-#define PTP_ERROR_IO_READ					PTP_OFFSET + 1
-#define PTP_ERROR_IO_WRITE					PTP_OFFSET + 2
-#define PTP_ERROR_ENDPOINT_READ				PTP_OFFSET + 3
-#define PTP_ERROR_ENDPOINT_WRITE			PTP_OFFSET + 4
-#define PTP_RC_READ_OK						PTP_OFFSET + 5
-#define PTP_RC_WRITE_OK						PTP_OFFSET + 6
-#define PTP_ENDPOINT_READ					PTP_OFFSET + 7
-#define PTP_ENDPOINT_WRITE					PTP_OFFSET + 8
-#define PTP_INTERFACE_READ					PTP_OFFSET + 9
-#define PTP_INTERFACE_WRITE					PTP_OFFSET + 10
-#define	PTP_BULK_READ_SIZE					PTP_OFFSET + 11
-#define PTP_ERROR_ENDPOINT_NULL				PTP_OFFSET + 12
-#define PTP_ENDPOINT_INPUT					PTP_OFFSET + 13
-#define PTP_ENDPOINT_OUTPUT					PTP_OFFSET + 14
 
 #endif
 

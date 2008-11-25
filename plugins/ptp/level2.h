@@ -9,6 +9,7 @@
 #include <map>
 #include <Bitmap.h>
 #include <Looper.h>
+#include <TranslationUtils.h>
 // user includes
 extern "C" {
 #include "libptp/ptp.h"

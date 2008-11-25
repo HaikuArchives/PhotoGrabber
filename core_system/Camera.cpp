@@ -60,7 +60,7 @@ bool Camera::Stop()
 		fprintf(lfcam,"CAM - Stop listening to connecting digital cameras.\n");
 		fclose(lfcam);
 	#endif
-	BLooper::Lock();
+	//BLooper::Lock();
 	BLooper::Quit();
 	return B_OK;
 }
@@ -160,6 +160,7 @@ bool Camera::GetCameraItems()
 				localItemData->ItemYres = camInterface->getHeight();
 				localItemData->ItemDate = camInterface->getDate();
 				localItemData->ItemThumbBitmap = camInterface->getThumb();
+				//localItemData->ItemThumbBitmap = NULL;
 				if(localItemData->ItemThumbBitmap != NULL)
 				{
 					localItemData->ItemThumbXres = (uint32)localItemData->ItemThumbBitmap->Bounds().Width();

@@ -22,7 +22,7 @@ BeCam_Item::BeCam_Item(ItemData *data) : BListItem()
 }
 
 //
-//		Item destructor
+//		Item
 
 BeCam_Item::BeCam_Item() : BListItem()
 {
@@ -34,7 +34,14 @@ BeCam_Item::BeCam_Item() : BListItem()
 
 BeCam_Item::~BeCam_Item()
 {
-	//nothing yet
+	#ifdef DEBUG
+		lfitem = fopen(INTF_LOGFILE,"a");	
+		fprintf(lfitem,"ITEM - Delete Item\n");
+		fclose(lfitem);
+	#endif
+	
+	if(itemdata != NULL)
+		delete(itemdata);
 }
 
 //

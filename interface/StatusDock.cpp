@@ -46,6 +46,7 @@ StatusDock::StatusDock(BRect rect, const char* name, uint32 resize,uint32 flags)
 //	StatusDock :: Destructor
 StatusDock::~StatusDock()
 {
+	delete(statusbar);
 	delete(downloadBitmap);
 	delete(connectBitmapOn);
 	delete(connectBitmapOff);

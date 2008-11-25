@@ -1,11 +1,11 @@
 /* This file is generated automatically by configure */
-/* It is valid only for the system type i586-pc-beos */
+/* It is valid only for the system type i586-pc-haiku */
 
 #ifndef __BYTEORDER_H
 #define __BYTEORDER_H
 
 /* ntohl and relatives live here */
-#include <netinet/in.h>
+#include <arpa/inet.h>
 
 /* Use these as generic byteswapping macros on this little endian system */
 #define swap16(x)		ntohs(x)

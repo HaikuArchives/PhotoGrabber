@@ -8,7 +8,7 @@
 ## Buildfile for PhotoGrabber PTP plugin
 
 # Cleaning the build system
-#make clean
+make clean
 # Build the ptp plugin
 make
 # Copy the binaries to the build directory

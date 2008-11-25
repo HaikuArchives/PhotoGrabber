@@ -116,6 +116,9 @@ void GridView::RemoveItem(BeCam_Item* item)
 inline void GridView::RemoveItemFast (BeCam_Item* item)
 {
 	fItemList->RemoveItem (reinterpret_cast<void*>(item));
+	// Delete the item
+	delete item;
+	item = NULL;
 }
 //
 //	GridView :: AddList
@@ -428,7 +431,8 @@ void GridView::DeleteAllItems ()
 {
 	for (int32 i = 0; i < fItemList->CountItems(); i++)
 	{
-		BeCam_Item *item = reinterpret_cast<BeCam_Item*>(fItemList->RemoveItem (0L));
+		BeCam_Item *item = reinterpret_cast<BeCam_Item*>(fItemList->RemoveItem (i));
+		// Delete the item
 		delete item;
 		item = NULL;
 	}
