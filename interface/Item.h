@@ -12,6 +12,7 @@
 //		Includes
 #include <interface/ListView.h>
 #include <interface/Region.h>
+#include <stdlib.h>
 //
 //		Local Includes
 #include "intf_global.h"

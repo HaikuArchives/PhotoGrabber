@@ -6,9 +6,7 @@
 ****************************************************************
 */
 //		System Includes
-#include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 #include <iostream.h>
 #include <NodeInfo.h>
 #include <libexif/exif-data.h>
@@ -31,7 +29,8 @@ virtual status_t DeviceAdded(BUSBDevice *dev)
 	cameraDevice = new USBCameraDevice;
 	cameraDevice->device = dev;
 	// Init Params
-	params = new PTPParams;
+	params = (PTPParams*)malloc(sizeof(PTPParams));
+	memset(params,0, sizeof(PTPParams));
 	if(ptp_init_usb(params,cameraDevice) == PTP_RC_OK)
 	{ 
 		ptp_opensession(params,1);
@@ -61,12 +60,6 @@ virtual void DeviceRemoved(BUSBDevice *dev)
 {
 	if(ptp_exit_usb(params,dev) == PTP_RC_OK)
 	{
-		ptp_closesession(params);
-		free ((*params).objectinfo);
-		delete(cameraDevice);
-		cameraDevice = NULL;
-		delete(params);
-		delete(handles);
 		// send a message to the system core
 		BMessage *core_msg;
 		core_msg = new BMessage(CAM_DISCONNECTED);
@@ -81,6 +74,12 @@ virtual void DeviceRemoved(BUSBDevice *dev)
 			#endif
 			msgtarget->PostMessage(core_msg);
 		}
+		ptp_closesession(params);
+		ptp_free_params (params);
+		delete(cameraDevice);
+		cameraDevice = NULL;
+		free(params);
+		delete(handles);
 	}
 }
 };
@@ -169,7 +168,6 @@ status_t getNumberofPics(int &number)
 			fprintf(lflevel1,"PTP - No objecthandles were found.\n",(*params).handles.n);
 			fclose(lflevel1);
 		#endif
-		//logError(PTPCAM_NO_HANDLES);
 		return(B_ERROR);
 	}
 	else
@@ -181,6 +179,7 @@ status_t getNumberofPics(int &number)
 		#endif
 		handles = new int[(*params).handles.n];
 		(*params).objectinfo =(PTPObjectInfo*)malloc(sizeof(PTPObjectInfo)* (*params).handles.n);
+		memset((*params).objectinfo,0,sizeof(PTPObjectInfo) * (*params).handles.n);
 		for (uint32 j = 0; j < (*params).handles.n;j++)
 		{
 			#ifdef DEBUG
@@ -208,7 +207,7 @@ status_t getNumberofPics(int &number)
 			fprintf(lflevel1,"PTP - Get part3\n");
 			fclose(lflevel1);
 		#endif
-	}	
+	}
 	return(B_NO_ERROR);
 }
 

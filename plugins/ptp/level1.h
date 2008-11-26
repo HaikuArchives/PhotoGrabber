@@ -9,7 +9,8 @@
 #include <Errors.h> // For Return Type
 #include <AppFileInfo.h> // For Version Info
 #include <String.h>
-#include <cstdio>
+#include <stdio.h>
+#include <stdlib.h>
 #include <Path.h>
 #include <string>
 #include <vector>

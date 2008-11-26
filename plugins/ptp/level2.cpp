@@ -107,9 +107,9 @@ status_t getImageDate(char* &date)
 
 status_t getThumbnail(BBitmap* & bitmap)
 {
-	int 		ret = 0;
+	int 			ret = 0;
 	unsigned char	*image = NULL;
-	long int 	size=0,width=0,height=0;
+	long int 		size=0,width=0,height=0;
 	
 	#ifdef DEBUG
 		lflevel2 = fopen(LOGFILE,"a");	

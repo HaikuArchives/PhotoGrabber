@@ -40,8 +40,21 @@ BeCam_Item::~BeCam_Item()
 		fclose(lfitem);
 	#endif
 	
-	if(itemdata != NULL)
+	if(itemdata)
+	{
+		if(itemdata->ItemThumbBitmap)
+		{
+			#ifdef DEBUG
+				lfitem = fopen(INTF_LOGFILE,"a");	
+				fprintf(lfitem,"ITEM - Free thumb bitmap\n");
+				fclose(lfitem);
+			#endif
+			free(itemdata->ItemThumbBitmap);
+			itemdata->ItemThumbBitmap = NULL;
+		}
 		delete(itemdata);
+		itemdata = NULL;
+	}
 }
 
 //
