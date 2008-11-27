@@ -66,7 +66,7 @@ bool MSDInterface::downloadItem(BPath path,const char *name)
 	#endif
 	BFile *fromfile = new BFile(item->ItemPath.String(), B_READ_ONLY);
 	BFile *tofile;
-	BNodeInfo *ni;
+	BNodeInfo *niTo, *niFrom;
 	#ifdef DEBUG
 		file = fopen(LOGFILE,"a");
 		fprintf(file,"MS - Create To-filename.\n");
@@ -81,16 +81,24 @@ bool MSDInterface::downloadItem(BPath path,const char *name)
 		fprintf(file,"MS - To-filename created.\n");
 		fclose(file);
 	#endif 
-	if((tofile=new BFile(filename, B_WRITE_ONLY | B_CREATE_FILE )))
+	if((tofile = new BFile(filename, B_WRITE_ONLY | B_CREATE_FILE )))
 	{
 		long int fherr;
 
 		if((fherr = tofile->InitCheck()) != B_OK)
 			return(B_ERROR);
-		if((ni=new BNodeInfo(tofile)))
+		if((niTo = new BNodeInfo(tofile)))
 		{
-			ni->SetType("image/jpeg");
-			delete ni;
+			if((niFrom = new BNodeInfo(fromfile)))
+			{
+				char *mymetype =  NULL;
+				niFrom->GetType(mymetype);
+				niTo->SetType(mymetype);
+				delete niFrom;
+			}
+			else 
+				niTo->SetType("image/jpeg");
+			delete niTo;
 		}
 		// read the data from the fromfile and write it to the tofile
 		char buf[READ_BUFFER];
@@ -412,7 +420,7 @@ void MSDInterface::getMSDItems(const char* path)
         			{
         				BString tmp;
         				tmp.Insert(type,256,0);
-        				if(tmp.FindFirst("image/jpeg") > B_ERROR)
+        				if(supportedItem(tmp))
         				{
         					localItem = new MSDItem();
 							// set the handle
@@ -430,6 +438,53 @@ void MSDInterface::getMSDItems(const char* path)
       		}
       	}
     }
+}
+//
+// MSDInterface : Is the item supported
+bool MSDInterface::supportedItem(BString mymetype)
+{
+	bool ret;
+	
+	if(mymetype.FindFirst("image/jpeg") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("image/jpeg") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("audio/aiff") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("audio/wav") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("audio/mpeg3") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("video/avi") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("video/mpeg") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("video/x-ms-asf") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("video/quicktime") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("image/tiff") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("image/vnd.fpx") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("image/bmp") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("image/gif") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("image/pcd") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("image/pict") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("image/png") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("image/jp2") != B_ERROR)
+		ret = true;
+	else if(mymetype.FindFirst("image/jpx") != B_ERROR)
+		ret = true;
+	else 
+		ret = false;
+				
+	return ret;
 }
 //
 //		MSDInterface: camera Connection

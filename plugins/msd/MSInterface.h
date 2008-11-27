@@ -84,6 +84,7 @@ class MSDInterface
 			char					*msdMountPoint;
 			
 			void					getMSDItems(const char *path);
+			bool					supportedItem(BString mymetype);
 			bool					removeMSDItem();
 			MSDItem* 				getMSDItem();
 			map<uint32,MSDItem*> 	MSDItems;

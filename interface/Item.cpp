@@ -73,91 +73,99 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 	rgb_color color_disabled = {0x77, 0x00, 0x00, 0xff};
 	rgb_color color_picture = {0x8b, 0x8b, 0x83, 0xff};
 	rgb_color color_background = owner->ViewColor();
+	int8 radius = 3;
+	BRect selectionRect;
 	BRect thumbRect;
 	BRect itemRect = BRect(0,0,(frame.right - frame.left),(frame.bottom - frame.top));
 	BBitmap* thumbnail = GetThumbBitmap();
 	float thumbWidth = ThumbWidth();
 	float thumbHeight = ThumbHeight();
-	BBitmap *itemBitmap;
-	BView *itemView;
 	
-	itemBitmap = new BBitmap(itemRect,B_RGB_32_BIT,TRUE);
-	itemView = new BView(itemBitmap->Bounds(),"itemRect",B_FOLLOW_ALL,B_WILL_DRAW);
+	BBitmap *itemBitmap = new BBitmap(itemRect,B_RGB_32_BIT,TRUE);
+	BView *itemView = new BView(itemBitmap->Bounds(),"itemRect",B_FOLLOW_ALL,B_WILL_DRAW);
 	itemBitmap->AddChild(itemView);
+	
 	float xItemBitmapPos = floor((frame.right - frame.left)/2);
 	float yItemBitmapPos = floor((frame.bottom - frame.top)/2);
-	
 	
 	float xPos = frame.left + floor((frame.right - frame.left)/2);
 	float yPos = frame.top + floor((frame.bottom - frame.top)/2);
 	
+	// Begin drawing	
+	owner->SetDrawingMode( B_OP_ALPHA );
+	itemBitmap->Lock();
+	if(complete)
+	{	
+		itemView->SetHighColor(owner->ViewColor());
+		itemView->SetLowColor(owner->ViewColor());
+		itemView->FillRect (itemView->Bounds());
+		itemView->StrokeRect (itemView->Bounds());
+	}
+	
+	itemView->FillRoundRect (selectionRect, radius, radius);
+	itemView->StrokeRoundRect (selectionRect, radius, radius);
+	
+	if (IsEnabled())
+		itemView->SetHighColor(color_enabled);
+	else
+		itemView->SetHighColor(color_disabled);
+	
 	if(thumbnail)
-	{
-		thumbRect=thumbnail->Bounds();
-		int8 radius = 3;
-		
-		BRect selectionRect;
-		
-		owner->SetDrawingMode( B_OP_ALPHA );
-		itemBitmap->Lock();
-		if(complete)
-		{	
-			itemView->SetHighColor(owner->ViewColor());
-			itemView->SetLowColor(owner->ViewColor());
-			itemView->FillRect (itemView->Bounds());
-			itemView->StrokeRect (itemView->Bounds());
-		}
-		
-		itemView->FillRoundRect (selectionRect, radius, radius);
-		itemView->StrokeRoundRect (selectionRect, radius, radius);
-		
-		if (IsEnabled())
-			itemView->SetHighColor(color_enabled);
-		else
-			itemView->SetHighColor(color_disabled);
-		
-		
-		// Move the pen to draw
+	{	
+		// There is a thumbnail, so draw it.
+		thumbRect = thumbnail->Bounds();
 		if(thumbRect.right < thumbRect.bottom)
 			thumbRect.right = thumbRect.bottom;
 		thumbRect.left = xItemBitmapPos - floor(thumbWidth/2);
 		thumbRect.right = xItemBitmapPos + floor(thumbWidth/2);
 		thumbRect.top = yItemBitmapPos - floor(thumbHeight/2);
 		thumbRect.bottom = yItemBitmapPos + floor(thumbHeight/2);
-		//	Draw the thumbnail
+		//
 		itemView->DrawBitmapAsync(thumbnail,thumbRect);
 		thumbRect.right += 1; // bug Haiku
-		if(!IsSelected())
-		{
-			itemView->SetHighColor (color_picture);
-			itemView->SetLowColor (color_picture);
-		}
-		else
-		{
-			itemView->SetPenSize(3);
-			itemView->SetHighColor (color_selected);
-			itemView->SetLowColor (color_selected);
-		}
-		itemView->StrokeRect (thumbRect);
-		itemView->Sync();
-		itemBitmap->Unlock();
-		
-		owner->DrawBitmapAsync(itemBitmap,frame);
-		owner->Sync();
-		owner->SetDrawingMode( B_OP_COPY );
 	}
 	else
 	{
-		// Move the pen to draw
-		owner->MovePenTo(frame.left,frame.top);
-		
-		thumbRect.left = 0;
-		thumbRect.right = ThumbWidth();
-		thumbRect.top = 0;
-		thumbRect.bottom = ThumbHeight();
-		//	Draw a string	
-		owner->DrawString("No thumbnail");
+		// There is no thumbnail, so draw the file name.
+		BFont font = be_plain_font;
+        font_height fontHeight;
+        font.SetFace(B_BOLD_FACE);
+        itemView->SetFont(&font);
+		itemView->GetFontHeight (&fontHeight);
+		float fFontHeight = fontHeight.ascent + fontHeight.descent - 4;
+		float fStringWidth = itemView->StringWidth(itemdata->ItemName.String());
+		itemView->MovePenTo(xItemBitmapPos - fStringWidth/2,yItemBitmapPos + fFontHeight/2);
+		if(thumbRect.right < thumbRect.bottom)
+			thumbRect.right = thumbRect.bottom;
+		thumbRect.left = xItemBitmapPos - floor(thumbWidth/2);
+		thumbRect.right = xItemBitmapPos + floor(thumbWidth/2);
+		thumbRect.top = yItemBitmapPos - floor(thumbHeight/2);
+		thumbRect.bottom = yItemBitmapPos + floor(thumbHeight/2);
+		//
+		itemView->SetHighColor (color_picture);
+		itemView->DrawString(itemdata->ItemName.String());
+	}	
+	
+	if(!IsSelected())
+	{
+		itemView->SetHighColor (color_picture);
+		itemView->SetLowColor (color_picture);
 	}
+	else
+	{
+		itemView->SetPenSize(3);
+		itemView->SetHighColor (color_selected);
+		itemView->SetLowColor (color_selected);
+	}
+	
+	itemView->StrokeRect (thumbRect);
+	itemView->Sync();
+	itemBitmap->Unlock();
+	
+	owner->DrawBitmapAsync(itemBitmap,frame);
+	owner->Sync();
+	owner->SetDrawingMode( B_OP_COPY );
+	
 	delete(itemBitmap);
 	fRegion.Include(thumbRect);
 }
