@@ -291,7 +291,8 @@ status_t downloadPicture(BPath savedir, const char *name)
 	}
 	return(B_ERROR);
 }
-
+//
+//		Save the picture
 bool saveCamPicture (unsigned char *data, long int size, uint16_t type,const char *filename)
 {
 	int					systemresult;

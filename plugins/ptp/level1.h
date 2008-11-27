@@ -48,7 +48,7 @@ extern "C" status_t getNumberofPics(int &);
 extern "C" status_t setCurrentPicture(int picturenumber);
 extern "C" status_t downloadPicture(BPath savedir, const char *name);
 extern "C" void getSupportedCameras(vector<string> &);
-bool saveCamPicture (unsigned char *data, long int size,uint16_t type, const char filename[255]);
+bool saveCamPicture (unsigned char *data, long int size,uint16_t type, const char *filename);
 
 // Messages
 #define CAM_CONNECTED				'CCON'

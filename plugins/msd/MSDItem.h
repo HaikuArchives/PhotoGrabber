@@ -24,6 +24,7 @@ typedef struct {
 		int32			ItemHandle;
 		BString			ItemName;
 		BString			ItemPath;
+		BString			ItemParent;
 }MSDItem;
 
 #endif

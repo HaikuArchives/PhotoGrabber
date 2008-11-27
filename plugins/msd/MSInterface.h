@@ -87,6 +87,7 @@ class MSDInterface
 			bool					supportedItem(BString mymetype);
 			bool					removeMSDItem();
 			MSDItem* 				getMSDItem();
+			bool 					saveItem (MSDItem *item, const char *filename);
 			map<uint32,MSDItem*> 	MSDItems;
 			int						numberOfItems;
 			BDiskDevice				*device;

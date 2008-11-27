@@ -22,7 +22,7 @@
 
 //
 // External variables
-int READ_BUFFER  = 1024;
+int READ_BUFFER  = 4096;
 //
 //		MSDInterface constructor
 MSDInterface::MSDInterface(BUSBDevice *dev) 
@@ -58,29 +58,69 @@ bool MSDInterface::downloadItem(BPath path,const char *name)
 {
 	MSDItem *item;
 	item = getMSDItem();
+	char *filename;
 	#ifdef DEBUG
 		FILE	*file;
 		file = fopen(LOGFILE,"a");
 		fprintf(file,"MS - Download file: %s to %s\n",item->ItemPath.String(),path.Path());
 		fclose(file);
 	#endif
+	//BFile *fromfile = new BFile(item->ItemPath.String(), B_READ_ONLY);
+	//BFile *tofile;
+	//BNodeInfo *niTo, *niFrom;
+	int32 pathLength = strlen(path.Path());
+	int32 fileNameLength = strlen(item->ItemName.String());
+	off_t file_size = 0;
+	status_t err;
+	BFile *fh;
+	int numberOfCopies = 1;
+	while(numberOfCopies <= 100)
+	{
+		filename = new char[pathLength + fileNameLength + 3];
+		strcpy(filename,path.Path());
+		strcat(filename,"/");
+		if(name != NULL)
+			strcat(filename,name);
+		else
+			strcat(filename,item->ItemName.String());
+		if(numberOfCopies > 1)
+			sprintf(filename,"%s %d",filename,numberOfCopies);
+		// Check if the file exists. If it exists, check if it is empty or not.
+		fh = new BFile(filename, B_WRITE_ONLY | B_CREATE_FILE);
+		err = fh->GetSize(&file_size);
+		if(err == B_OK && file_size == 0)
+		{
+			delete fh;
+			if(saveItem(item, filename) == B_NO_ERROR)
+			{	
+				//image = NULL;
+				return B_NO_ERROR;
+			}
+		}
+		else
+			delete fh;
+		numberOfCopies++;	
+	}
+	//char filename[B_FILE_NAME_LENGTH];
+	//strcpy(filename,path.Path());
+	//strcat(filename,"/");
+	//strcat(filename,item->ItemName.String());
+	//#ifdef DEBUG
+	//	file = fopen(LOGFILE,"a");
+	//	fprintf(file,"MS - To-filename created.\n");
+	//	fclose(file);
+	//#endif 
+	
+	return B_ERROR;
+}
+//
+//	MSDInterface : save Item
+bool MSDInterface::saveItem (MSDItem *item, const char *filename)
+{
 	BFile *fromfile = new BFile(item->ItemPath.String(), B_READ_ONLY);
 	BFile *tofile;
 	BNodeInfo *niTo, *niFrom;
-	#ifdef DEBUG
-		file = fopen(LOGFILE,"a");
-		fprintf(file,"MS - Create To-filename.\n");
-		fclose(file);
-	#endif
-	char filename[B_FILE_NAME_LENGTH];
-	strcpy(filename,path.Path());
-	strcat(filename,"/");
-	strcat(filename,item->ItemName.String());
-	#ifdef DEBUG
-		file = fopen(LOGFILE,"a");
-		fprintf(file,"MS - To-filename created.\n");
-		fclose(file);
-	#endif 
+	
 	if((tofile = new BFile(filename, B_WRITE_ONLY | B_CREATE_FILE )))
 	{
 		long int fherr;
@@ -125,7 +165,7 @@ bool MSDInterface::downloadItem(BPath path,const char *name)
 		if (bufsize == 0) 
 		{
 			fprintf (stderr, "Error reading file\n");
-			fclose(file);
+			fclose(exifFile);
 			delete tofile;
 			return (B_ERROR);
 		}
@@ -159,7 +199,7 @@ bool MSDInterface::downloadItem(BPath path,const char *name)
 		fclose(exifFile);
 		delete tofile;
 	}
-	return B_OK;
+	return B_NO_ERROR;
 }
 //
 //		MSDInterface: delete picture
@@ -406,13 +446,13 @@ void MSDInterface::getMSDItems(const char* path)
     	BEntry entry;
     	while(dir.GetNextEntry(&entry,true) >= 0) 
     	{
-      		BPath name;
-      		entry.GetPath(&name);
+      		BPath path;
+      		entry.GetPath(&path);
       		if(entry.IsDirectory()) 
-        		getMSDItems(name.Path());
+        		getMSDItems(path.Path());
       		else if(entry.IsFile())
       		{
-        		status = file.SetTo(name.Path(),B_READ_ONLY);
+        		status = file.SetTo(path.Path(),B_READ_ONLY);
         		if(status == B_OK)
         		{
         			fileInfo.SetTo(&file);
@@ -426,9 +466,12 @@ void MSDInterface::getMSDItems(const char* path)
 							// set the handle
 							localItem->ItemHandle = numberOfItems;
 							// set the path
-							localItem->ItemPath = name.Path();
+							localItem->ItemPath = path.Path();
 							// set the file name
-							localItem->ItemName = name.Leaf();
+							localItem->ItemName = path.Leaf();
+							// set the parent path
+							path.GetParent(&path);
+							localItem->ItemParent = path.Path();
 							// Insert the Item in the list
 							MSDItems.insert(pair<uint32,MSDItem*>(numberOfItems,localItem));
 							numberOfItems++;
