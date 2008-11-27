@@ -23,15 +23,12 @@ FILE *lfgridv;
 
 #define kDRAG_SLOP		4
 
-//float GridView::fItemWidth	= 160;	// max width of a bitmap
-//float GridView::fItemHeight	= 120;	// max height of a bitmap
 float GridView::fMinHorizItemMargin = 20;	// horizontal margin
 float GridView::fMinVertItemMargin = 20;	// vertical margin
 //
 //	GridView :: Constructor
 GridView::GridView (BRect rect, const char* name, uint32 resize,uint32 flags)
 : BControl (rect, name, NULL, NULL,resize, flags | B_FRAME_EVENTS )
-//: BView (rect, name, resize, flags | B_FRAME_EVENTS)
 	,fCachedColumnCount (-1)
 	,fSelectedItemIndex (-1)
 	,fSelectionRadius (4)
@@ -40,7 +37,7 @@ GridView::GridView (BRect rect, const char* name, uint32 resize,uint32 flags)
 	,fKeyTargetLooper (NULL)
 	,fKeyTargetHandler (NULL)
 {
-	rgb_color color_background =  {0x42, 0x42, 0x42, 0xff};//ui_color(B_MENU_BACKGROUND_COLOR);
+	rgb_color color_background =  {0x42, 0x42, 0x42, 0xff};
 	SetViewColor(color_background);
 	fItemList = new BList();
 	fHorizItemMargin = fMinHorizItemMargin;
@@ -291,10 +288,8 @@ BRect GridView::ItemRect (int32 index)
 	BRect itemRect;
 	
 	itemRect.left = column * (ItemWidth () + ItemHorizMargin());
-	//itemRect.top = row * (ItemHeight () + ItemVertMargin());
 	itemRect.top = GetTop(row,columnCount);
 	itemRect.right = itemRect.left + ItemWidth() + ItemHorizMargin();
-	//itemRect.bottom = itemRect.top + ItemHeight() + ItemVertMargin();
 	itemRect.bottom = itemRect.top + GetRowHeight(row,columnCount) + ItemVertMargin();
 	return itemRect;
 }
@@ -477,7 +472,6 @@ void GridView::UpdateScrollView ()
 			float row = CountRows();
 			float columnCount = CountColumnsWithMinHorizItemMargin();
 			
-			//float maxV = CountRows() * (ItemHeight() + ItemVertMargin());
 			float maxV = GetTop(row,columnCount) + GetRowHeight(row,columnCount) + ItemVertMargin();
 
 			if (maxV - Bounds().Height() > 0)
@@ -1006,11 +1000,37 @@ void GridView::ActionCopy(BMessage *request)
 }
 //
 //	GridView :: Index Of
-int32 GridView::IndexOf(BPoint point) const
+int32 GridView::IndexOf(BPoint point)
 {
-	int32 rowIndex = (int32)floor (point.y  / (ItemHeight() + ItemVertMargin())); 
-	int32 colIndex = (int32)floor (point.x / (ItemWidth() + ItemHorizMargin()));
-	int32 itemIndex = colIndex + rowIndex * (CountColumnsWithMinHorizItemMargin());
+	
+	int32 columnCount = CountColumnsWithMinHorizItemMargin();
+	int32 row = 0, column = 0;
+	int32 itemIndex;
+	
+	for(itemIndex = 0; itemIndex < fItemList->CountItems(); itemIndex++)
+	{
+		
+		BeCam_Item *item = (BeCam_Item*)(fItemList->ItemAt (itemIndex));
+		if (item == NULL)
+			break;
+	
+		BRect itemRect;
+		itemRect.left = column * (ItemWidth () + ItemHorizMargin());
+		itemRect.top = GetTop(row,columnCount);
+		itemRect.right = itemRect.left + ItemWidth() + ItemHorizMargin();
+		itemRect.bottom = itemRect.top + GetRowHeight(row,columnCount) + ItemVertMargin();
+		
+		if(itemRect.Contains(point))
+			break;
+		
+		column++;
+		if (column >= columnCount)
+		{
+			column = 0;
+			row++;
+		}
+	}	
+	
 	return itemIndex;
 }
 //

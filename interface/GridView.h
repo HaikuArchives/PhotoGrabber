@@ -95,7 +95,7 @@ class GridView : public BControl
 		float					ItemVertMargin() const;
 		void					SetHorizItemMargin(float margin);
 		void					SetVertItemMargin(float margin);
-		int32					IndexOf(BPoint point) const;
+		int32					IndexOf(BPoint point);
 		static status_t 		TrackItem(list_tracking_data *data);
 	 	void					ActionCopy(BMessage * request);
 	 	float					CalculateHorizMargin(float gridWidth) const;
