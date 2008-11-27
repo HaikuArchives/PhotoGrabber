@@ -57,7 +57,6 @@ CamInterface::CamInterface(char *libName)
 	char test[B_FILE_NAME_LENGTH];
 	strncpy(test,path.Path(),B_FILE_NAME_LENGTH);
 	addonId = load_add_on(path.Path());
-	camConnected = false;
 	//
 	if (addonId >= 0)
 	{
@@ -65,7 +64,12 @@ CamInterface::CamInterface(char *libName)
 	}
 	else
 	{
-		logError(CAMI_LOAD_LIB);
+		#ifdef DEBUG
+			FILE	*file;
+			file = fopen(LOGFILE,"a");
+			fprintf(file,"CAMINTF - Plugin '%s' couldn't be loaded.\n",libName);
+			fclose(file);
+		#endif
 	}
 }
 //		CamInterface::destructor
@@ -189,21 +193,35 @@ bool CamInterface::open()
 	
 	if (err != B_NO_ERROR)
 	{
-		camConnected = false;
-		logError(CAMI_OPEN_CAMERA);
-		return false;
+		#ifdef DEBUG
+			FILE	*file;
+			file = fopen(LOGFILE,"a");
+			fprintf(file,"CAMINTF - Couldn't open the camere.\n");
+			fclose(file);
+		#endif
+		return B_ERROR;
 	}
-	else
-		camConnected = true;
-	return true;
+	return B_OK;
 }
 //
 //		Interface: closeCamera
 bool CamInterface::close()
 {
-	camConnected = false;
-	(*closeCamera)();
-	return true;
+	status_t err = B_ERROR;
+	if (check_closeCamera == true)
+		err = (*closeCamera)();
+		
+	if (err != B_NO_ERROR)
+	{
+		#ifdef DEBUG
+			FILE	*file;
+			file = fopen(LOGFILE,"a");
+			fprintf(file,"CAMINTF - Couldn't close the camere.\n");
+			fclose(file);
+		#endif
+		return B_ERROR;
+	}
+	return B_OK;
 }		
 //
 //		Interface: closeCamera
@@ -233,9 +251,9 @@ bool CamInterface::setCurrentItem(int index)
 	if(check_numberOfPictures)
 	{
 		(*setCurrentPicture)(index);
-		return true;
+		return B_OK;
 	}
-	return false;
+	return B_ERROR;
 }
 //
 //		Interface: Download picture
@@ -245,9 +263,9 @@ bool CamInterface::downloadItem(int index,BPath path, const char *name)
 	{
 		setCurrentItem(index);
 		(*downloadPicture)(path,name);
-		return true;
+		return B_OK;
 	}
-	return false;
+	return B_ERROR;
 }
 //
 //		Interface: delete picture
@@ -257,9 +275,9 @@ bool CamInterface::deleteItem(int index)
 	{
 		setCurrentItem(index);
 		(*deletePicture)();
-		return true;
+		return B_OK;
 	}
-	return false;
+	return B_ERROR;
 }
 //
 //		Interface: take picture
@@ -268,9 +286,9 @@ bool CamInterface::takeItem()
 	if(check_takePicture)
 	{
 		(*takePicture)();
-		return true;
+		return B_OK;
 	}
-	return false;
+	return B_ERROR;
 }
 //
 //		Interface: get Name
@@ -376,60 +394,9 @@ bool CamInterface::setCoreSystemLoop(BLooper *core)
 }
 //
 //		Interface: camera Connection
-bool CamInterface::cameraConnected() 
-{
-	return camConnected;
-}
-//
-//		Interface: camera Connection
 BWindow* CamInterface::pluginConfiguration(BPoint centerPoint) 
 {
 	if(check_configurePlugin)
 		return (BWindow *)((*configurePlugin)(centerPoint));
 	return NULL;
-}
-// 
-//		Interface: BDCP_logError
-int CamInterface::logError(int ErrorMes)
-{
-	char 				*errorMessage;
-	
-	switch(ErrorMes)
-	{
-		case CAMI_OPEN_CAMERA:
-			errorMessage = "BDCP: Could not open camera\n";
-			break;
-		case CAMI_LOAD_LIB:
-			errorMessage = "BDCP: Could not load library\n";
-			break;
-		default:
-			errorMessage = "BDCP: An unexpected error occured\n";
-	}
-	// write the errorMessage into the logfile
-	#ifdef DEBUG
-		FILE	*file;
-		file = fopen(LOGFILE,"a");
-		fprintf(file,errorMessage);
-		fclose(file);
-	#endif
-	return(ErrorMes);
-}
-
-//
-//		Interface :: BDCP_LogValue
-void CamInterface::logValue(int ValueMes, int Value)
-{
-	char 				*valueMessage;
-	
-	switch(ValueMes)
-	{
-		default:
-			valueMessage = "BDCP: An unexpected error occured\n";
-	}
-	#ifdef DEBUG
-		FILE	*file;
-		file = fopen(LOGFILE,"a");
-		fprintf(file,valueMessage,Value);
-		fclose(file);
-	#endif
 }

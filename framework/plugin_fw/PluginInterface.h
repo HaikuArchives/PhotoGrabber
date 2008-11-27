@@ -29,8 +29,6 @@ class CamInterface
 	public:
 						CamInterface(char *libName);
 						~CamInterface(void);
-		int 			logError(int ErrorMes);
-		void			logValue(int ValueMes, int Value);
 		int				getRevision();
 		vector<string>	getCameraStrings();
 		version_info	getVersion();
@@ -49,7 +47,6 @@ class CamInterface
 		int				getWidth();
 		bool			setCoreSystemLoop(BLooper *core);
 		int				getDevType();
-		bool			cameraConnected(); 
 		BWindow*		pluginConfiguration(BPoint);
 		// Checks
 		bool		check_revision;
@@ -102,13 +99,8 @@ class CamInterface
 		//
 		bool		getSymbols(image_id addonId);
 		image_id	addonId;
-		// 
-		bool		camConnected;
 };
 
 #define CAMI_OFFSET								655
-#define	CAMI_OPEN_CAMERA						CAMI_OFFSET + 1
-#define	CAMI_LOAD_LIB							CAMI_OFFSET + 2
-#define CAMI_NO_HANDLES							CAMI_OFFSET + 3
 
 #endif

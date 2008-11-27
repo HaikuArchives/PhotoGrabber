@@ -59,17 +59,12 @@ class BeDiGiCamApp : public BApplication {
 		image_id 					addonId;
 		SETTINGS                	pgsettings;
 		
-	private:
-		int						LogError(int ErrorMes);
-		
 		
 };
 
 // defenitions
 
 #define CLI_OFFSET				55
-#define CLI_WRONG_ARGUMENT		CLI_OFFSET+1
-#define CLI_NO_ARGUMENT			CLI_OFFSET+2
 
 
 #endif /* __CORESYS_H__ */

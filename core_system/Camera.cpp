@@ -28,8 +28,7 @@ Camera::Camera(char *libName = NULL) : BLooper("cameralooper")
 		fclose(lfcam);
 	#endif
 	// Create the interface
-	if(libName != NULL)
-		camInterface = new CamInterface(libName);
+	camInterface = new CamInterface(libName);
 }
 //
 // Camera::destructor
@@ -60,7 +59,6 @@ bool Camera::Stop()
 		fprintf(lfcam,"CAM - Stop listening to connecting digital cameras.\n");
 		fclose(lfcam);
 	#endif
-	//BLooper::Lock();
 	BLooper::Quit();
 	return B_OK;
 }
@@ -73,13 +71,8 @@ bool Camera::OpenDevice()
 		fprintf(lfcam,"CAM - Open the digital camera.\n");
 		fclose(lfcam);
 	#endif
-	if(camInterface)
-	{
-		camInterface->setCoreSystemLoop(app);
-		camInterface->open();
-		return camInterface->cameraConnected();
-	}
-	return false;
+	camInterface->setCoreSystemLoop(app);
+	return camInterface->open();
 }
 //
 //	Camera:: Close Device
@@ -90,12 +83,7 @@ bool Camera::CloseDevice()
 		fprintf(lfcam,"CAM - Close the digital camera.\n");
 		fclose(lfcam);
 	#endif
-	if(camInterface)
-	{
-		camInterface->close();
-		return !camInterface->cameraConnected();
-	}
-	return false;
+	return	camInterface->close();
 }
 //
 // Camera:: get number of pictures
@@ -113,17 +101,13 @@ bool Camera::DownloadItem(uint32 itemhandle, entry_ref *copyToDir = NULL, const 
 	 	directory = BPath(copyToDir);
 	else
 		directory = CameraSavedir;
-	if(camInterface && camInterface->cameraConnected())
-		camInterface->downloadItem(itemhandle,directory, fileName);
-	return B_OK;
+	return	camInterface->downloadItem(itemhandle,directory, fileName);
 }
 //
 // 	Camera:: delete an item
 bool Camera::RemoveItem(uint32 itemhandle)
-{
-	if(camInterface && camInterface->cameraConnected())	
-		camInterface->deleteItem(itemhandle);
-	return B_OK;
+{	
+	return	camInterface->deleteItem(itemhandle);
 }
 // 
 //	Camera::get the data of all the items of the camera
@@ -131,60 +115,55 @@ bool Camera::GetCameraItems()
 {	
 	ItemData *localItemData;
 	BMessage *message;
-	if(camInterface && camInterface->cameraConnected())
+
+	uint32 numberOfItems = camInterface->getNumberOfItems();
+	if(numberOfItems == 0)
 	{
-		uint32 numberOfItems = camInterface->getNumberOfItems();
-		if(numberOfItems == 0)
-		{
-			#ifdef DEBUG
-				lfcam = fopen(LOGFILE,"a");
-				fprintf(lfcam,"CAM - There are no items on the camera.\n");
-				fclose(lfcam);
-			#endif
-			message = new BMessage(GET_ITEMS_DONE);
-			app->PostMessage(message,app);
-			return(B_ERROR);
-		}
-		else
-		{
-			for (uint32 i = 0; i < numberOfItems;i++)
-			{
-				
-				localItemData = new ItemData();
-				// set current item is important! Don't forget it!
-				camInterface->setCurrentItem(i);
-				localItemData->ItemHandle = i;
-				localItemData->ItemSize = camInterface->getSize();
-				localItemData->ItemName = camInterface->getName();
-				localItemData->ItemXres = camInterface->getWidth();
-				localItemData->ItemYres = camInterface->getHeight();
-				localItemData->ItemDate = camInterface->getDate();
-				localItemData->ItemThumbBitmap = camInterface->getThumb();
-				//localItemData->ItemThumbBitmap = NULL;
-				if(localItemData->ItemThumbBitmap != NULL)
-				{
-					localItemData->ItemThumbXres = (uint32)localItemData->ItemThumbBitmap->Bounds().Width();
-					localItemData->ItemThumbYres = (uint32)localItemData->ItemThumbBitmap->Bounds().Height();
-				}
-				else
-				{
-					localItemData->ItemThumbXres = THUMBWIDTH;
-					localItemData->ItemThumbYres = THUMBHEIGHT;
-				}
-				// send a message to insert a item in the list
-				message = new BMessage(ADD_ITEM);
-				message->AddPointer("item",localItemData);
-				app->PostMessage(message,app);
-				//
-				localItemData = NULL;
-			}
-			message = new BMessage(GET_ITEMS_DONE);
-			app->PostMessage(message,app);
-			return(B_OK);
-		}
+		#ifdef DEBUG
+			lfcam = fopen(LOGFILE,"a");
+			fprintf(lfcam,"CAM - There are no items on the camera.\n");
+			fclose(lfcam);
+		#endif
+		message = new BMessage(GET_ITEMS_DONE);
+		app->PostMessage(message,app);
+		return(B_ERROR);
 	}
 	else
-		return(B_ERROR);	
+	{
+		for (uint32 i = 0; i < numberOfItems;i++)
+		{
+			
+			localItemData = new ItemData();
+			// set current item is important! Don't forget it!
+			camInterface->setCurrentItem(i);
+			localItemData->ItemHandle = i;
+			localItemData->ItemSize = camInterface->getSize();
+			localItemData->ItemName = camInterface->getName();
+			localItemData->ItemXres = camInterface->getWidth();
+			localItemData->ItemYres = camInterface->getHeight();
+			localItemData->ItemDate = camInterface->getDate();
+			localItemData->ItemThumbBitmap = camInterface->getThumb();
+			if(localItemData->ItemThumbBitmap != NULL)
+			{
+				localItemData->ItemThumbXres = (uint32)localItemData->ItemThumbBitmap->Bounds().Width();
+				localItemData->ItemThumbYres = (uint32)localItemData->ItemThumbBitmap->Bounds().Height();
+			}
+			else
+			{
+				localItemData->ItemThumbXres = THUMBWIDTH;
+				localItemData->ItemThumbYres = THUMBHEIGHT;
+			}
+			// send a message to insert a item in the list
+			message = new BMessage(ADD_ITEM);
+			message->AddPointer("item",localItemData);
+			app->PostMessage(message,app);
+			//
+			localItemData = NULL;
+		}
+		message = new BMessage(GET_ITEMS_DONE);
+		app->PostMessage(message,app);
+		return(B_OK);
+	}	
 }
 //
 // 	Camera:: Set the Download Properties
@@ -199,10 +178,7 @@ bool Camera::SetDownloadProps(BPath savedir)
 // 	Camera:: Get the type of the device
 int Camera::GetDeviceType()
 {
-	if(camInterface)
-		return camInterface->getDevType();
-	else 
-		return 0;
+	return camInterface->getDevType();
 }
 //
 //	Camera::Get Device Properties
@@ -292,12 +268,9 @@ void Camera::MessageReceived(BMessage *message)
 		case RELOAD_CONFIGURATION:
 		{
 			const char *libName = NULL;
-			
-			if(camInterface)
-				delete(camInterface);
+			delete(camInterface);
 			libName = message->FindString("libname");
-			if(libName != NULL)
-				camInterface = new CamInterface((char *)libName);
+			camInterface = new CamInterface((char *)libName);
 			break;
 		}
 		default: 
