@@ -568,13 +568,13 @@ bool MSDInterface::Mount()
 		for(int i = 0; i < deviceList.CountDevices();i++)
 		{
 			BDiskDevice *device = deviceList.DeviceAt(i);
+			BPath path;
+			device->GetPath(&path);
 			#ifdef DEBUG
 					FILE	*file;
 					file = fopen(LOGFILE,"a");
 					fprintf(file,"MS - Mount :: Device %d:\n", i + 1);
 					fprintf(file,"MS - Mount :: Name: %s.\n", device->Name());
-					BPath path;
-					device->GetPath(&path);
 					fprintf(file,"MS - Mount :: Path:%s.\n\n", path.Path());
 					fclose(file);
 			#endif

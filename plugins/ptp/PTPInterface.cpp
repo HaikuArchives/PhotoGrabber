@@ -129,7 +129,7 @@ ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 	
 	#ifdef DEBUG
 		lfptpi = fopen(LOGFILE,"a");
-		fprintf(lfptpi,"PTP - Read from USB\n");
+		fprintf(lfptpi,"PTP - Read from endpoint %d\n",cameraDevice->bulkInput);
 		fclose(lfptpi);
 	#endif
 	iept = dev->ActiveConfiguration()->InterfaceAt(cameraDevice->interface)->EndpointAt(cameraDevice->bulkInput);	
@@ -177,7 +177,7 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
 
 	#ifdef DEBUG
 		lfptpi = fopen(LOGFILE,"a");
-		fprintf(lfptpi,"PTP - Write to USB\n");
+		fprintf(lfptpi,"PTP - Write at endpoint %d\n",cameraDevice->bulkOutput);
 		fclose(lfptpi);
 	#endif
 	iept=dev->ActiveConfiguration()->InterfaceAt(cameraDevice->interface)->EndpointAt(cameraDevice->bulkOutput);

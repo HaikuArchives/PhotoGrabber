@@ -271,8 +271,14 @@ status_t downloadPicture(BPath savedir, const char *name)
 					delete fh;
 					if(saveCamPicture(image,size,(*params).objectinfo[currentpicturenumber].ObjectFormat,filename) == B_NO_ERROR)
 					{	
+						#ifdef DEBUG
+							lflevel1 = fopen(LOGFILE,"a");
+							fprintf(lflevel1,"PTP - Free the image\n");
+							fclose(lflevel1);
+						#endif
+						delete(image);
 						image = NULL;
-						return(B_NO_ERROR);
+						return B_NO_ERROR ;
 					}
 				}
 				else
