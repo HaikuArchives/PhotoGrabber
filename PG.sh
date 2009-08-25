@@ -49,6 +49,12 @@ fi
 make
 cd ../..
 
+#	Copy the files to the build folder
+cp obj.x86/PhotoGrabber build/PhotoGrabber/PhotoGrabber
+cp interface/obj.x86/libPGInterface build/PhotoGrabber/interface/libPGInterface
+cp plugins/msd/obj.x86/libbdcp_msd build/PhotoGrabber/plugins/libbdcp_msd
+cp plugins/ptp/obj.x86/libbdcp_ptp build/PhotoGrabber/plugins/libbdcp_ptp
+
 # 	Make the package
 cd build
 zip -r "PhotoGrabber_V${VERSION}_R${REVISION}.zip" PhotoGrabber
