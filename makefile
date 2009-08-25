@@ -151,7 +151,7 @@ DRIVER_PATH :=
 OBJ_DIR := 
 
 #       Specify a non default placement for the target 
-TARGET_DIR := .
+TARGET_DIR := build/PhotoGrabber
 
 #       If you want to see the complete build line for every file, then set this to 'true', 
 #       otherwise it will tell you at the end what the build flags were. 

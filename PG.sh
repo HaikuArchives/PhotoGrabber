@@ -22,6 +22,11 @@ BUILDDIR="./build"
 if [ -d "$BUILDDIR" ] ; then
 	rm -r build
 fi
+# 	Creating target dirs
+mkdir build
+mkdir ./build/PhotoGrabber
+mkdir ./build/PhotoGrabber/interface
+mkdir ./build/PhotoGrabber/plugins
 # 	Build the core
 make
 # 	Build the interface
@@ -43,17 +48,6 @@ if [ ! -d "$PRIVATEDIR" ] ; then
 fi
 make
 cd ../..
-# 	Creating target dirs
-mkdir build
-mkdir ./build/PhotoGrabber
-mkdir ./build/PhotoGrabber/interface
-mkdir ./build/PhotoGrabber/plugins
-
-# 	Copy the binaries to the build directory
-cp ./PhotoGrabber ./build/PhotoGrabber/
-cp ./interface/libPGInterface ./build/PhotoGrabber/interface/
-cp ./plugins/ptp/libbdcp_ptp ./build/PhotoGrabber/plugins/
-cp ./plugins/msd/libbdcp_msd ./build/PhotoGrabber/plugins/
 
 # 	Make the package
 cd build
