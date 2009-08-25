@@ -88,7 +88,7 @@ class MSDInterface
 			bool					removeMSDItem();
 			MSDItem* 				getMSDItem();
 			bool 					saveItem (MSDItem *item, const char *filename);
-			map<uint32,MSDItem*> 	MSDItems;
+			std::map<uint32,MSDItem*> 	MSDItems;
 			int						numberOfItems;
 			BDiskDevice				*device;
 			int 					currentItemHandle;

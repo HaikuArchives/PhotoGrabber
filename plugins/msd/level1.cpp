@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <iostream.h>
+#include <iostream>
 #include <NodeInfo.h>
 
 //		User Includes
@@ -133,7 +133,7 @@ void getPluginVersion(version_info &ver)
 	sprintf(ver.long_info,"BDCP Mass Storage Cameras Plugin");
 }
 
-void getSupportedCameras(vector<string> & listofcams)
+void getSupportedCameras(std::vector<std::string> & listofcams)
 {
 	listofcams.push_back("MSC(Mass Storage) camera");
 }

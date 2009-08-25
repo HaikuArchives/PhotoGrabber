@@ -17,7 +17,7 @@ extern class BeDiGiCamApp *app;
 FILE *lfcam;
 //
 // Camera::constructor
-Camera::Camera(char *libName = NULL) : BLooper("cameralooper")
+Camera::Camera(char *libName) : BLooper("cameralooper")
 {
 	// First create the temporary directory
 	BDirectory tmpDir("/boot");

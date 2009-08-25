@@ -21,9 +21,9 @@ extern int currentpicturenumber;
 extern int *handles;
 extern bool haveigotfilenames;
 extern PTPParams		*params;
-extern map<int, char*> imagenames;
-extern map<int, int> imagesizes;
-extern map<int, char*> imagedates;
+extern std::map<int, char*> imagenames;
+extern std::map<int, int> imagesizes;
+extern std::map<int, char*> imagedates;
 
 //Level 2 Functions - Optional
 extern "C" status_t deletePicture();
@@ -32,7 +32,7 @@ extern "C" status_t getImageName(char* &name);
 extern "C" status_t getImageSize(int &size);
 extern "C" status_t getImageDate(char* &date);
 extern "C" status_t getThumbnail(BBitmap* &);
-extern "C" status_t getLevel3FunctionNames(map<char*, char*> &menunames);
+extern "C" status_t getLevel3FunctionNames(std::map<char*, char*> &menunames);
 extern "C" status_t setMessageTarget(BLooper* mtarget);
 //extern "C" BWindow * configurePlugin(BPoint middle);
 //Functions for BDCP3

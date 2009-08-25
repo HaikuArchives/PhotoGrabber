@@ -4,6 +4,11 @@
 ## * Distributed under the terms of the MIT License.               *
 ## *****************************************************************
 
+ifneq ($(wildcard /boot/system/lib/libstdc++.so), )
+	TARGET_LIBSTDC++ := stdc++
+else
+	TARGET_LIBSTDC++ := stdc++.r4
+endif
 
 ## Application Specific Settings
 
@@ -68,7 +73,7 @@ RDEFS :=
 #               naming scheme you need to specify the path to the library 
 #               and it's name 
 #               library: my_lib.a entry: my_lib.a or path/my_lib.a 
-LIBS :=  stdc++.r4 be translation root
+LIBS :=  $(TARGET_LIBSTDC++) be translation root
 		
 #       specify additional paths to directories following the standard 
 #       libXXX.so or libXXX.a naming scheme.  You can specify full paths 

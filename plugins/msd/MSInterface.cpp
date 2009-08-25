@@ -20,6 +20,8 @@
 #include <libexif/exif-data.h>
 #include <libexif/exif-entry.h>
 
+#include <stdlib.h>
+
 //
 // External variables
 int READ_BUFFER  = 4096;
@@ -473,7 +475,7 @@ void MSDInterface::getMSDItems(const char* path)
 							path.GetParent(&path);
 							localItem->ItemParent = path.Path();
 							// Insert the Item in the list
-							MSDItems.insert(pair<uint32,MSDItem*>(numberOfItems,localItem));
+							MSDItems.insert(std::pair<uint32,MSDItem*>(numberOfItems,localItem));
 							numberOfItems++;
         				}
         			}
@@ -688,7 +690,7 @@ bool MSDInterface::Unmount()
 //		MSDInterface: get MSD Item
 MSDItem* MSDInterface::getMSDItem()
 {
-	map<uint32,MSDItem*>::iterator i = MSDItems.begin();
+	std::map<uint32,MSDItem*>::iterator i = MSDItems.begin();
 	while(i != MSDItems.end())
 	{
 		if((*i).first == currentItemHandle)
@@ -710,7 +712,7 @@ MSDItem* MSDInterface::getMSDItem()
 //		MSDInterface: get MSD Item
 bool MSDInterface::removeMSDItem()
 {
-	map<uint32,MSDItem*>::iterator i = MSDItems.begin();
+	std::map<uint32,MSDItem*>::iterator i = MSDItems.begin();
 	while(i != MSDItems.end())
 	{
 		if((*i).first == currentItemHandle)

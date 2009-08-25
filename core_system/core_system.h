@@ -15,10 +15,9 @@
 #include <Application.h>
 #include <Deskbar.h>
 #include <Roster.h>
-#include <map.h>
-#include <multimap.h>
-#include <string.h>
-#include <vector.h>
+#include <map>
+#include <string>
+#include <vector>
 #include <FindDirectory.h>
 #include <AppFileInfo.h>
 #include <Window.h>
@@ -46,8 +45,8 @@ class BeDiGiCamApp : public BApplication {
 		bool						OpenPluginConfig(char *camerastring, BPoint *interfacePoint);
 		bool						IsPluginConfigPresent(char *camerastring);
 		CamInterface 				*interface;
-		vector<string> 				supportedCams;
-		multimap<const char*,string>	pluginSupportedCams;
+		std::vector<std::string>	supportedCams;
+		std::multimap<const char*,std::string>	pluginSupportedCams;
 		version_info				plugininfo;
 		BWindow						*pluginconfwindow;
 		//

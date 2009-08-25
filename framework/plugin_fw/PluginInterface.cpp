@@ -176,9 +176,9 @@ int CamInterface::getRevision()
 }
 //
 //		Interface: getCameraStrings
-vector<string>	CamInterface::getCameraStrings()
+std::vector<std::string>	CamInterface::getCameraStrings()
 {
-	vector<string> supportedCams;
+	std::vector<std::string> supportedCams;
 	if(check_supcams)
 		(*getSupportedCameras)(supportedCams);
 	return supportedCams;

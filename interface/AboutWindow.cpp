@@ -42,7 +42,7 @@ void	AboutBitmapView::Draw(BRect rect)
 }
 //
 //		Aboutview :: Constructor
-BeCam_AboutView::BeCam_AboutView(BRect r):BView(r, "aboutview", B_FOLLOW_LEFT_RIGHT, B_WILL_DRAW)
+BeCam_AboutView::BeCam_AboutView(BRect rect):BView(rect, "aboutview", B_FOLLOW_LEFT_RIGHT, B_WILL_DRAW)
 {
 	rgb_color bg_color=ui_color(B_PANEL_BACKGROUND_COLOR);
 	SetViewColor(bg_color);

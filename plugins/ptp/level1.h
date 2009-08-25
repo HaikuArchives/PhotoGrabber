@@ -35,9 +35,9 @@ PTPParams		*params;
 
 int currentpicturenumber;
 //bool haveigotfilenames;
-//map<int, char*> imagenames;
-//map<int, int> imagesizes;
-//map<int, char*> imagedates;
+//std::map<int, char*> imagenames;
+//std::map<int, int> imagesizes;
+//std::map<int, char*> imagedates;
 //Level 1 Functions - MUST be implemented fully to be BDCP2 Compliant
 
 extern "C" int get_BDCP_API_Revision(void);
@@ -47,7 +47,7 @@ extern "C" status_t closeCamera(void);
 extern "C" status_t getNumberofPics(int &);
 extern "C" status_t setCurrentPicture(int picturenumber);
 extern "C" status_t downloadPicture(BPath savedir, const char *name);
-extern "C" void getSupportedCameras(vector<string> &);
+extern "C" void getSupportedCameras(std::vector<std::string> &);
 bool saveCamPicture (unsigned char *data, long int size,uint16_t type, const char *filename);
 
 // Messages

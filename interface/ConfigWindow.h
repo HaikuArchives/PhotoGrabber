@@ -73,7 +73,7 @@ class BeCam_ConfigWindow : public BWindow
 		void				GetPluginDetails(char *cameraname = NULL);
 		void				OpenPluginConfig();
 		bool				IsPluginConfigPresent();
-		multimap<const char*,string>	*pluginSupportedCams;
+		std::multimap<const char*,std::string>	*pluginSupportedCams;
 		class BeCam_MainWindow    *parent;
 		version_info		versioninfo;
 		SETTINGS            *pgsettings;

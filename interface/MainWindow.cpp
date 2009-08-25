@@ -167,7 +167,7 @@ void BeCam_MainWindow::clearItems()
 }
 //
 // MainWindow:: Download the selected items
-void BeCam_MainWindow::downloadSelectedItems(entry_ref copyToDir, const char *fileName = NULL)
+void BeCam_MainWindow::downloadSelectedItems(entry_ref copyToDir, const char *fileName)
 {
 	//
 	if(becam_gridview->CurrentSelection() >= 0)

@@ -9,9 +9,9 @@
 #include "global.h"
 #include <Path.h>
 #include <FindDirectory.h>
-#include <fstream.h>
+#include <fstream>
 #include <cstdio>
-#include <iostream.h>
+#include <iostream>
 #include <String.h>
 #include <Looper.h>
 

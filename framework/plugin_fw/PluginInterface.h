@@ -11,12 +11,13 @@
 #define CAMINTF_H
 
 //		Includes
-#include <map.h>
+#include <map>
 #include <Looper.h>
 #include <Entry.h>
 #include <Path.h>
 #include <image.h>
 #include <AppFileInfo.h>
+#include <Window.h>
 #include <vector>
 #include <string>
 
@@ -30,7 +31,7 @@ class CamInterface
 						CamInterface(char *libName);
 						~CamInterface(void);
 		int				getRevision();
-		vector<string>	getCameraStrings();
+		std::vector<std::string>	getCameraStrings();
 		version_info	getVersion();
 		int				getNumberOfItems();
 		bool			open();
@@ -74,7 +75,7 @@ class CamInterface
 		// level 1
 		status_t 	(*get_BDCP_API_Revision)();
 		status_t 	(*getPluginVersion)(version_info &);
-		status_t	(*getSupportedCameras)(vector<string> &);
+		status_t	(*getSupportedCameras)(std::vector<std::string> &);
 		status_t 	(*openCamera)();
 		status_t 	(*closeCamera)();
 		status_t 	(*getNumberofPics)(int &);
@@ -88,7 +89,7 @@ class CamInterface
 		status_t 	(*getImageDate)(char* &);
 		status_t 	(*configurePlugin)(BPoint);
 		status_t 	(*setMessageTarget)(BLooper*);
-		status_t 	(*getLevel3FunctionNames)(map<char*, char*> &);
+		status_t 	(*getLevel3FunctionNames)(std::map<char*, char*> &);
 		status_t 	(*getThumbnail)(BBitmap* &);
 		// level 2 BDCP3
 		status_t 	(*getImageHeight)(int &);

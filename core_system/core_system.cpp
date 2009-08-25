@@ -332,14 +332,14 @@ bool BeDiGiCamApp::GetCameraStrings()
 			{
 				unload_add_on(lAddonId);
 				interface = new CamInterface(addonName);
-				vector<string> plugincamstrings = interface->getCameraStrings();
-				vector<string>::iterator i = plugincamstrings.begin();
+				std::vector<std::string> plugincamstrings = interface->getCameraStrings();
+				std::vector<std::string>::iterator i = plugincamstrings.begin();
 				while(i != plugincamstrings.end())
 				{
 					char *dummy = new char[B_FILE_NAME_LENGTH];
 					strcpy(dummy,(*i).c_str());
 					supportedCams.push_back(dummy);
-					pluginSupportedCams.insert(pair<const char* const,string>(addonName,(*i)));
+					pluginSupportedCams.insert(std::pair<const char* const,std::string>(addonName,(*i)));
 					i++;
 				}
 				delete(interface);
@@ -355,7 +355,7 @@ bool BeDiGiCamApp::GetCameraStrings()
 bool BeDiGiCamApp::GetPluginDetails(char *camerastring)
 {
 	// save the plugin name
-	multimap<const char*,string>::iterator i = pluginSupportedCams.begin();
+	std::multimap<const char*,std::string>::iterator i = pluginSupportedCams.begin();
 	while(i != pluginSupportedCams.end())
 	{
 		//	TODO should be revised :: FindMarked->label must be put in a variable first
@@ -375,7 +375,7 @@ bool BeDiGiCamApp::GetPluginDetails(char *camerastring)
 bool BeDiGiCamApp::OpenPluginConfig(char *camerastring,BPoint *interfacePoint)
 {
 	BPoint lPoint = *interfacePoint;
-	multimap<const char*,string>::iterator i = pluginSupportedCams.begin();
+	std::multimap<const char*,std::string>::iterator i = pluginSupportedCams.begin();
 	while(i != pluginSupportedCams.end())
 	{
 		if(!strcmp((*i).second.c_str(),camerastring))
@@ -396,7 +396,7 @@ bool BeDiGiCamApp::OpenPluginConfig(char *camerastring,BPoint *interfacePoint)
 //	BeDiGiCam:: Check if there is a plugin configuration screen
 bool BeDiGiCamApp::IsPluginConfigPresent(char *camerastring)
 {
-	multimap<const char*,string>::iterator i = pluginSupportedCams.begin();
+	std::multimap<const char*,std::string>::iterator i = pluginSupportedCams.begin();
 	while(i != pluginSupportedCams.end())
 	{
 		if(!strcmp((*i).second.c_str(),camerastring))

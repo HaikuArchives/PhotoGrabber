@@ -700,7 +700,7 @@ void GridView::SendKeyStrokesTo (BLooper* looper, BHandler* handler)
 }
 //
 //	GridView :: Select
-void GridView::Select (int32 index, bool extend = false)
+void GridView::Select (int32 index, bool extend)
 {
 	#ifdef DEBUG
 		lfgridv = fopen(INTF_LOGFILE,"a");	
@@ -727,7 +727,7 @@ void GridView::Select (int32 index, bool extend = false)
 	}
 }
 //	GridView :: Select From To
-void GridView::Select (int32 fromIndex, int32 toIndex, bool extend = false)
+void GridView::Select (int32 fromIndex, int32 toIndex, bool extend)
 {
 	BeCam_Item *item;
 	int32 startIndex;
@@ -760,7 +760,7 @@ void 	GridView::SelectAll ()
 }
 //
 //	GridView:: Select next item
-void 	GridView::SelectNext(int32 modifiers = 0)
+void 	GridView::SelectNext(int32 modifiers)
 {
 	if((modifiers & B_SHIFT_KEY))
 		Select (fSelectedItemIndex,fLastSelectedItemIndex < CountItems() - 1 ? fLastSelectedItemIndex + 1 : CountItems() - 1,true);
@@ -770,7 +770,7 @@ void 	GridView::SelectNext(int32 modifiers = 0)
 }
 //
 //	GridView:: Select previous item
-void 	GridView::SelectPrevious (int32 modifiers = 0)
+void 	GridView::SelectPrevious (int32 modifiers)
 {
 	if((modifiers & B_SHIFT_KEY))
 		Select (fSelectedItemIndex,fLastSelectedItemIndex > 0 ? fLastSelectedItemIndex - 1 : 0,true);
@@ -780,7 +780,7 @@ void 	GridView::SelectPrevious (int32 modifiers = 0)
 }
 //
 //	GridView :: Deselect
-void GridView::Deselect(int32 index, bool extend = false)
+void GridView::Deselect(int32 index, bool extend)
 {
 	
 	BeCam_Item *item = (BeCam_Item*)(fItemList->ItemAt(index));
@@ -826,7 +826,7 @@ void GridView::DeselectAll()
 }
 //
 //	GridView:: Current Selection
-int32	GridView::CurrentSelection(int32 index = 0)
+int32	GridView::CurrentSelection(int32 index)
 {
 	int32 countItems = fItemList->CountItems();
 	BeCam_Item* item;

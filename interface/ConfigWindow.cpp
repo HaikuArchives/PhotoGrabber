@@ -126,7 +126,7 @@ void BeCam_ConfigWindow::MessageReceived(BMessage* message)
 				if(becam_cameraMenu->FindMarked() != NULL)
 				strncpy(pgsettings->deviceName,becam_cameraMenu->FindMarked()->Label(),B_FILE_NAME_LENGTH);
 				// save the plugin name
-				multimap<const char*,string>::iterator i = pluginSupportedCams->begin();
+				std::multimap<const char*,std::string>::iterator i = pluginSupportedCams->begin();
 				while(i != pluginSupportedCams->end())
 				{
 					if(!strcmp((*i).second.c_str(),pgsettings->deviceName))
@@ -169,7 +169,7 @@ void BeCam_ConfigWindow::MessageReceived(BMessage* message)
 void BeCam_ConfigWindow::CreateCameraTypeMenu(BRect r)
 {
 	BMenuItem *cameraName;
-	vector<string> *supportedCams;
+	std::vector<std::string> *supportedCams;
  	//		Create the menu
  	becam_cameraMenu = new BPopUpMenu("");
 	BMessenger messenger(NULL,parent->systemcore);
@@ -179,7 +179,7 @@ void BeCam_ConfigWindow::CreateCameraTypeMenu(BRect r)
 	if(reply.FindPointer("camstrings",(void **)&supportedCams) == B_OK && reply.FindPointer("pluginstrings",(void **)&pluginSupportedCams) == B_OK)
 	{
 		
-		vector<string>::iterator i = supportedCams->begin();
+		std::vector<std::string>::iterator i = supportedCams->begin();
 		while(i != supportedCams->end())
 		{
 			char *dummy = new char[B_FILE_NAME_LENGTH];
@@ -202,7 +202,7 @@ void BeCam_ConfigWindow::CreateCameraTypeMenu(BRect r)
 }
 
 //	configWindow::GetPluginName
-void BeCam_ConfigWindow::GetPluginDetails(char * cameraname = NULL)
+void BeCam_ConfigWindow::GetPluginDetails(char * cameraname)
 {
 	version_info *versioninfo;
 	BMessenger messenger(NULL,parent->systemcore);

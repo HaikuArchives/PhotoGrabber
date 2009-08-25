@@ -50,10 +50,10 @@ mkdir ./build/PhotoGrabber/interface
 mkdir ./build/PhotoGrabber/plugins
 
 # 	Copy the binaries to the build directory
-cp ./obj.x86/PhotoGrabber ./build/PhotoGrabber/
-cp ./interface/obj.x86/libPGInterface ./build/PhotoGrabber/interface/
-cp ./plugins/ptp/obj.x86/libbdcp_ptp ./build/PhotoGrabber/plugins/
-cp ./plugins/msd/obj.x86/libbdcp_msd ./build/PhotoGrabber/plugins/
+cp ./PhotoGrabber ./build/PhotoGrabber/
+cp ./interface/libPGInterface ./build/PhotoGrabber/interface/
+cp ./plugins/ptp/libbdcp_ptp ./build/PhotoGrabber/plugins/
+cp ./plugins/msd/libbdcp_msd ./build/PhotoGrabber/plugins/
 
 # 	Make the package
 cd build

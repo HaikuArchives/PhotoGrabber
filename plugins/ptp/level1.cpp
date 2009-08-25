@@ -7,7 +7,7 @@
 */
 //		System Includes
 #include <string.h>
-#include <iostream.h>
+#include <iostream>
 #include <NodeInfo.h>
 #include <libexif/exif-data.h>
 #include <libexif/exif-entry.h>
@@ -100,7 +100,7 @@ void getPluginVersion(version_info &ver)
 	sprintf(ver.long_info,"PTP Cameras Plugin");
 }
 
-void getSupportedCameras(vector<string> & listofcams)
+void getSupportedCameras(std::vector<std::string> & listofcams)
 {
 	listofcams.push_back("PTP(Picture Transfer Protocol) camera");
 }
