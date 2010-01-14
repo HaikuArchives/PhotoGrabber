@@ -19,10 +19,10 @@
 #include "PTPInterface.h"
 #include <USBKit.h>
 //	Local Includes
-extern "C" {
-#include "libptp/ptp.h"
-}
-
+//extern "C" {
+//#include "libptp/ptp.h"
+//}
+#include "results.h"
 
 const int32 MSG_UPDATEBAR			= 0x01012001;
 

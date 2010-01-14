@@ -19,7 +19,7 @@ void debug(BString debugstring1, int debugval2);
 // defenitions
 //#define	DEBUG
 // log-file
-#define LOGFILE "/boot/var/tmp/ptp.log"
+#define LOGFILE "/boot/home/Desktop/ptp.log"
 // error messages
 #define	PTPCAM_OFFSET				155
 #define PTPCAM_DEV_NO_FIND			PTPCAM_OFFSET + 1
@@ -34,5 +34,6 @@ void debug(BString debugstring1, int debugval2);
 #define PTPCAM_DEL_PIC_FAIL			PTPCAM_OFFSET + 10
 #define PTPCAM_GET_NAME_FAIL		PTPCAM_OFFSET + 11
 #define PTPCAM_NEW_FILE_FAIL		PTPCAM_OFFSET + 12
+#define PTPCAM_GETTHUMB_FAIL		PTPCAM_OFFSET + 13
 
 #endif

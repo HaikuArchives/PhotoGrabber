@@ -66,7 +66,7 @@ typedef struct _PTPContainer PTPContainer;
  * and fixed the bugs that made this necessary and it can be 512 again.
  */
 #define PTP_USB_BULK_HS_MAX_PACKET_LEN_WRITE	512
-#define PTP_USB_BULK_HS_MAX_PACKET_LEN_READ   4096
+#define PTP_USB_BULK_HS_MAX_PACKET_LEN_READ   	4096
 #define PTP_USB_BULK_HDR_LEN		(2*sizeof(uint32_t)+2*sizeof(uint16_t))
 #define PTP_USB_BULK_PAYLOAD_LEN_WRITE	(PTP_USB_BULK_HS_MAX_PACKET_LEN_WRITE-PTP_USB_BULK_HDR_LEN)
 #define PTP_USB_BULK_PAYLOAD_LEN_READ	(PTP_USB_BULK_HS_MAX_PACKET_LEN_READ-PTP_USB_BULK_HDR_LEN)
@@ -1569,7 +1569,7 @@ struct _PTPParams {
 int ptp_read_func (unsigned char *bytes, unsigned int size, void *data);
 int ptp_write_func (unsigned char *bytes, unsigned int size, void *data);
 int	ptp_check_int(unsigned char *bytes, unsigned int size, void *data);
-int ptp_clear_read_halt(void *data);
+int ptp_clear_read_halt(void *data, int endpoint);
 /* last, but not least - ptp functions */
 uint16_t ptp_usb_sendreq	(PTPParams* params, PTPContainer* req);
 uint16_t ptp_usb_senddata	(PTPParams* params, PTPContainer* ptp,

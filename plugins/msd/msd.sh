@@ -21,6 +21,4 @@ if [ ! -d "$PRIVATEDIR" ] ; then
 fi
 # Build the ptp plugin
 make
-# Copy the binaries to the build directory
-cp ./obj.x86/libbdcp_msd ../../build/PhotoGrabber/plugins/
 

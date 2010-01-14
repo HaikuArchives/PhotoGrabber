@@ -13,6 +13,7 @@
 #include "PTPInterface.h"
 #include "preferences.h"
 #include "debug.h"
+#include "results.h"
 
 int globalEndpoint;
 FILE *lfptpi;
@@ -26,7 +27,7 @@ uint16_t  ptp_init_usb(PTPParams* params, USBCameraDevice *cameraDevice)
 		fclose(lfptpi);
 	#endif
 	// Initialize the USB device
-	uint16_t ret = PTP_ERROR_IO;
+	uint16_t ret = PG_ERROR;
 	uint32 i,j;
 	const BUSBConfiguration *conf;
 	const BUSBInterface *ifc;
@@ -89,7 +90,7 @@ uint16_t  ptp_init_usb(PTPParams* params, USBCameraDevice *cameraDevice)
 							params->data			= cameraDevice;	
 							params->transaction_id	= 0;
 							params->byteorder 		= PTP_DL_LE;
-							ret = PTP_RC_OK;	
+							ret = PG_OK;	
 						}
 					}	
 			}
@@ -113,9 +114,9 @@ uint16_t ptp_exit_usb(PTPParams* params, BUSBDevice *device)
 	USBCameraDevice *cameraDevice = (USBCameraDevice *)(params->data);
 	
 	if(cameraDevice->device == device)
-		return PTP_RC_OK;
+		return PG_OK;
 	
-	return PTP_ERROR_IO;
+	return PG_ERROR;
 }
 //
 //	Read from USB
@@ -141,7 +142,7 @@ ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 			fprintf(lfptpi,"PTP - The endpoint is null\n");
 			fclose(lfptpi);
 		#endif
-		return PTP_ERROR_IO;
+		return PG_ERROR_IO_READ;
 	}
 	
 	result = iept->BulkTransfer(bytes,size);
@@ -162,7 +163,7 @@ ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 			fprintf(lfptpi,"PTP - Bulk read failed.\n");
 			fclose(lfptpi);
 		#endif
-		return PTP_ERROR_IO;
+		return PG_ERROR_IO_READ;
 	}
 }
 //
@@ -183,7 +184,7 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
 	iept=dev->ActiveConfiguration()->InterfaceAt(cameraDevice->interface)->EndpointAt(cameraDevice->bulkOutput);
 	
 	if(iept == NULL)
-		return PTP_ERROR_IO;
+		return PG_ERROR_IO_WRITE;
 
 	result = iept->BulkTransfer(bytes,size);
 	if (result >= 0)
@@ -202,7 +203,7 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
 			fprintf(lfptpi,"PTP - Bulk write failed.\n");
 			fclose(lfptpi);
 		#endif
-		return PTP_ERROR_IO;
+		return PG_ERROR_IO_WRITE;
 	}
 }
 //
@@ -224,7 +225,7 @@ ptp_check_int(unsigned char *bytes, unsigned int size, void *data)
 	iept = dev->ActiveConfiguration()->InterfaceAt(cameraDevice->interface)->EndpointAt(cameraDevice->interruptInput);
 		
 	if(iept == NULL)
-		return PTP_ERROR_IO;
+		return PG_ERROR_IO_READ;
 		
 	result= iept->InterruptTransfer(bytes,size);
 	if (result >= 0)
@@ -243,13 +244,13 @@ ptp_check_int(unsigned char *bytes, unsigned int size, void *data)
 			fprintf(lfptpi,"PTP - Interrupt write failed.\n");
 			fclose(lfptpi);
 		#endif
-		return PTP_ERROR_IO;
+		return PG_ERROR_IO_READ;
 	}
 }
 //
 //	Get the timeout
 int
-ptp_clear_read_halt(void *data)
+ptp_clear_read_halt(void *data, int endpoint)
 {
 	USBCameraDevice *cameraDevice = (USBCameraDevice *)data;
 	BUSBDevice *dev = (BUSBDevice *)(cameraDevice->device);
@@ -260,16 +261,27 @@ ptp_clear_read_halt(void *data)
 		fprintf(lfptpi,"PTP - Write to USB\n");
 		fclose(lfptpi);
 	#endif
+	switch(endpoint) {
+		case PG_USB_ENDPOINT_IN:
+			iept = dev->ActiveConfiguration()->InterfaceAt(cameraDevice->interface)->EndpointAt(cameraDevice->bulkInput);
+			break;
+		case PG_USB_ENDPOINT_OUT:
+			iept = dev->ActiveConfiguration()->InterfaceAt(cameraDevice->interface)->EndpointAt(cameraDevice->bulkOutput);
+			break;
+		case PG_USB_ENDPOINT_INT:
+			iept = dev->ActiveConfiguration()->InterfaceAt(cameraDevice->interface)->EndpointAt(cameraDevice->interruptInput);
+			break;
+	}
 	
-	iept = dev->ActiveConfiguration()->InterfaceAt(cameraDevice->interface)->EndpointAt(cameraDevice->interruptInput);
+	//iept = dev->ActiveConfiguration()->InterfaceAt(cameraDevice->interface)->EndpointAt(cameraDevice->interruptInput);
 	
 	if(iept == NULL)
-		return PTP_ERROR_IO;
+		return PG_ERROR_IO_USB_CLEAR_HALT;
 		
 	if( iept->IsStalled())
 		iept->ClearStall();
 
-	return PTP_RC_OK;
+	return PG_OK;
 }
 
 //

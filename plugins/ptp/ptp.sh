@@ -6,11 +6,13 @@
 ## *****************************************************************
 
 ## Buildfile for PhotoGrabber PTP plugin
-
+# PTP lib
+cd ./libptp
+make clean
+make
+cd ..
 # Cleaning the build system
 make clean
 # Build the ptp plugin
 make
-# Copy the binaries to the build directory
-cp ./obj.x86/libbdcp_ptp ../../build/PhotoGrabber/plugins/
 

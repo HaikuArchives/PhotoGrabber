@@ -60,7 +60,7 @@ void sendmessage(char* message)
 int logError(int ErrorMes)
 {
 	#ifdef DEBUG
-	char *errorMessage;
+	const char *errorMessage;
 	switch(ErrorMes)
 	{
 		case PTPCAM_DEV_NO_FIND:
@@ -98,6 +98,9 @@ int logError(int ErrorMes)
 			break;
 		case PTPCAM_NEW_FILE_FAIL:
 			errorMessage = "CAM:Could not create a file to save the thumbnail\n";
+			break;
+		case PTPCAM_GETTHUMB_FAIL:
+			errorMessage = "CAM:Could not get the thumbnail from the device.\n";
 			break;
 		default:
 			errorMessage = "CAM:An unexpected error occured\n";

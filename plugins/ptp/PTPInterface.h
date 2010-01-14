@@ -32,7 +32,7 @@ uint16_t 			ptp_exit_usb (PTPParams* params, BUSBDevice* device);
 int					ptp_read_func (unsigned char *bytes, unsigned int size, void *data);
 int		 			ptp_write_func (unsigned char *bytes, unsigned int size, void *data);
 int					ptp_check_int(unsigned char *bytes, unsigned int size, void *data);
-int 				ptp_clear_read_halt(void *data);
+int 				ptp_clear_read_halt(void *data, int endpoint);
 void 				ptp_debug (void *data, const char *format, va_list args);
 void				ptp_error (void *data, const char *format, va_list args);
 

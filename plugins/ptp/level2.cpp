@@ -143,15 +143,16 @@ status_t getThumbnail(BBitmap* & bitmap)
 		image = NULL;
 		return(B_NO_ERROR);
 	}
-	else if(ret == PTP_RC_NoThumbnailPresent)
+	else
 	{
 		#ifdef DEBUG
 			lflevel2 = fopen(LOGFILE,"a");
 			fprintf(lflevel2,"No thumbnail present\n");
 			fclose(lflevel2);
 		#endif
+		bitmap = NULL;
 	}
-	logError(PTPCAM_GETPIC_FAIL);
+	logError(PTPCAM_GETTHUMB_FAIL);
 	return(B_ERROR);
 }	
 

@@ -14,7 +14,7 @@
 
 //		User Includes
 #include "level1.h"
-#include "level2.h"
+//#include "level2.h"
 #include "debug.h"
 
 //
@@ -31,7 +31,7 @@ virtual status_t DeviceAdded(BUSBDevice *dev)
 	// Init Params
 	params = (PTPParams*)malloc(sizeof(PTPParams));
 	memset(params,0, sizeof(PTPParams));
-	if(ptp_init_usb(params,cameraDevice) == PTP_RC_OK)
+	if(ptp_init_usb(params,cameraDevice) == PG_OK)
 	{ 
 		ptp_opensession(params,1);
 		// send a message to the system core
@@ -58,7 +58,7 @@ virtual status_t DeviceAdded(BUSBDevice *dev)
 }
 virtual void DeviceRemoved(BUSBDevice *dev)
 {
-	if(ptp_exit_usb(params,dev) == PTP_RC_OK)
+	if(ptp_exit_usb(params,dev) == PG_OK)
 	{
 		// send a message to the system core
 		BMessage *core_msg;
@@ -93,10 +93,10 @@ void getPluginVersion(version_info &ver)
 {
 	ver.major = 2;
 	ver.middle = 2;
-	ver.minor = 0;
+	ver.minor = 1;
 	ver.variety = 0;
 	ver.internal = 0;
-	sprintf(ver.short_info,"Jan-Rixt Van Hoye 2008");
+	sprintf(ver.short_info,"Jan-Rixt Van Hoye 2010");
 	sprintf(ver.long_info,"PTP Cameras Plugin");
 }
 
@@ -195,7 +195,8 @@ status_t getNumberofPics(int &number)
 			#endif
 			if((*params).objectinfo[j].ObjectFormat != PTP_OFC_Undefined 
 				&& (*params).objectinfo[j].ObjectFormat != PTP_OFC_Association 
-				&& (*params).objectinfo[j].ObjectFormat != PTP_OFC_DPOF)
+				&& (*params).objectinfo[j].ObjectFormat != PTP_OFC_DPOF
+				/*&& (*params).objectinfo[j].ObjectFormat == PTP_OFC_EXIF_JPEG*/)
 			{
 				handles[i] = j;
 				i++;
