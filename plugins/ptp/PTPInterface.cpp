@@ -19,104 +19,47 @@ int globalEndpoint;
 FILE *lfptpi;
 //
 // initialize a PTP camera via the USB protocol
-uint16_t  ptp_init_usb(PTPParams* params, USBCameraDevice *cameraDevice)
+uint16_t  ptp_init_usb(PTPParams* params)
 {
 	#ifdef DEBUG
 		lfptpi = fopen(LOGFILE,"a");
-		fprintf(lfptpi,"PTP - Init ptp usb\n");
+		fprintf(lfptpi,"PTP Interface - Init ptp usb\n");
 		fclose(lfptpi);
 	#endif
-	// Initialize the USB device
-	uint16_t ret = PG_ERROR;
-	uint32 i,j;
-	const BUSBConfiguration *conf;
-	const BUSBInterface *ifc;
-	BUSBDevice *dev = (BUSBDevice *)(cameraDevice->device);
 	
-	for(i=0;i<(int)dev->CountConfigurations();i++)
-	{
-		conf = dev->ConfigurationAt(i);
-		if(conf)
-		{
-			for(j=0;j<(int)conf->CountInterfaces();j++)
-			{
-				ifc = conf->InterfaceAt(j);	
-				if(ifc)
-					if(ifc->Class() == 6)
-					{
-						#ifdef DEBUG
-							lfptpi = fopen(LOGFILE,"a");
-							fprintf(lfptpi,"PTP - Device %s found and attached!\n",dev->ProductString());
-							fclose(lfptpi);
-						#endif
-						
-						if(dev->InitCheck() || dev->SetConfiguration(dev->ConfigurationAt(i)))
-							logError(PTPCAM_DEV_NO_FIND);
-						else
-						{
-							// initialize the ptp device
-							LoadSettingsFromFile();
-							//	Save the configuration, interface and endpoints for later use
-							cameraDevice->configuration = i;
-							cameraDevice->interface = j;
-							uint32 k = ifc->CountEndpoints();
-							while (k > 0) 
-							{
-								k--;
-								if(ifc->EndpointAt(k)->IsBulk())
-								{
-									if(ifc->EndpointAt(k)->IsInput())
-									{
-										cameraDevice->bulkInput = k;
-										params->maxpacketsize = ifc->EndpointAt(k)->MaxPacketSize();
-									}
-									else 
-										cameraDevice->bulkOutput = k;
-								}
-								else if(ifc->EndpointAt(k)->IsInterrupt())
-									cameraDevice->interruptInput = k;
-								
-							};
-							//
-							params->error_func		= ptp_error;
-							params->debug_func		= ptp_debug;
-							params->sendreq_func	= ptp_usb_sendreq;
-							params->senddata_func	= ptp_usb_senddata;
-							params->getresp_func	= ptp_usb_getresp;
-							params->getdata_func	= ptp_usb_getdata;
-							params->event_wait		= ptp_usb_event_wait;
-							params->event_check		= ptp_usb_event_check;
-							params->cancelreq_func	= ptp_usb_control_cancel_request;
-							params->data			= cameraDevice;	
-							params->transaction_id	= 0;
-							params->byteorder 		= PTP_DL_LE;
-							ret = PG_OK;	
-						}
-					}	
-			}
-		}
-	}
-	#ifdef DEBUG
-		lfptpi = fopen(LOGFILE,"a");
-		fprintf(lfptpi,"PTP - Using configuration %d!\n",cameraDevice->configuration);
-		fclose(lfptpi);
-	#endif
-	return ret;
+	params->error_func		= ptp_error;
+	params->debug_func		= ptp_debug;
+	params->sendreq_func	= ptp_usb_sendreq;
+	params->senddata_func	= ptp_usb_senddata;
+	params->getresp_func	= ptp_usb_getresp;
+	params->getdata_func	= ptp_usb_getdata;
+	params->event_wait		= ptp_usb_event_wait;
+	params->event_check		= ptp_usb_event_check;
+	params->cancelreq_func	= ptp_usb_control_cancel_request;
+	params->transaction_id	= 0;
+	params->byteorder 		= PTP_DL_LE;
+	// Open a session
+	ptp_opensession(params,1);	
+							
+							
+	return PG_OK;
 }
 //
 //	Exit the PTP USB Device
-uint16_t ptp_exit_usb(PTPParams* params, BUSBDevice *device)
+uint16_t ptp_exit_usb(PTPParams* params)
 {
-	// Initialize the USB device
-	int i,j;
-	const BUSBConfiguration *conf;
-	const BUSBInterface *ifc;
-	USBCameraDevice *cameraDevice = (USBCameraDevice *)(params->data);
+	#ifdef DEBUG
+		lfptpi = fopen(LOGFILE,"a");
+		fprintf(lfptpi,"PTP Interface - Exit ptp usb\n");
+		fclose(lfptpi);
+	#endif
 	
-	if(cameraDevice->device == device)
-		return PG_OK;
+	// Close the session and free the PTP parameters
+	ptp_closesession(params);
+	ptp_free_params (params);
 	
-	return PG_ERROR;
+	return PG_OK;
+
 }
 //
 //	Read from USB
@@ -130,7 +73,7 @@ ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 	
 	#ifdef DEBUG
 		lfptpi = fopen(LOGFILE,"a");
-		fprintf(lfptpi,"PTP - Read from endpoint %d\n",cameraDevice->bulkInput);
+		fprintf(lfptpi,"PTP Interface - Read from endpoint %d\n",cameraDevice->bulkInput);
 		fclose(lfptpi);
 	#endif
 	iept = dev->ActiveConfiguration()->InterfaceAt(cameraDevice->interface)->EndpointAt(cameraDevice->bulkInput);	
@@ -139,7 +82,7 @@ ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 	{
 		#ifdef DEBUG
 			lfptpi = fopen(LOGFILE,"a");
-			fprintf(lfptpi,"PTP - The endpoint is null\n");
+			fprintf(lfptpi,"PTP Interface - The endpoint is null\n");
 			fclose(lfptpi);
 		#endif
 		return PG_ERROR_IO_READ;
@@ -151,7 +94,7 @@ ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 	{
 		#ifdef DEBUG
 			lfptpi = fopen(LOGFILE,"a");
-			fprintf(lfptpi,"PTP - The bulk read size is: %d k.\n",(int)result);
+			fprintf(lfptpi,"PTP Interface - The bulk read size is: %d k.\n",(int)result);
 			fclose(lfptpi);
 		#endif
 		return result;
@@ -160,7 +103,7 @@ ptp_read_func (unsigned char *bytes, unsigned int size, void *data)
 	{ 
 		#ifdef DEBUG
 			lfptpi = fopen(LOGFILE,"a");
-			fprintf(lfptpi,"PTP - Bulk read failed.\n");
+			fprintf(lfptpi,"PTP Interface - Bulk read failed.\n");
 			fclose(lfptpi);
 		#endif
 		return PG_ERROR_IO_READ;
@@ -178,7 +121,7 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
 
 	#ifdef DEBUG
 		lfptpi = fopen(LOGFILE,"a");
-		fprintf(lfptpi,"PTP - Write at endpoint %d\n",cameraDevice->bulkOutput);
+		fprintf(lfptpi,"PTP Interface - Write at endpoint %d\n",cameraDevice->bulkOutput);
 		fclose(lfptpi);
 	#endif
 	iept=dev->ActiveConfiguration()->InterfaceAt(cameraDevice->interface)->EndpointAt(cameraDevice->bulkOutput);
@@ -191,7 +134,7 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
 	{
 		#ifdef DEBUG
 			lfptpi = fopen(LOGFILE,"a");
-			fprintf(lfptpi,"PTP - The bulk write size is: %d k.\n",(int)size);
+			fprintf(lfptpi,"PTP Interface - The bulk write size is: %d k.\n",(int)size);
 			fclose(lfptpi);
 		#endif
 		return result;
@@ -200,7 +143,7 @@ ptp_write_func (unsigned char *bytes, unsigned int size, void *data)
 	{ 
 		#ifdef DEBUG
 			lfptpi = fopen(LOGFILE,"a");
-			fprintf(lfptpi,"PTP - Bulk write failed.\n");
+			fprintf(lfptpi,"PTP Interface - Bulk write failed.\n");
 			fclose(lfptpi);
 		#endif
 		return PG_ERROR_IO_WRITE;
@@ -218,7 +161,7 @@ ptp_check_int(unsigned char *bytes, unsigned int size, void *data)
 
 	#ifdef DEBUG
 		lfptpi = fopen(LOGFILE,"a");
-		fprintf(lfptpi,"PTP - Check interrupt USB\n");
+		fprintf(lfptpi,"PTP Interface - Check interrupt USB\n");
 		fclose(lfptpi);
 	#endif
 	
@@ -232,7 +175,7 @@ ptp_check_int(unsigned char *bytes, unsigned int size, void *data)
 	{
 		#ifdef DEBUG
 			lfptpi = fopen(LOGFILE,"a");
-			fprintf(lfptpi,"PTP - The interrupt write size is: %d k.\n",(int)size);
+			fprintf(lfptpi,"PTP Interface - The interrupt write size is: %d k.\n",(int)size);
 			fclose(lfptpi);
 		#endif
 		return result;
@@ -241,7 +184,7 @@ ptp_check_int(unsigned char *bytes, unsigned int size, void *data)
 	{ 
 		#ifdef DEBUG
 			lfptpi = fopen(LOGFILE,"a");
-			fprintf(lfptpi,"PTP - Interrupt write failed.\n");
+			fprintf(lfptpi,"PTP Interface - Interrupt write failed.\n");
 			fclose(lfptpi);
 		#endif
 		return PG_ERROR_IO_READ;
@@ -258,7 +201,7 @@ ptp_clear_read_halt(void *data, int endpoint)
 
 	#ifdef DEBUG
 		lfptpi = fopen(LOGFILE,"a");
-		fprintf(lfptpi,"PTP - Write to USB\n");
+		fprintf(lfptpi,"PTP Interface - Write to USB\n");
 		fclose(lfptpi);
 	#endif
 	switch(endpoint) {
@@ -272,8 +215,6 @@ ptp_clear_read_halt(void *data, int endpoint)
 			iept = dev->ActiveConfiguration()->InterfaceAt(cameraDevice->interface)->EndpointAt(cameraDevice->interruptInput);
 			break;
 	}
-	
-	//iept = dev->ActiveConfiguration()->InterfaceAt(cameraDevice->interface)->EndpointAt(cameraDevice->interruptInput);
 	
 	if(iept == NULL)
 		return PG_ERROR_IO_USB_CLEAR_HALT;

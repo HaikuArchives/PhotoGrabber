@@ -1,6 +1,6 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+* Copyright (c) 2004-2010,	Jan-Rixt Van Hoye				   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
@@ -25,61 +25,133 @@ class Roster : public BUSBRoster
 public:
 virtual status_t DeviceAdded(BUSBDevice *dev)
 {
-	// Create USB Camera Device
-	cameraDevice = new USBCameraDevice;
-	cameraDevice->device = dev;
-	// Init Params
-	params = (PTPParams*)malloc(sizeof(PTPParams));
-	memset(params,0, sizeof(PTPParams));
-	if(ptp_init_usb(params,cameraDevice) == PG_OK)
-	{ 
-		ptp_opensession(params,1);
-		// send a message to the system core
-		BMessage *core_msg;
-		core_msg = new BMessage(CAM_CONNECTED);
-		core_msg->AddString("product",dev->ProductString());
-		if(msgtarget != NULL)
-		{
-			#ifdef DEBUG
-				lflevel1 = fopen(LOGFILE,"a");
-				fprintf(lflevel1,"PTP - Send message to the system core\n");
-				fclose(lflevel1);
-			#endif
-			msgtarget->PostMessage(core_msg);
-		}
-		return B_OK;
-	}
-	else
+	// Check if it is a class 6 device
+	uint32 i,j;
+	const BUSBConfiguration *conf;
+	const BUSBInterface *ifc;
+	#ifdef DEBUG
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - Added device location is %s.\n",dev->Location());
+		fclose(lflevel1);
+	#endif
+	for(i=0;i<(int)dev->CountConfigurations();i++)
 	{
-		delete(cameraDevice);
-		cameraDevice = NULL;
+		conf = dev->ConfigurationAt(i);
+		if(conf)
+		{
+			for(j=0;j<(int)conf->CountInterfaces();j++)
+			{
+				ifc = conf->InterfaceAt(j);	
+				if(ifc)
+					if(ifc->Class() == 6)
+					{
+						if(dev->InitCheck() || dev->SetConfiguration(dev->ConfigurationAt(i)))
+							logError(PTPCAM_DEV_NO_FIND);
+						else 
+						{
+							#ifdef DEBUG
+								lflevel1 = fopen(LOGFILE,"a");
+								fprintf(lflevel1,"PTP - Device %s found and attached!\n",dev->ProductString());
+								fclose(lflevel1);
+							#endif
+							// Allocate memory for the Camera Device
+							cameraDevice = (USBCameraDevice *)malloc(sizeof(USBCameraDevice));
+							memset(cameraDevice,0,sizeof(USBCameraDevice));
+							// Allocate memory for PTP parameters
+							params = (PTPParams*)malloc(sizeof(PTPParams));
+							memset(params,0,sizeof(PTPParams));
+							//
+							cameraDevice->configuration = i;
+							cameraDevice->interface = j;
+							uint32 k = ifc->CountEndpoints();
+							while (k > 0) 
+							{
+								k--;
+								if(ifc->EndpointAt(k)->IsBulk())
+								{
+									if(ifc->EndpointAt(k)->IsInput())
+									{
+										cameraDevice->bulkInput = k;
+										params->maxpacketsize = ifc->EndpointAt(k)->MaxPacketSize();
+									}
+									else 
+										cameraDevice->bulkOutput = k;
+								}
+								else if(ifc->EndpointAt(k)->IsInterrupt())
+									cameraDevice->interruptInput = k;
+								
+							};
+							cameraDevice->device = dev;
+							cameraDevice->location = (char *)dev->Location();
+							params->data = cameraDevice;	
+							// Initialize the PTP parameters
+							if(ptp_init_usb(params) == PG_OK)
+							{ 
+								#ifdef DEBUG
+									lflevel1 = fopen(LOGFILE,"a");
+									fprintf(lflevel1,"PTP - Camera device location is %s.\n",cameraDevice->location);
+									fclose(lflevel1);
+								#endif
+								// send a message to the system core
+								BMessage *core_msg;
+								core_msg = new BMessage(CAM_CONNECTED);
+								core_msg->AddString("product",dev->ProductString());
+								if(msgtarget != NULL)
+								{
+									#ifdef DEBUG
+										lflevel1 = fopen(LOGFILE,"a");
+										fprintf(lflevel1,"PTP - Send message to the system core\n");
+										fclose(lflevel1);
+									#endif
+									msgtarget->PostMessage(core_msg);
+								}
+								return B_OK;
+							}
+						}
+					}
+			}
+		}
+	}
+	if(cameraDevice != NULL)
+	{
+	#ifdef DEBUG
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - Camera device location is %s.\n",cameraDevice->location);
+		fclose(lflevel1);
+	#endif 
 	}
 	return B_ERROR;
 }
 virtual void DeviceRemoved(BUSBDevice *dev)
 {
-	if(ptp_exit_usb(params,dev) == PG_OK)
+	
+	#ifdef DEBUG
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - Camera device location is %s.\n",cameraDevice->location);
+		fprintf(lflevel1,"PTP - Removed device location is %s.\n",dev->Location());
+		fclose(lflevel1);
+	#endif
+	if(cameraDevice->location == dev->Location())
 	{
-		// send a message to the system core
-		BMessage *core_msg;
-		core_msg = new BMessage(CAM_DISCONNECTED);
-		core_msg->AddString("product",dev->ProductString());
-		if(msgtarget != NULL)
+		if(ptp_exit_usb(params) == PG_OK)
 		{
-			#ifdef DEBUG
-				lflevel1 = fopen(LOGFILE,"a");
-				fprintf(lflevel1,"PTP - Removed %s @ '%s'\n",dev->IsHub() ? "hub" : "device", dev->Location());
-				fprintf(lflevel1,"PTP - Send message to the system core\n");
+			free(cameraDevice);
+			free(params);
+			// send a message to the system core
+			BMessage *core_msg;
+			core_msg = new BMessage(CAM_DISCONNECTED);
+			core_msg->AddString("product",dev->ProductString());
+			if(msgtarget != NULL)
+			{
+				#ifdef DEBUG
+					lflevel1 = fopen(LOGFILE,"a");
+					fprintf(lflevel1,"PTP - Removed %s @ '%s'\n",dev->IsHub() ? "hub" : "device", dev->Location());
+					fprintf(lflevel1,"PTP - Send message to the system core\n");
 					fclose(lflevel1);
-			#endif
-			msgtarget->PostMessage(core_msg);
+				#endif
+				msgtarget->PostMessage(core_msg);
+			}
 		}
-		ptp_closesession(params);
-		ptp_free_params (params);
-		delete(cameraDevice);
-		cameraDevice = NULL;
-		free(params);
-		delete(handles);
 	}
 }
 };
@@ -153,62 +225,20 @@ status_t closeCamera(void)
 
 status_t getNumberofPics(int &number)
 {
-	int i=0;
+	//n = 0;
 	number = 0;
 	#ifdef DEBUG
 		lflevel1 = fopen(LOGFILE,"a");
 		fprintf(lflevel1,"PTP - Get number of pictures\n");
 		fclose(lflevel1);
 	#endif
-	ptp_getobjecthandles(params, 0xffffffff, 0x000000, 0x000000,&params->handles);
-	if((*params).handles.n == 0)
-	{
-		#ifdef DEBUG
-			lflevel1 = fopen(LOGFILE,"a");
-			fprintf(lflevel1,"PTP - No objecthandles were found.\n",(*params).handles.n);
-			fclose(lflevel1);
-		#endif
-		return(B_ERROR);
-	}
-	else
-	{
-		#ifdef DEBUG
-			lflevel1 = fopen(LOGFILE,"a");
-			fprintf(lflevel1,"PTP - There are %d objecthandles\n",(*params).handles.n);
-			fclose(lflevel1);
-		#endif
-		handles = new int[(*params).handles.n];
-		(*params).objectinfo =(PTPObjectInfo*)malloc(sizeof(PTPObjectInfo)* (*params).handles.n);
-		memset((*params).objectinfo,0,sizeof(PTPObjectInfo) * (*params).handles.n);
-		for (uint32 j = 0; j < (*params).handles.n;j++)
-		{
-			#ifdef DEBUG
-				lflevel1 = fopen(LOGFILE,"a");
-				fprintf(lflevel1,"PTP - Get the info of object %d.\n",j);
-				fclose(lflevel1);
-			#endif
-			ptp_getobjectinfo(params,(*params).handles.Handler[j],&params->objectinfo[j]);
-			#ifdef DEBUG
-				lflevel1 = fopen(LOGFILE,"a");
-				fprintf(lflevel1,"PTP - Check the Object Format of Object number %d\n",j);
-				fclose(lflevel1);
-			#endif
-			if((*params).objectinfo[j].ObjectFormat != PTP_OFC_Undefined 
-				&& (*params).objectinfo[j].ObjectFormat != PTP_OFC_Association 
-				&& (*params).objectinfo[j].ObjectFormat != PTP_OFC_DPOF
-				/*&& (*params).objectinfo[j].ObjectFormat == PTP_OFC_EXIF_JPEG*/)
-			{
-				handles[i] = j;
-				i++;
-			}
-		}
-		number = i;
-		#ifdef DEBUG
-			lflevel1 = fopen(LOGFILE,"a");
-			fprintf(lflevel1,"PTP - Get part3\n");
-			fclose(lflevel1);
-		#endif
-	}
+	getObjects(0xffffffff,0x000000);
+	number = (*params).handles.n;
+	#ifdef DEBUG
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - There are %d items found to show!\n",number);
+		fclose(lflevel1);
+	#endif
 	return(B_NO_ERROR);
 }
 
@@ -219,14 +249,45 @@ status_t setCurrentPicture(int picturenum)
 		fprintf(lflevel1,"PTP - Set current picture\n");
 		fclose(lflevel1);
 	#endif
-	currentpicturenumber = handles[picturenum];
+	currentpicturenumber = picturenum;
 	#ifdef DEBUG
 		lflevel1 = fopen(LOGFILE,"a");
 		fprintf(lflevel1,"PTP - Current picnumber is: %d\n",picturenum);
-		fprintf(lflevel1,"PTP - Current picnumber(handle) is: %d\n",currentpicturenumber);
+		fprintf(lflevel1,"PTP - Current (handler) is: %d\n",currentpicturenumber);
 		fclose(lflevel1);
 	#endif
-	return(B_NO_ERROR);
+	return B_NO_ERROR;
+}
+//
+// Get the handles of a certain storage ID
+status_t getObjects(uint32_t storage, uint32_t association)
+{
+	PTPObjectHandles *handles = (PTPObjectHandles *)malloc(sizeof(PTPObjectHandles));
+	
+	ptp_getobjecthandles(params, storage, 0x000000, association,handles);
+	if(handles->n == 0)
+	{
+		#ifdef DEBUG
+			lflevel1 = fopen(LOGFILE,"a");
+			fprintf(lflevel1,"PTP - No objecthandles were found.\n",handles->n);
+			fclose(lflevel1);
+		#endif
+		return B_ERROR;
+	}
+	else
+	{
+		#ifdef DEBUG
+			lflevel1 = fopen(LOGFILE,"a");
+			fprintf(lflevel1,"PTP - There are %d objecthandles\n",(*handles).n);
+			fclose(lflevel1);
+		#endif
+		for (uint32 j = 0; j < handles->n;j++)
+		{
+			addObject(handles->Handler[j]);
+		}
+	}
+	free(handles);
+	return B_NO_ERROR;
 }
 
 status_t downloadPicture(BPath savedir, const char *name)
@@ -475,4 +536,32 @@ bool saveCamPicture (unsigned char *data, long int size, uint16_t type,const cha
 	systemresult=-1;
 	return (B_NO_ERROR);
 }
-
+//
+// Add a object to the handles array
+status_t addObject(uint32_t handle)
+{
+	int n;
+	PTPObjectInfo *objectinfo =(PTPObjectInfo *)malloc(sizeof(PTPObjectInfo));
+	memset(objectinfo,0, sizeof(PTPObjectInfo));
+	
+	#ifdef DEBUG
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - Adding object\n");
+		fclose(lflevel1);
+	#endif
+	ptp_getobjectinfo(params,handle, objectinfo);
+	if((*objectinfo).ObjectFormat != PTP_OFC_Undefined 
+		&& (*objectinfo).ObjectFormat != PTP_OFC_Association 
+		&& (*objectinfo).ObjectFormat != PTP_OFC_DPOF)
+	{
+		n= ++params->handles.n;
+		params->objectinfo = (PTPObjectInfo*) realloc(params->objectinfo, sizeof(PTPObjectInfo)*n);
+		params->handles.Handler=(uint32_t *)realloc(params->handles.Handler,sizeof(uint32_t)*n);
+		memset(&params->objectinfo[n-1],0,sizeof(PTPObjectInfo));
+		params->handles.Handler[n-1]=handle;
+		ptp_getobjectinfo(params,handle, &params->objectinfo[n-1]);
+	}
+	
+	free(objectinfo);
+	return B_NO_ERROR;
+}

@@ -24,11 +24,12 @@ typedef struct  {
 	uint32		interruptInput;
 	uint32		bulkInput;
 	uint32		bulkOutput;
+	char*		location;
 } USBCameraDevice;
 //
 
-uint16_t 			ptp_init_usb (PTPParams* params, USBCameraDevice* cameraDevice);
-uint16_t 			ptp_exit_usb (PTPParams* params, BUSBDevice* device);
+uint16_t 			ptp_init_usb (PTPParams* params);
+uint16_t 			ptp_exit_usb (PTPParams* params);
 int					ptp_read_func (unsigned char *bytes, unsigned int size, void *data);
 int		 			ptp_write_func (unsigned char *bytes, unsigned int size, void *data);
 int					ptp_check_int(unsigned char *bytes, unsigned int size, void *data);

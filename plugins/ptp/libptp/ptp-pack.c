@@ -568,7 +568,7 @@ ptp_unpack_OI (PTPParams *params, unsigned char* data, PTPObjectInfo *oi, unsign
 		oi->SequenceNumber=dtoh32a(&data[PTP_oi_SequenceNumber]);
 		ptp_pack_debug (params, "PTP: File Name.");
 		oi->Filename= ptp_unpack_string(params, data, PTP_oi_filenamelen, &filenamelen);
-	
+		ptp_pack_debug(params,"PTP : File Name is %s",oi->Filename);
 		ptp_pack_debug (params, "PTP: Capture date.");
 		
 		capture_date = ptp_unpack_string(params, data,

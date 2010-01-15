@@ -18,26 +18,19 @@
 #include <Looper.h>
 #include "PTPInterface.h"
 #include <USBKit.h>
-//	Local Includes
-//extern "C" {
-//#include "libptp/ptp.h"
-//}
+
 #include "results.h"
 
 const int32 MSG_UPDATEBAR			= 0x01012001;
 
 BLooper* msgtarget;
-//class BUSBDevice *appDev;
+
 USBCameraDevice * cameraDevice;
 class Roster	*roster;
-int				*handles;
 PTPParams		*params;
 
-int currentpicturenumber;
-//bool haveigotfilenames;
-//std::map<int, char*> imagenames;
-//std::map<int, int> imagesizes;
-//std::map<int, char*> imagedates;
+int 	currentpicturenumber;
+
 //Level 1 Functions - MUST be implemented fully to be BDCP2 Compliant
 
 extern "C" int get_BDCP_API_Revision(void);
@@ -49,6 +42,8 @@ extern "C" status_t setCurrentPicture(int picturenumber);
 extern "C" status_t downloadPicture(BPath savedir, const char *name);
 extern "C" void getSupportedCameras(std::vector<std::string> &);
 bool saveCamPicture (unsigned char *data, long int size,uint16_t type, const char *filename);
+status_t addObject(uint32_t handle);
+status_t getObjects(uint32_t storageID,uint32_t association);
 
 // Messages
 #define CAM_CONNECTED				'CCON'
