@@ -208,7 +208,7 @@ status_t downloadPicture(BPath savedir, const char *name)
 {
 	#ifdef DEBUG
 		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"MS - Download pictures\n");
+		fprintf(lflevel1,"MS - Download picture with name %s\n",name);
 		fclose(lflevel1);
 	#endif
 	mscam->downloadItem(savedir, name);

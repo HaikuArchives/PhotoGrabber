@@ -101,6 +101,11 @@ bool Camera::DownloadItem(uint32 itemhandle, entry_ref *copyToDir = NULL, const 
 	 	directory = BPath(copyToDir);
 	else
 		directory = CameraSavedir;
+	#ifdef DEBUG
+		lfcam = fopen(LOGFILE,"a");
+		fprintf(lfcam,"CAM - Download item with name %s\n", fileName);
+		fclose(lfcam);
+	#endif
 	return	camInterface->downloadItem(itemhandle,directory, fileName);
 }
 //
@@ -202,6 +207,11 @@ void Camera::MessageReceived(BMessage *message)
 			if(message->FindRef("copyToDir",&copyToDir) >= 0)
 				directory = &copyToDir;
 			fileName = message->FindString("name");
+			#ifdef DEBUG
+				lfcam = fopen(LOGFILE,"a");
+				fprintf(lfcam,"CAM - Message received and string 'name' value is %s\n", fileName);
+				fclose(lfcam);
+			#endif
 			if(DownloadItem((uint32)handle,directory,fileName) == B_OK)
 			{
 				BMessage reply(DOWN_ITEM_OK);

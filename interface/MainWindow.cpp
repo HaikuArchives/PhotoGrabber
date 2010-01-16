@@ -177,7 +177,16 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref copyToDir, const char *fi
 		data->downloadDir = copyToDir;
         data->gridview = becam_gridview;
         data->window = this;
-        data->fileName = fileName;
+        data->fileName = (char *)malloc(sizeof(fileName));
+        strcpy(data->fileName,(char *)fileName);
+        #ifdef DEBUG
+			BPath directory;
+			directory = BPath(&data->downloadDir);
+			lfmainw = fopen(INTF_LOGFILE,"a");	
+			fprintf(lfmainw,"MAINWINDOW - The selected filename is: %s\n",fileName);
+			fprintf(lfmainw,"MAINWINDOW - The data filename is: %s\n",data->fileName);
+			fclose(lfmainw);
+		#endif
 		resume_thread(spawn_thread((status_t(*)(void*))DownloadItems,"download_items",B_DISPLAY_PRIORITY,data));
 	}
 	else
@@ -233,6 +242,7 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data)
 			directory = BPath(&data->downloadDir);
 			lfmainw = fopen(INTF_LOGFILE,"a");	
 			fprintf(lfmainw,"MAINWINDOW - The save directory is: %s\n",directory.Path());
+			fprintf(lfmainw,"MAINWINDOW - The filename is: %s\n",data->fileName);
 			fclose(lfmainw);
 		#endif
 		message->AddRef("copyToDir", &refentry);

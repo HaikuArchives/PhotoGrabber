@@ -16,7 +16,7 @@
 
 // defenitions
 #define APP_SIG           			"application/x-vnd.Jixt.PhotoGrabber"
-#define LOGFILE 					"/boot/var/tmp/photograbber.log"
+#define LOGFILE 					"/boot/home/Desktop/photograbber.log"
 #define	THUMBHEIGHT					120
 #define THUMBWIDTH					160
 //#define DEBUG						1

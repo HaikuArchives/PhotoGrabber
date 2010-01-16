@@ -261,6 +261,12 @@ bool CamInterface::downloadItem(int index,BPath path, const char *name)
 {
 	if(check_downloadPicture)
 	{
+		#ifdef DEBUG
+			FILE	*file;
+			file = fopen(LOGFILE,"a");
+			fprintf(file,"CAMINTF - File name is %s.\n", name);
+			fclose(file);
+		#endif
 		setCurrentItem(index);
 		(*downloadPicture)(path,name);
 		return B_OK;

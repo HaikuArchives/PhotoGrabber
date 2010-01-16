@@ -299,7 +299,7 @@ status_t downloadPicture(BPath savedir, const char *name)
 	
 	#ifdef DEBUG
 		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"PTP - Download picture\n");
+		fprintf(lflevel1,"PTP - Download picture with name: %s\n", name);
 		fclose(lflevel1);
 	#endif
 	if(savedir != NULL)
@@ -323,6 +323,11 @@ status_t downloadPicture(BPath savedir, const char *name)
 					strcat(filename,name);
 				else
 					strcat(filename,(*params).objectinfo[currentpicturenumber].Filename);
+				#ifdef DEBUG
+					lflevel1 = fopen(LOGFILE,"a");
+					fprintf(lflevel1,"PTP - File name (with path) is: %s\n", filename);
+					fclose(lflevel1);
+				#endif
 				if(numberOfCopies > 1)
 					sprintf(filename,"%s %d",filename,numberOfCopies);
 				// Check if the file exists. If it exists, check if it is empty or not.
