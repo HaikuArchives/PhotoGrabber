@@ -41,7 +41,7 @@ extern "C" status_t getNumberofPics(int &);
 extern "C" status_t setCurrentPicture(int picturenumber);
 extern "C" status_t downloadPicture(BPath savedir, const char *name);
 extern "C" void getSupportedCameras(std::vector<std::string> &);
-bool saveCamPicture (unsigned char *data, long int size,uint16_t type, const char *filename);
+bool saveCamPicture (const char *filename);
 status_t addObject(uint32_t handle);
 status_t getObjects(uint32_t storageID,uint32_t association);
 

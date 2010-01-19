@@ -292,66 +292,45 @@ status_t getObjects(uint32_t storage, uint32_t association)
 
 status_t downloadPicture(BPath savedir, const char *name)
 {
-	unsigned char *image = NULL;
 	char *filename;
 	long int size=0;
-	int ret=0;
 	
 	#ifdef DEBUG
 		lflevel1 = fopen(LOGFILE,"a");
 		fprintf(lflevel1,"PTP - Download picture with name: %s\n", name);
 		fclose(lflevel1);
 	#endif
+	
 	if(savedir != NULL)
 	{
-		size=(*params).objectinfo[currentpicturenumber].ObjectCompressedSize;
-		ret = ptp_getobject(params,(*params).handles.Handler[currentpicturenumber],&image);
-		if ( ret == PTP_RC_OK)
+		int32 pathLength = strlen(savedir.Path());
+		int32 fileNameLength = strlen((*params).objectinfo[currentpicturenumber].Filename);
+		off_t file_size = 0;
+		status_t err;
+		BFile *fh;
+		int numberOfCopies = 1;
+		while(numberOfCopies <= 100)
 		{
-			int32 pathLength = strlen(savedir.Path());
-			int32 fileNameLength = strlen((*params).objectinfo[currentpicturenumber].Filename);
-			off_t file_size = 0;
-			status_t err;
-			BFile *fh;
-			int numberOfCopies = 1;
-			while(numberOfCopies <= 100)
+			filename = new char[pathLength + fileNameLength + 3];
+			strcpy(filename,savedir.Path());
+			strcat(filename,"/");
+			if(name != NULL)
+				strcat(filename,name);
+			else
+				strcat(filename,(*params).objectinfo[currentpicturenumber].Filename);
+			if(numberOfCopies > 1)
+				sprintf(filename,"%s %d",filename,numberOfCopies);
+			// Check if the file exists. If it exists, check if it is empty or not.
+			fh = new BFile(filename, B_WRITE_ONLY | B_CREATE_FILE);
+			err = fh->GetSize(&file_size);
+			if(err == B_OK && file_size == 0)
 			{
-				filename = new char[pathLength + fileNameLength + 3];
-				strcpy(filename,savedir.Path());
-				strcat(filename,"/");
-				if(name != NULL)
-					strcat(filename,name);
-				else
-					strcat(filename,(*params).objectinfo[currentpicturenumber].Filename);
-				#ifdef DEBUG
-					lflevel1 = fopen(LOGFILE,"a");
-					fprintf(lflevel1,"PTP - File name (with path) is: %s\n", filename);
-					fclose(lflevel1);
-				#endif
-				if(numberOfCopies > 1)
-					sprintf(filename,"%s %d",filename,numberOfCopies);
-				// Check if the file exists. If it exists, check if it is empty or not.
-				fh = new BFile(filename, B_WRITE_ONLY | B_CREATE_FILE);
-				err = fh->GetSize(&file_size);
-				if(err == B_OK && file_size == 0)
-				{
-					delete fh;
-					if(saveCamPicture(image,size,(*params).objectinfo[currentpicturenumber].ObjectFormat,filename) == B_NO_ERROR)
-					{	
-						#ifdef DEBUG
-							lflevel1 = fopen(LOGFILE,"a");
-							fprintf(lflevel1,"PTP - Free the image\n");
-							fclose(lflevel1);
-						#endif
-						delete(image);
-						image = NULL;
-						return B_NO_ERROR ;
-					}
-				}
-				else
-					delete fh;
-				numberOfCopies++;	
+				delete fh;
+				return saveCamPicture(filename);
 			}
+			else
+				delete fh;
+			numberOfCopies++;	
 		}	
 	}
 	else
@@ -366,178 +345,185 @@ status_t downloadPicture(BPath savedir, const char *name)
 }
 //
 //		Save the picture
-bool saveCamPicture (unsigned char *data, long int size, uint16_t type,const char *filename)
+bool saveCamPicture (const char *filename)
 {
 	int					systemresult;
 	BFile				*fh;
 	BNodeInfo			*ni;
+	int fd;
+	int ret=0;
 	
 	#ifdef DEBUG
 		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"PTP - Save picture @ %s with size %d\n", filename,size);
+		fprintf(lflevel1,"PTP - Saving file %s\n", filename);
 		fclose(lflevel1);
 	#endif
-	if((fh=new BFile(filename, B_WRITE_ONLY | B_CREATE_FILE )))
+	fd = open(filename, B_WRITE_ONLY | B_CREATE_FILE);
+	#ifdef DEBUG
+		lflevel1 = fopen(LOGFILE,"a");
+		fprintf(lflevel1,"PTP - File descriptor is: %d\n", fd);
+		fclose(lflevel1);
+	#endif
+	if(fd > 0)
 	{
-		long int			fherr;
-
-		if((fherr = fh->InitCheck()) != B_OK)
-			return(B_ERROR);
-		if((ni=new BNodeInfo(fh)))
+		ret = ptp_getobject_tofd(params,(*params).handles.Handler[currentpicturenumber],fd);
+		close(fd);
+		if( ret == PTP_RC_OK)
 		{
-			// This has to be changed. It should set the correct type.
-			#ifdef DEBUG
-				lflevel1 = fopen(LOGFILE,"a");
-				fprintf(lflevel1,"PTP - Object format%d\n",type);
-				fclose(lflevel1);
-			#endif
-			switch(type)
+			if((fh=new BFile(filename, B_WRITE_ONLY)))
 			{
-				case PTP_OFC_AIFF:
+				long int			fherr;
+		
+				if((fherr = fh->InitCheck()) != B_OK)
+					return(B_ERROR);
+				if((ni=new BNodeInfo(fh)))
 				{
-					ni->SetType("audio/aiff");
-					break;
-				}
-				case PTP_OFC_WAV:
-				{
-					ni->SetType("audio/wav");
-					break;
-				}
-				case PTP_OFC_MP3:
-				{
-					ni->SetType("audio/mpeg3");
-					break;
-				}
-				case PTP_OFC_AVI:
-				{
-					ni->SetType("video/avi");
-					break;
-				}
-				case PTP_OFC_MPEG:
-				{
-					ni->SetType("video/mpeg");
-					break;
-				}
-				case PTP_OFC_ASF:
-				{
-					ni->SetType("video/x-ms-asf");
-					break;
-				}
-				case PTP_OFC_QT:
-				{
-					ni->SetType("video/quicktime");
-					break;
-				}
-				case PTP_OFC_EXIF_JPEG:
-				case PTP_OFC_CIFF:
-				case PTP_OFC_JFIF:
-				{
-					ni->SetType("image/jpeg");
-					break;
-				}
-				case PTP_OFC_TIFF:
-				case PTP_OFC_TIFF_EP:
-				case PTP_OFC_TIFF_IT:
-				{
-					ni->SetType("image/tiff");
-					break;
-				}
-				case PTP_OFC_FlashPix:
-				{
-					ni->SetType("image/vnd.fpx");
-					break;
-				}
-				case PTP_OFC_BMP:
-				{
-					ni->SetType("image/bmp");
-					break;
-				}
-				case PTP_OFC_GIF:
-				{
-					ni->SetType("image/gif");
-					break;
-				}
-				case PTP_OFC_PCD:
-				{
-					ni->SetType("image/pcd");
-					break;
-				}
-				case PTP_OFC_PICT:
-				{
-					ni->SetType("image/pict");
-					break;
-				}
-				case PTP_OFC_PNG:
-				{
-					ni->SetType("image/png");
-					break;
-				}
-				case PTP_OFC_JP2:
-				{
-					ni->SetType("image/jp2");
-					break;
-				}
-				case PTP_OFC_JPX:
-				{
-					ni->SetType("image/jpx");
-					break;
-				}
-				default:
-				{
-					ni->SetType("image/jpeg");
-				}
-			}
-			delete ni;
-		}
-		if(( (fherr = fh->Write(data, size)) != size))
-		{
-			delete fh;
-			return(B_ERROR);			
-		}
-		else
-		{
-			// Create the EXIF data as attributes
-			FILE *exifFile = fopen(filename, "rb");
-			unsigned char buf[0x7fff];
-			ssize_t bufsize = fread(buf, 1, sizeof(buf), exifFile);
-			if (bufsize == 0) 
-			{
-				fprintf (stderr, "Error reading file\n");
-				fclose(exifFile);
-				delete fh;
-				return (B_ERROR);
-			}
-			ExifData *data = exif_data_new_from_data(buf, bufsize);
-			if (!data)
-			{ 
-				fclose(exifFile);
-				delete fh;
-				return (B_ERROR);
-			}
-			// Read EXIF tags.
-			BString ident;
-			char value[256];
-			int count = 0;
-			for (int i = 0; i < EXIF_IFD_COUNT; i++) 
-			{
-				if (i != 1 && data->ifd[i] && data->ifd[i]->count) 
-				{
-					for (unsigned int j = 0; j < data->ifd[i]->count; j++)
+					switch((*params).objectinfo[currentpicturenumber].ObjectFormat)
 					{
-						ExifEntry *e = data->ifd[i]->entries[j];
-						exif_entry_get_value(e, value, sizeof(value));
-						ident = "EXIF:";
-						ident += exif_tag_get_name(e->tag);
-						fh->WriteAttr(ident.String(), B_STRING_TYPE, 0, (const void *)&value, strlen(value) + 1);
-						count++;
+						case PTP_OFC_AIFF:
+						{
+							ni->SetType("audio/aiff");
+							break;
+						}
+						case PTP_OFC_WAV:
+						{
+							ni->SetType("audio/wav");
+							break;
+						}
+						case PTP_OFC_MP3:
+						{
+							ni->SetType("audio/mpeg3");
+							break;
+						}
+						case PTP_OFC_AVI:
+						{
+							ni->SetType("video/avi");
+							break;
+						}
+						case PTP_OFC_MPEG:
+						{
+							ni->SetType("video/mpeg");
+							break;
+						}
+						case PTP_OFC_ASF:
+						{
+							ni->SetType("video/x-ms-asf");
+							break;
+						}
+						case PTP_OFC_QT:
+						{
+							ni->SetType("video/quicktime");
+							break;
+						}
+						case PTP_OFC_EXIF_JPEG:
+						case PTP_OFC_CIFF:
+						case PTP_OFC_JFIF:
+						{
+							ni->SetType("image/jpeg");
+							break;
+						}
+						case PTP_OFC_TIFF:
+						case PTP_OFC_TIFF_EP:
+						case PTP_OFC_TIFF_IT:
+						{
+							ni->SetType("image/tiff");
+							break;
+						}
+						case PTP_OFC_FlashPix:
+						{
+							ni->SetType("image/vnd.fpx");
+							break;
+						}
+						case PTP_OFC_BMP:
+						{
+							ni->SetType("image/bmp");
+							break;
+						}
+						case PTP_OFC_GIF:
+						{
+							ni->SetType("image/gif");
+							break;
+						}
+						case PTP_OFC_PCD:
+						{
+							ni->SetType("image/pcd");
+							break;
+						}
+						case PTP_OFC_PICT:
+						{
+							ni->SetType("image/pict");
+							break;
+						}
+						case PTP_OFC_PNG:
+						{
+							ni->SetType("image/png");
+							break;
+						}
+						case PTP_OFC_JP2:
+						{
+							ni->SetType("image/jp2");
+							break;
+						}
+						case PTP_OFC_JPX:
+						{
+							ni->SetType("image/jpx");
+							break;
+						}
+						default:
+						{
+							ni->SetType("image/jpeg");
+						}
+					}
+									
+					delete ni;
+				}
+				// Create the EXIF data as attributes
+				FILE *exifFile = fopen(filename, "rb");
+				unsigned char buf[0x7fff];
+				ssize_t bufsize = fread(buf, 1, sizeof(buf), exifFile);
+				if (bufsize == 0) 
+				{
+					fprintf (stderr, "Error reading file\n");
+					fclose(exifFile);
+					delete fh;
+					return (B_ERROR);
+				}
+				ExifData *data = exif_data_new_from_data(buf, bufsize);
+				if (!data)
+				{ 
+					fclose(exifFile);
+					delete fh;
+					return (B_ERROR);
+				}
+				// Read EXIF tags.
+				BString ident;
+				char value[256];
+				int count = 0;
+				for (int i = 0; i < EXIF_IFD_COUNT; i++) 
+				{
+					if (i != 1 && data->ifd[i] && data->ifd[i]->count) 
+					{
+						for (unsigned int j = 0; j < data->ifd[i]->count; j++)
+						{
+							ExifEntry *e = data->ifd[i]->entries[j];
+							exif_entry_get_value(e, value, sizeof(value));
+							ident = "EXIF:";
+							ident += exif_tag_get_name(e->tag);
+							fh->WriteAttr(ident.String(), B_STRING_TYPE, 0, (const void *)&value, strlen(value) + 1);
+							count++;
+						}
 					}
 				}
+				exif_data_unref(data);
+				fclose(exifFile);
+				delete fh;
 			}
-			exif_data_unref(data);
-			fclose(exifFile);
-			delete fh;
 		}
+		else
+			return B_ERROR;
 	}
+	else
+		return B_ERROR;
 	systemresult=-1;
 	return (B_NO_ERROR);
 }

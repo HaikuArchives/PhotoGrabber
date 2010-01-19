@@ -322,7 +322,8 @@ fd_putfunc(PTPParams* params, void* private,
 ) {
 	int		written;
 	PTPFDHandlerPrivate* priv = (PTPFDHandlerPrivate*)private;
-
+	
+	ptp_debug(params,"ptp2/fd_putfunc : Write data to file descriptor");
 	written = write (priv->fd, data, sendlen);
 	if (written != -1)
 		*putlen = written;
@@ -333,6 +334,7 @@ fd_putfunc(PTPParams* params, void* private,
 
 static uint16_t
 ptp_init_fd_handler(PTPDataHandler *handler, int fd) {
+	
 	PTPFDHandlerPrivate* priv;
 	priv = malloc (sizeof(PTPFDHandlerPrivate));
 	handler->priv = priv;
