@@ -45,7 +45,6 @@ struct items_data
 	entry_ref			downloadDir;
 	float				totalitems;
 	StatusDock			*statusDock;
-	char				*fileName;
 };
 
 //		Main window class

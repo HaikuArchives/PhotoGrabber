@@ -177,16 +177,6 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref copyToDir, const char *fi
 		data->downloadDir = copyToDir;
         data->gridview = becam_gridview;
         data->window = this;
-        data->fileName = (char *)malloc(sizeof(fileName));
-        strcpy(data->fileName,(char *)fileName);
-        #ifdef DEBUG
-			BPath directory;
-			directory = BPath(&data->downloadDir);
-			lfmainw = fopen(INTF_LOGFILE,"a");	
-			fprintf(lfmainw,"MAINWINDOW - The selected filename is: %s\n",fileName);
-			fprintf(lfmainw,"MAINWINDOW - The data filename is: %s\n",data->fileName);
-			fclose(lfmainw);
-		#endif
 		resume_thread(spawn_thread((status_t(*)(void*))DownloadItems,"download_items",B_DISPLAY_PRIORITY,data));
 	}
 	else
@@ -208,9 +198,9 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data)
 	BeCam_Item *selectedItem;
 	BMessenger *messenger = NULL;
 	BMessage *message = NULL;
-	//
 	refentry = data->downloadDir;
-	//
+	
+	// Show the status dock
 	totalSelectedItems = data->gridview->GetNumberOfSelectedItems();
 	sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)1,(int32)totalSelectedItems);
 	messenger = new BMessenger(data->window);
@@ -220,9 +210,10 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data)
 	messenger->SendMessage(message);
 	delete(message);
 	delete(messenger);
+	
+	// Update the status dock
 	while((index = data->gridview->CurrentSelection(index)) >= 0)
 	{
-		//Update the status dock
 		sprintf(tmpBuffer,"Downloading number %ld of the %ld selected files",(uint32)count + 1,(int32)totalSelectedItems);
 		messenger = new BMessenger(data->statusDock);
 		message = new BMessage(UPDATE_STAT);
@@ -230,22 +221,22 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data)
 		message->AddString("statusmessage",tmpBuffer);
 		messenger->SendMessage(message);
 		delete(messenger);
+		
 		// Get selected item
 		selectedItem = (BeCam_Item *)data->gridview->ItemAt(index);
+		
 		// Send a message to the camera interface to get the selected item
 		message = new BMessage(DOWN_ITEM);
 		message->AddInt32("itemhandle",(int32)selectedItem->GetHandle());
-		if(data->gridview->GetNumberOfSelectedItems() == 1)
-			message->AddString("name",data->fileName);
 		#ifdef DEBUG
 			BPath directory;
 			directory = BPath(&data->downloadDir);
 			lfmainw = fopen(INTF_LOGFILE,"a");	
 			fprintf(lfmainw,"MAINWINDOW - The save directory is: %s\n",directory.Path());
-			fprintf(lfmainw,"MAINWINDOW - The filename is: %s\n",data->fileName);
 			fclose(lfmainw);
 		#endif
 		message->AddRef("copyToDir", &refentry);
+		
 		// Wait untill the item has been downloaded
 		messenger =  new BMessenger(NULL,data->window->systemcore);
 		BMessage reply;
@@ -265,11 +256,13 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data)
 		delete(message);
 		index++;
 	}
+	// Hide the status dock
 	messenger = new BMessenger(data->window);
 	message = new BMessage(STATDOCK_HIDE);
 	messenger->SendMessage(message);
 	delete(message);
 	delete(messenger);
+	delete(data);
 }
 //
 // MainWindow:: Remove the selected items
@@ -345,7 +338,7 @@ status_t BeCam_MainWindow::RemoveItems(items_data *data)
 //	MainWindow:: Error messages
 int BeCam_MainWindow::logMainWindowError(int ErrorMes)
 {
-	char 				*errorMessage;
+	const char 				*errorMessage;
 	
 	switch(ErrorMes)
 	{
@@ -537,6 +530,11 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 		{
 			entry_ref copyToDirDrag;
 			const char *fileName = NULL;
+			#ifdef DEBUG
+				lfmainw = fopen(INTF_LOGFILE,"a");	
+				fprintf(lfmainw,"MAINWINDOW - Get the save directory\n");
+				fclose(lfmainw);
+			#endif
 			message->FindRef("directory", &copyToDirDrag);
 			fileName = message->FindString("name");
 			#ifdef DEBUG
