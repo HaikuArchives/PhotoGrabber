@@ -66,6 +66,8 @@
 #define GET_DEVICE_TYPE				'GDET'
 #define OPEN_DEVICE					'OPND'
 #define CLOSE_DEVICE				'CLSD'
+#define CAM_SORT_TITLE				'CSTI'
+#define CAM_SORT_DATE				'CSDA'
 //
 //		Item status
 #define	ITEM_NOT_DOWNLOADED			0
