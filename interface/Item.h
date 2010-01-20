@@ -41,12 +41,15 @@ class BeCam_Item : public BListItem
 		float			Width() const;
 		float			ThumbHeight() const;
 		float			ThumbWidth() const;
+		float			DetailsHeight() const;
 		virtual bool	IsClickableFrame (BPoint point) const;
 		void 			RotateThumb(uint32 angle);
 		
 	private:
 		ItemData		*itemdata;
 		BRegion			fRegion;
+		float			fFontHeight;
+		float			fThumbDetailsGap;
 };
 
 #endif

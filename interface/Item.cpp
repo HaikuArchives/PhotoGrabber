@@ -19,6 +19,7 @@ FILE *lfitem;
 BeCam_Item::BeCam_Item(ItemData *data) : BListItem()
 {
 	itemdata = data;
+	fThumbDetailsGap = 5;
 }
 
 //
@@ -80,6 +81,8 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 	BBitmap* thumbnail = GetThumbBitmap();
 	float thumbWidth = ThumbWidth();
 	float thumbHeight = ThumbHeight();
+	BFont font = be_plain_font;
+	font_height fontHeight;
 	
 	BBitmap *itemBitmap = new BBitmap(itemRect,B_RGB_32_BIT,TRUE);
 	BView *itemView = new BView(itemBitmap->Bounds(),"itemRect",B_FOLLOW_ALL,B_WILL_DRAW);
@@ -110,6 +113,12 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 	else
 		itemView->SetHighColor(color_disabled);
 	
+	// Text Font
+	font.SetFace(B_BOLD_FACE);
+    itemView->SetFont(&font);
+	itemView->GetFontHeight (&fontHeight);
+	fFontHeight = fontHeight.ascent + fontHeight.descent - 4;
+		
 	if(thumbnail)
 	{	
 		// There is a thumbnail, so draw it.
@@ -122,18 +131,18 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 		thumbRect.bottom = yItemBitmapPos + floor(thumbHeight/2);
 		//
 		itemView->DrawBitmapAsync(thumbnail,thumbRect);
-		thumbRect.right += 1; // bug Haiku
+		thumbRect.right += 1; // bug Haiku    
+		float fStringWidth = itemView->StringWidth(itemdata->ItemName.String());
+		itemView->MovePenTo(thumbRect.left,thumbRect.bottom + fThumbDetailsGap + fFontHeight);
+		//
+		itemView->SetHighColor (color_picture);
+		itemView->DrawString(itemdata->ItemName.String());
+		
 	}
 	else
 	{
-		// There is no thumbnail, so draw the file name.
-		BFont font = be_plain_font;
-        font_height fontHeight;
-        font.SetFace(B_BOLD_FACE);
-        itemView->SetFont(&font);
-		itemView->GetFontHeight (&fontHeight);
-		float fFontHeight = fontHeight.ascent + fontHeight.descent - 4;
-		float fStringWidth = itemView->StringWidth(itemdata->ItemName.String());
+		// There is no thumbnail, so draw the file name in the middle.
+        float fStringWidth = itemView->StringWidth(itemdata->ItemName.String());
 		itemView->MovePenTo(xItemBitmapPos - fStringWidth/2,yItemBitmapPos + fFontHeight/2);
 		if(thumbRect.right < thumbRect.bottom)
 			thumbRect.right = thumbRect.bottom;
@@ -232,7 +241,7 @@ uint32 BeCam_Item::GetOrientation()
 //	Item::Height
 float BeCam_Item::Height() const
 {
-	return itemdata->ItemYres;
+	return itemdata->ItemYres ;
 }
 //
 //	Item::Width
@@ -251,6 +260,12 @@ float BeCam_Item::ThumbHeight() const
 float BeCam_Item::ThumbWidth() const
 {
 	return itemdata->ItemThumbXres;
+}
+//
+//	Item::ThumbWidth
+float BeCam_Item::DetailsHeight() const
+{
+	return fThumbDetailsGap + fFontHeight;
 }
 //
 //	Item:: Is Clickable Frame

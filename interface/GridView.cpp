@@ -1,6 +1,6 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2008,	Ramshankar, Jan-Rixt Van Hoye	   *
+* Copyright (c) 2004-2010,	Ramshankar, Jan-Rixt Van Hoye	   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
@@ -90,7 +90,7 @@ inline void GridView::AddItemFast (BeCam_Item* item)
 {
 	if(fItemList->IsEmpty())
 	{
-		fItemHeight = item->ThumbHeight();
+		fItemHeight = item->ThumbHeight() + item->DetailsHeight();
 		fItemWidth = item->ThumbWidth();
 	}
 	fItemList->AddItem (reinterpret_cast<void*>(item));
@@ -234,8 +234,8 @@ float GridView::GetTop(int32 rowCount,int32 columnCount)
 		for(int32 y = 0; y < columnCount; y++)
 		{
 			BeCam_Item *item = (BeCam_Item*)(fItemList->ItemAt ((x * columnCount) + y));
-			if(item && item->ThumbHeight() > maxRowHeight)
-				maxRowHeight = item->ThumbHeight();
+			if(item && (item->ThumbHeight() + item->DetailsHeight()) > maxRowHeight)
+				maxRowHeight = (item->ThumbHeight() + item->DetailsHeight());
 		}
 		
 		top += (maxRowHeight + ItemVertMargin());
@@ -251,8 +251,8 @@ float GridView::GetRowHeight(int32 rowCount,int32 columnCount)
 	for(int32 x = 0; x < columnCount; x++)
 	{
 		BeCam_Item *item = (BeCam_Item*)(fItemList->ItemAt ((rowCount * columnCount) + x));
-		if(item && item->ThumbHeight() > rowHeight)
-			rowHeight = item->ThumbHeight();
+		if(item && (item->ThumbHeight() + item->DetailsHeight()) > rowHeight)
+			rowHeight = item->ThumbHeight() + item->DetailsHeight();
 	}
 	
 	return rowHeight;
@@ -1045,3 +1045,41 @@ float GridView::CalculateHorizMargin(float gridWidth) const
 	return horizMargin;
 }
 
+//
+//	GridView :: Sort the gridview depending on the type
+void GridView::SortItemsBy(int sortType)
+{
+	switch(sortType) {
+		case ITEM_SORT_BY_TITLE:
+			fItemList->SortItems(GridView::CompareTitles);
+			break;
+		case ITEM_SORT_BY_DATE:
+			fItemList->SortItems(GridView::CompareDates);
+			break;
+		default:
+			break;
+	}
+	Invalidate();
+	UpdateScrollView();
+}
+//
+// GridView :: Compare item titles
+// return: -1:first<second 0:first==second 1:first>second
+int GridView::CompareTitles(const void* first, const void* second) 
+{
+	BeCam_Item* firstItem = *((BeCam_Item**)first);
+	BeCam_Item* secondItem = *((BeCam_Item**)second);
+	
+	BString firstTitle(firstItem->GetName());
+	
+	return firstTitle.ICompare(secondItem->GetName());
+}
+//
+// GridView :: Compare item dates
+// return: -1:first<second 0:first==second 1:first>second
+int GridView::CompareDates(const void* first, const void* second) 
+{
+	const BeCam_Item* firstItem = *((BeCam_Item**)first);
+	const BeCam_Item* secondItem = *((BeCam_Item**)second);
+	return 0;
+}

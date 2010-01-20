@@ -86,6 +86,9 @@ class BeCam_MainWindow : public BWindow
 		BMenuBar			*becam_menubar;
 		BMenu				*becam_fileMenu;
 		BMenu				*becam_actionsMenu;
+		BMenu				*becam_viewMenu;
+		BMenuItem 			*sortTitleMenu;
+		BMenuItem 			*sortDateMenu;
 		BScrollView			*becam_scrollview;
 		StatusDock			*becam_statusDock;
 		int					devicetype;

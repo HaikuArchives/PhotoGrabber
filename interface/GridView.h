@@ -22,6 +22,8 @@
 // Defines
 #define ITEM_NEXT	'INXT'
 #define ITEM_BACK	'IBAK'
+#define ITEM_SORT_BY_TITLE	0
+#define ITEM_SORT_BY_DATE	1
 //
 // Classes
 class GridView;
@@ -81,6 +83,7 @@ class GridView : public BControl
 		void					SetSelectionCurveRadius(uint8 radius);
 		uint8					SelectionCurveRadius() const;
 		void					SendKeyStrokesTo(BLooper* looper,BHandler* handler = NULL);
+		void					SortItemsBy(int sortType);
 				
 	private:
 		friend class			Item;
@@ -99,6 +102,8 @@ class GridView : public BControl
 		static status_t 		TrackItem(list_tracking_data *data);
 	 	void					ActionCopy(BMessage * request);
 	 	float					CalculateHorizMargin(float gridWidth) const;
+	 	static int				CompareTitles(const void* first, const void* second);
+	 	static int				CompareDates(const void* first, const void* second);
 		
 		float					fItemHeight;	// height of item
 		float					fItemWidth;		// width of item

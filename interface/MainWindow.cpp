@@ -105,7 +105,7 @@ void BeCam_MainWindow::addMenuBar ()
 	becam_menubar = new BMenuBar(Bounds(), "menu_bar");
 	AddChild(becam_menubar);
 	// Add File menu to the menu bar
-	becam_fileMenu = new BMenu("File");
+	becam_fileMenu = new BMenu(_T("File"));
 	becam_fileMenu->AddItem(new BMenuItem(_T("About") , new BMessage(ABOUT)));
 	becam_fileMenu->AddSeparatorItem();
 	becam_fileMenu->AddItem(new BMenuItem(_T("Preferences") , new BMessage(CONFIG),'P'));
@@ -120,6 +120,16 @@ void BeCam_MainWindow::addMenuBar ()
 	disconnect = becam_actionsMenu->FindItem(_T("Disconnect"));
 	disconnect->SetEnabled(false);
 	becam_menubar->AddItem(becam_actionsMenu);
+	// Add the view menu
+	BMenu *sortMenu = new BMenu(_T("Sort by"));
+	sortTitleMenu = new BMenuItem(_T("Title"),new BMessage(CAM_SORT_TITLE));
+	sortDateMenu = new BMenuItem(_T("Date"),new BMessage(CAM_SORT_DATE));
+	sortDateMenu->SetMarked(true);
+	sortMenu->AddItem(sortTitleMenu);
+	sortMenu->AddItem(sortDateMenu);
+	becam_viewMenu = new BMenu(_T("View"));
+	becam_viewMenu->AddItem(sortMenu , NULL);
+	becam_menubar->AddItem(becam_viewMenu);
 	// Add the test menu
 	#ifdef DEBUG	
 		BMenu *debuggingMenu = new BMenu(_T("Debugging"));
@@ -617,6 +627,16 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			v_scrollbar->ResizeTo(v_scrollbar->Frame().Width(),v_scrollbar->Frame().Height() - B_H_SCROLL_BAR_HEIGHT + 2);
 			break;
 		}
+		case CAM_SORT_TITLE:
+			sortDateMenu->SetMarked(false);
+			sortTitleMenu->SetMarked(true);
+			becam_gridview->SortItemsBy(ITEM_SORT_BY_TITLE);
+			break;
+		case CAM_SORT_DATE:
+			sortDateMenu->SetMarked(true);
+			sortTitleMenu->SetMarked(false);
+			becam_gridview->SortItemsBy(ITEM_SORT_BY_DATE);
+			break;
 		default:
 			BWindow::MessageReceived(message);
 		}
