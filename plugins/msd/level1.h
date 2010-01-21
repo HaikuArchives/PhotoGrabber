@@ -1,6 +1,6 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+* Copyright (c) 2004-2010,	Jan-Rixt Van Hoye				   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
@@ -16,18 +16,15 @@
 #include <vector>
 #include <map>
 #include <Looper.h>
-#include <USBKit.h>
 //
-//	Locale includes
+//	Local includes
 #include "MSInterface.h"
 
 const int32 MSG_UPDATEBAR			= 0x01012001;
 
-BLooper* msgtarget;
-class BUSBDevice *appDev;
-class Roster	*roster;
-int				*handles;
-MSDInterface	*mscam;
+BLooper		*msgtarget;
+int			*handles;
+MSInterface	*msInterface;
 
 bool haveigotfilenames;
 std::map<int, char*> imagenames;
@@ -43,8 +40,4 @@ extern "C" status_t getNumberofPics(int &);
 extern "C" status_t setCurrentPicture(int picturenumber);
 extern "C" status_t downloadPicture(BPath savedir, const char *name);
 extern "C" void getSupportedCameras(std::vector<std::string> &);
-
-// Messages
-#define CAM_CONNECTED				'CCON'
-#define CAM_DISCONNECTED			'DCON'
 

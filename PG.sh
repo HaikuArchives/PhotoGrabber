@@ -1,5 +1,5 @@
 ## *****************************************************************
-## * Copyright (c) 2004-2008, Jan-Rixt Van Hoye aka'Jixt'		   *
+## * Copyright (c) 2004-2010, Jan-Rixt Van Hoye aka'Jixt'		   *
 ##,* 							and Luc Schrijvers aka 'Begasus'   *
 ## * All rights reserved.										   *
 ## * Distributed under the terms of the MIT License.               *
@@ -47,6 +47,7 @@ if [ ! -d "$PRIVATEDIR" ] ; then
 	cd ./private
 	svn checkout svn://svn.berlios.de/haiku/haiku/trunk/headers/private/storage storage
 	svn checkout svn://svn.berlios.de/haiku/haiku/trunk/headers/private/shared shared
+	svn checkout svn://svn.berlios.de/haiku/haiku/trunk/headers/private/mount mount
 	cd ..
 fi
 make

@@ -1,5 +1,5 @@
 ## *****************************************************************
-## * Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+## * Copyright (c) 2004-2010,	Jan-Rixt Van Hoye				   *
 ## * All rights reserved.										   *
 ## * Distributed under the terms of the MIT License.               *
 ## *****************************************************************
@@ -86,7 +86,7 @@ LIBPATHS := "../shared/libexif"
 #       additional paths to look for system headers 
 #       these use the form: #include <header.h> 
 #       source file directories are NOT auto-included here 
-SYSTEM_INCLUDE_PATHS := "./private/storage" "./private/shared" "../shared"
+SYSTEM_INCLUDE_PATHS := "./private/storage" "./private/shared" "./private/mount" "../shared"
 
 #       additional paths to look for local headers 
 #       thes use the form: #include "header.h" 

@@ -1,6 +1,6 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+* Copyright (c) 2004-2010,	Jan-Rixt Van Hoye				   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
@@ -18,104 +18,6 @@
 #include "debug.h"
 //
 FILE *lflevel1;
-//		USB Roster class
-class Roster : public BUSBRoster
-{
-public:
-virtual status_t DeviceAdded(BUSBDevice *dev)
-{
-	// Initialize the USB device
-	int i,j;
-	const BUSBConfiguration *conf;
-	const BUSBInterface *ifc;
-	
-	for(i=0;i<(int)dev->CountConfigurations();i++)
-	{
-		conf = dev->ConfigurationAt(i);
-		if(conf)
-		{
-			for(j=0;j<(int)conf->CountInterfaces();j++)
-			{
-				ifc = conf->InterfaceAt(j);	
-				if(ifc)
-					if(ifc->Class() == 8)
-					{
-						#ifdef DEBUG
-							lflevel1 = fopen(LOGFILE,"a");
-							fprintf(lflevel1,"MS: Device %s found!\n",dev->ProductString());
-							fclose(lflevel1);
-						#endif
-						appDev = dev;
-						if(appDev->InitCheck() || appDev->SetConfiguration(appDev->ConfigurationAt(0)))
-							logError(MSCAM_DEV_NO_FIND);
-						else
-						{
-							// create the mass storage interface
-							mscam = new MSDInterface(appDev);
-							#ifdef DEBUG
-								lflevel1 = fopen(LOGFILE,"a");
-								fprintf(lflevel1,"MS: Mount device %s.\n",dev->ProductString());
-								fclose(lflevel1);
-							#endif
-							mscam->Mount();
-							// send a message to the system core
-							BMessage *core_msg;
-							core_msg = new BMessage(CAM_CONNECTED);
-							core_msg->AddString("product",dev->ProductString());
-							if(msgtarget != NULL)
-							{
-								#ifdef DEBUG
-									lflevel1 = fopen(LOGFILE,"a");
-									fprintf(lflevel1,"MS: Send message to the system core\n");
-									fclose(lflevel1);
-								#endif
-								msgtarget->PostMessage(core_msg);
-							}
-						}
-					}	
-			}
-		}
-	}
-	
-	return B_OK;
-}
-virtual void DeviceRemoved(BUSBDevice *dev)
-{
-	int i,j;
-	const BUSBConfiguration *conf;
-	const BUSBInterface *ifc;
-	
-	for(i=0;i<(int)dev->CountConfigurations();i++)
-	{
-		conf = dev->ConfigurationAt(i);
-		if(conf)
-		{
-			for(j=0;j<(int)conf->CountInterfaces();j++)
-			{
-				ifc = conf->InterfaceAt(j);	
-				if(ifc)
-					if(ifc->Class() == 8)
-					{
-						appDev = NULL;
-						// send a message to the system core
-						BMessage *core_msg;
-						core_msg = new BMessage(CAM_DISCONNECTED);
-						core_msg->AddString("product",dev->ProductString());
-						if(msgtarget != NULL)
-						{
-							#ifdef DEBUG
-								lflevel1 = fopen(LOGFILE,"a");
-								fprintf(lflevel1,"MS: Send message to the system core\n");
-								fclose(lflevel1);
-							#endif
-							msgtarget->PostMessage(core_msg);
-						}
-					}
-			}
-		}
-	}
-}
-};
 
 int get_BDCP_API_Revision(void)
 {
@@ -124,12 +26,12 @@ int get_BDCP_API_Revision(void)
 
 void getPluginVersion(version_info &ver)
 {
-	ver.major = 2;
+	ver.major = 3;
 	ver.middle = 0;
 	ver.minor = 0;
 	ver.variety = 0;
 	ver.internal = 0;
-	sprintf(ver.short_info,"Jan-Rixt Van Hoye 2008");
+	sprintf(ver.short_info,"Jan-Rixt Van Hoye 2010");
 	sprintf(ver.long_info,"BDCP Mass Storage Cameras Plugin");
 }
 
@@ -140,36 +42,29 @@ void getSupportedCameras(std::vector<std::string> & listofcams)
 
 status_t openCamera(void)
 {
-	// Check USB Devices
+	// Check Mass Storage Devices
 	#ifdef DEBUG
 		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"MS - Start the roster\n");
+		fprintf(lflevel1,"MS - Start the MSD Interface\n");
 		fclose(lflevel1);
 	#endif
-	roster = new Roster;
-	roster->Start();
+	msInterface = new MSInterface(msgtarget);
+	msInterface->Start();
 	return(B_NO_ERROR);
 }
 
 status_t closeCamera(void)
 {
-	// Close the camera
 	#ifdef DEBUG
 		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"MS - Close MSD plugin\n");
+		fprintf(lflevel1,"MS - Stopping MSD Interface\n");
 		fclose(lflevel1);
 	#endif
-	delete(mscam);
+	msInterface->Stop();
+	//delete(msInterface);
 	#ifdef DEBUG
 		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"MS - Stopping USB Roster\n");
-		fclose(lflevel1);
-	#endif
-	roster->Stop();
-	delete(roster);
-	#ifdef DEBUG
-		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"MS - USB Roster stopped\n");
+		fprintf(lflevel1,"MS - MSD Interface stopped\n");
 		fclose(lflevel1);
 	#endif
 	return(B_NO_ERROR);
@@ -184,7 +79,7 @@ status_t getNumberofPics(int &number)
 		fprintf(lflevel1,"MS - Get number of pictures\n");
 		fclose(lflevel1);
 	#endif
-	number = mscam->getNumberOfItems();	
+	number = msInterface->getNumberOfItems();	
 	return(B_NO_ERROR);
 }
 
@@ -195,7 +90,7 @@ status_t setCurrentPicture(int picturenum)
 		fprintf(lflevel1,"MS - Set current picture\n");
 		fclose(lflevel1);
 	#endif
-	mscam->setCurrentItem(picturenum);
+	msInterface->setCurrentItem(picturenum);
 	#ifdef DEBUG
 		lflevel1 = fopen(LOGFILE,"a");
 		fprintf(lflevel1,"MS - Current picnumber is: %d\n",picturenum);
@@ -211,7 +106,7 @@ status_t downloadPicture(BPath savedir, const char *name)
 		fprintf(lflevel1,"MS - Download picture with name %s\n",name);
 		fclose(lflevel1);
 	#endif
-	mscam->downloadItem(savedir, name);
+	msInterface->downloadItem(savedir, name);
 	return(B_NO_ERROR);
 }
 

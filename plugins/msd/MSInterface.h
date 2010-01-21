@@ -15,6 +15,7 @@
 #include "global.h"
 #include "MSDItem.h"
 #include "scale.h"
+#include "Messages.h"
 //
 //		Experimental Includes
 #include <DiskDevice.h>
@@ -22,7 +23,9 @@
 #include <DiskDeviceRoster.h>
 #include <DiskDeviceTypes.h>
 #include <DiskDeviceList.h>
+#include <DiskDeviceVisitor.h>
 #include <Partition.h>
+#include <MountServer.h>
 
 //
 //		Includes
@@ -45,21 +48,22 @@
 #include <Picture.h>
 #include <Bitmap.h>
 #include <CAM.h>
-#include <USBKit.h>
+#include <Looper.h>
 #include <fs_volume.h>
 //
 #define	THUMBHEIGHT					120
 #define THUMBWIDTH					160
 //
 //		CameraInterface class
-class MSDInterface
+class MSInterface : public BLooper
 {
 	public:
-							MSDInterface(BUSBDevice *device);
-							~MSDInterface(void);
-			int 			MSD_logError(int ErrorMes);
-			void			MSD_logValue(int ValueMes, int Value);
-			//
+							MSInterface(BLooper *mainLooper);
+							~MSInterface();
+			virtual void	MessageReceived(BMessage *message);
+			
+			bool			Start();
+			bool			Stop();
 			int				getNumberOfItems();
 			bool			downloadItem(BPath path, const char *name);
 			bool			deleteItem();
@@ -71,27 +75,46 @@ class MSDInterface
 			BBitmap*		getThumb();
 			char*			getDeviceName();
 			char*			getVersion();
-			bool			cameraConnected();
-			bool			IsMounted() const; 
-			bool			Mount();
-			bool			Unmount();
+			bool			cameraConnected(); 
 			bool			setCurrentItem(int index);
 
 	private:
-			bool					camConnected;
-			char					*msdDeviceName;
-			char					*msdVersion;
-			char					*msdMountPoint;
+			bool						_camConnected;
+			char						*_msdDeviceName;
+			char						*_msdVersion;
+			BString				_mountPoint;
+			std::map<uint32,MSDItem*> 	_MSDItems;
+			int							_numberOfItems;
+			BDiskDevice					*_device;
+			int 						_currentItemHandle;
+			MSDItem						*_currentItem;
+			FILE						*_currentExifFile;
+			unsigned char 				_currentBuffer[0x7fff];
+			ssize_t 					_currentBufferSize;
+			BLooper						*_mainLooper;
 			
-			void					getMSDItems(const char *path);
-			bool					supportedItem(BString mymetype);
-			bool					removeMSDItem();
-			MSDItem* 				getMSDItem();
-			bool 					saveItem (MSDItem *item, const char *filename);
-			std::map<uint32,MSDItem*> 	MSDItems;
-			int						numberOfItems;
-			BDiskDevice				*device;
-			int 					currentItemHandle;
+			status_t				_searchMountedVolumes();
+			void					_getItems();
+			void					_getMSDItems(const char *path);
+			bool					_supportedItem(BString mymetype);
+			bool					_removeMSDItem();
+			MSDItem* 				_getMSDItem();
+			bool 					_saveItem (MSDItem *item, const char *filename);
+			void					_VolumeMounted(BMessage *message);
+			void					_VolumeUnmounted(BMessage *message);
+			int 					_logError(int ErrorMes);
+			void					_logValue(int ValueMes, int Value);
+			
+};
+//
+// Visitor Class
+class MSMountVisitor : public BDiskDeviceVisitor 
+{
+	public:
+						MSMountVisitor();
+		virtual			~MSMountVisitor();
+		virtual bool 	Visit(BDiskDevice* device);
+		virtual bool 	Visit(BPartition* partition, int32 level);
 };
 
 #define MS_OFFSET								1055

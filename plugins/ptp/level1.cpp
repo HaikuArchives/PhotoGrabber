@@ -54,9 +54,6 @@ virtual status_t DeviceAdded(BUSBDevice *dev)
 								fprintf(lflevel1,"PTP - Device %s found and attached!\n",dev->ProductString());
 								fclose(lflevel1);
 							#endif
-							// Allocate memory for the Camera Device
-							cameraDevice = (USBCameraDevice *)malloc(sizeof(USBCameraDevice));
-							memset(cameraDevice,0,sizeof(USBCameraDevice));
 							// Allocate memory for PTP parameters
 							params = (PTPParams*)malloc(sizeof(PTPParams));
 							memset(params,0,sizeof(PTPParams));
@@ -135,7 +132,6 @@ virtual void DeviceRemoved(BUSBDevice *dev)
 	{
 		if(ptp_exit_usb(params) == PG_OK)
 		{
-			free(cameraDevice);
 			free(params);
 			// send a message to the system core
 			BMessage *core_msg;
@@ -185,6 +181,10 @@ status_t openCamera(void)
 		fprintf(lflevel1,"PTP - Start the roster\n");
 		fclose(lflevel1);
 	#endif
+	// Allocate memory for the Camera Device
+	cameraDevice = (USBCameraDevice *)malloc(sizeof(USBCameraDevice));
+	memset(cameraDevice,0,sizeof(USBCameraDevice));
+	//
 	roster = new Roster;
 	roster->Start();
 	#ifdef DEBUG
@@ -215,6 +215,7 @@ status_t closeCamera(void)
 		fclose(lflevel1);
 	#endif
 	delete(roster);
+	free(cameraDevice);
 	#ifdef DEBUG
 		lflevel1 = fopen(LOGFILE,"a");
 		fprintf(lflevel1,"PTP - USB Roster deleted\n");

@@ -1,6 +1,6 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+* Copyright (c) 2004-2010,	Jan-Rixt Van Hoye				   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
@@ -14,7 +14,7 @@
 #include <TranslatorRoster.h>
  
 extern BLooper* msgtarget;
-extern MSDInterface *mscam;
+extern MSInterface *msInterface;
 FILE *lflevel2;
 
 status_t setMessageTarget(BLooper* mtarget)
@@ -39,7 +39,7 @@ status_t deletePicture()
 		fprintf(lflevel2,"MS - Delete Picture\n");
 		fclose(lflevel2);
 	#endif
-	if(!mscam->deleteItem())
+	if(!msInterface->deleteItem())
     {
     	logError(MSCAM_DEL_PIC_FAIL);
 		return(B_ERROR);	
@@ -59,7 +59,7 @@ status_t takePicture()
 
 status_t getImageName(char* &name)
 {
-	name = mscam->getName();
+	name = msInterface->getName();
 	if(name == "")
 	{
 		logError(MSCAM_GET_NAME_FAIL);
@@ -75,7 +75,7 @@ status_t getImageSize(int &size)
 		fprintf(lflevel2,"MS - Get image size\n");
 		fclose(lflevel2);
 	#endif
-	size = mscam->getSize();
+	size = msInterface->getSize();
 	return(B_NO_ERROR);
 }
 
@@ -86,24 +86,19 @@ status_t getImageDate(char* &date)
 		fprintf(lflevel2,"MS - Get image date\n");
 		fclose(lflevel2);
 	#endif
-	date = mscam->getDate();
+	date = msInterface->getDate();
 	return(B_NO_ERROR);
 }
 
 status_t getThumbnail(BBitmap* &bitmap)
 {
-	int 		ret = 0;
-	char 		*image = NULL;
-	long int 	size=0,width=0,height=0;
-	char		filename[40] = "/boot/var/tmp/thumb.tmp";
-	BFile *file;
 	
 	#ifdef DEBUG
 		lflevel2 = fopen(LOGFILE,"a");	
 		fprintf(lflevel2,"MS - Get thumbnail\n");
 		fclose(lflevel2);
 	#endif
-	bitmap = mscam->getThumb();
+	bitmap = msInterface->getThumb();
 	
 	return(B_NO_ERROR);
 }	
@@ -115,7 +110,7 @@ status_t getImageHeight(int &height)
 		fprintf(lflevel2,"MS - Get image height\n");
 		fclose(lflevel2);
 	#endif
-	height = mscam->getYRes();
+	height = msInterface->getYRes();
 	return(B_NO_ERROR);
 }
 
@@ -126,7 +121,7 @@ status_t getImageWidth(int &width)
 		fprintf(lflevel2,"MS - Get image width\n");
 		fclose(lflevel2);
 	#endif
-	width = mscam->getXRes();
+	width = msInterface->getXRes();
 	return(B_NO_ERROR);
 }
 

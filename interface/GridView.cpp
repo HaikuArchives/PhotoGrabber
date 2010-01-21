@@ -479,7 +479,7 @@ void GridView::UpdateScrollView ()
 			else
 				vertbar->SetRange (0, 0);
 			
-			vertbar->SetSteps ((ItemHeight() + ItemVertMargin()) / 2, (ItemHeight() + ItemVertMargin()));
+			vertbar->SetSteps ((ItemHeight() + ItemVertMargin()), (ItemHeight() + ItemVertMargin()));
 		}
 	}
 }
@@ -500,7 +500,7 @@ void GridView::ScrollToSelection ()
 
 	BRect rect = ItemRect (fLastSelectedItemIndex);
 	if (rect.bottom >= currentPosition + Bounds().Height())		// down
-		ScrollTo (0, rect.top + 2 - (Bounds().Height() - ItemHeight() -ItemVertMargin()));	
+		ScrollTo (0, rect.top + 2 - (Bounds().Height() - /*ItemHeight()*/(rect.bottom - rect.top) -ItemVertMargin()));	
 	else if (rect.top <= currentPosition)				// up
 		ScrollTo (0, rect.top - 4);
 }

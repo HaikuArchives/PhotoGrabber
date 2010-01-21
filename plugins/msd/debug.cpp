@@ -60,7 +60,7 @@ void sendmessage(char* message)
 int logError(int ErrorMes)
 {
 	#ifdef DEBUG
-	char *errorMessage;
+	const char *errorMessage;
 	switch(ErrorMes)
 	{
 		case MSCAM_DEV_NO_FIND:

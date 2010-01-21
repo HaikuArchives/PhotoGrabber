@@ -16,10 +16,12 @@
 #include <vector>
 #include <map>
 #include <Looper.h>
-#include "PTPInterface.h"
 #include <USBKit.h>
-
+//
+// Local includes
 #include "results.h"
+#include "Messages.h"
+#include "PTPInterface.h"
 
 const int32 MSG_UPDATEBAR			= 0x01012001;
 
@@ -44,8 +46,4 @@ extern "C" void getSupportedCameras(std::vector<std::string> &);
 bool saveCamPicture (const char *filename);
 status_t addObject(uint32_t handle);
 status_t getObjects(uint32_t storageID,uint32_t association);
-
-// Messages
-#define CAM_CONNECTED				'CCON'
-#define CAM_DISCONNECTED			'DCON'
 
