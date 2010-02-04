@@ -1,6 +1,6 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+* Copyright (c) 2004-2010,	Jan-Rixt Van Hoye				   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
@@ -66,6 +66,9 @@ class BeCam_ConfigWindow : public BWindow
 		BStringView			*becam_pluginSource;
 		BStringView			*becam_pluginVersion;
 		BButton				*becam_pluginConfig;
+		// Debugging section
+		BBox				*becam_debugbox;
+		BCheckBox			*becam_checkFile;
 		//	Screen section
 		BButton				*becam_savebutton;
 		BButton				*becam_cancelbutton;
@@ -85,7 +88,7 @@ class BeCam_ConfigWindow : public BWindow
 
 // Size
 #define CONFIG_WINDOW				4
-#define WINDOW_HEIGHT_CONFIG		215
+#define WINDOW_HEIGHT_CONFIG		300
 #define	WINDOW_WIDTH_CONFIG			350
 
 #endif

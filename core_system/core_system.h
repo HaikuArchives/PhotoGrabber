@@ -1,6 +1,6 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2007,	Jan-Rixt Van Hoye				   *
+* Copyright (c) 2004-2010,	Jan-Rixt Van Hoye				   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
@@ -44,6 +44,8 @@ class BeDiGiCamApp : public BApplication {
 		bool						GetPluginDetails(char *camerastring);
 		bool						OpenPluginConfig(char *camerastring, BPoint *interfacePoint);
 		bool						IsPluginConfigPresent(char *camerastring);
+		// Debugging functions
+		void						Debug(const char *message,...);
 		CamInterface 				*interface;
 		std::vector<std::string>	supportedCams;
 		std::multimap<const char*,std::string>	pluginSupportedCams;

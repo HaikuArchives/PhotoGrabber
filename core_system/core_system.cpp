@@ -1,6 +1,6 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+* Copyright (c) 2004-2010,	Jan-Rixt Van Hoye				   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
@@ -9,6 +9,8 @@
 // includes
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
+#include <time.h>
 #include <unistd.h>
 #include <Screen.h>
 #include <File.h>
@@ -46,11 +48,7 @@ void BeDiGiCamApp::ReadyToRun()
 	// Create a camera object if a plugin has been chosen
 	if(pgsettings.pluginName != NULL)
 	{
-		#ifdef DEBUG
-			lfcore = fopen(LOGFILE,"a");
-			fprintf(lfcore,"CORE - Create camera looper.\n");
-			fclose(lfcore);
-		#endif
+		Debug("CORE - Create camera looper.\n");
 		camera = new Camera(pgsettings.pluginName);
 		camera->Start();
 		// Open the device
@@ -75,11 +73,7 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
 		{
 			case CAM_CONNECTED:
 			{
-				#ifdef DEBUG
-					lfcore = fopen(LOGFILE,"a");
-					fprintf(lfcore,"CORE - Camera connected.\n");
-					fclose(lfcore);
-				#endif
+				Debug("CORE - Camera connected.\n");
 				mainWindow->PostMessage(message);
 				if(GetDeviceType() == TYPE_USB)
 				{	
@@ -93,11 +87,7 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
 				break;
 			case CAM_DISCONNECTED:
 			{	
-				#ifdef DEBUG
-					lfcore = fopen(LOGFILE,"a");
-					fprintf(lfcore,"CORE - Camera disconnected.\n");
-					fclose(lfcore);
-				#endif
+				Debug("CORE - Camera disconnected.\n");
 				mainWindow->PostMessage(message);
 				break;
 			}
@@ -141,12 +131,8 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
 				break;
 			case RELOAD_CONFIGURATION:
             {
-                #ifdef DEBUG
-					lfcore = fopen(LOGFILE,"a");
-					fprintf(lfcore,"CORE - Reloading the new plugin.\n");
-					fclose(lfcore);
-				#endif
-                // Close the old plugin
+                Debug("CORE - Reloading the new plugin.\n");
+				// Close the old plugin
                 camera->PostMessage(new BMessage(CLOSE_DEVICE));
                 // Get new Camera Interface
                 camera->PostMessage(message);
@@ -168,12 +154,8 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
             }
             case SAVE_CONFIGURATION:
             {
-            	#ifdef DEBUG
-					lfcore = fopen(LOGFILE,"a");
-					fprintf(lfcore,"CORE - Saving the new settings.\n");
-					fclose(lfcore);
-				#endif
-            	SaveSettingsToFile(pgsettings);
+            	Debug("CORE - Saving the new settings.\n");
+				SaveSettingsToFile(pgsettings);
             	break;
             }
             case GET_CAMSTRING:
@@ -235,21 +217,13 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
 //	BeDiGiCam:: MainWindow of the Application
 bool BeDiGiCamApp::CreateGUI()
 {
-	#ifdef DEBUG
-		lfcore = fopen(LOGFILE,"a");
-		fprintf(lfcore,"CORE - Create GUI.\n");
-		fclose(lfcore);
-	#endif
+	Debug("CORE - Create GUI.\n");
 	BEntry appentry; 
 	BPath path;
 	BWindow* (*instantiate_mainWindow)(BLooper*,int);
 	// get the path of the application
 	int32 devType = GetDeviceType();
-	#ifdef DEBUG
-		lfcore = fopen(LOGFILE,"a");
-		fprintf(lfcore,"CORE - Device type is: %d.\n",devType);
-		fclose(lfcore);
-	#endif
+	Debug("CORE - Device type is: %d.\n",devType);
 	app_info info; 
   	app->GetAppInfo(&info); 
   	appentry.SetTo(&info.ref); 
@@ -268,24 +242,14 @@ bool BeDiGiCamApp::CreateGUI()
         }
 	}
 	else
-	{
-		#ifdef DEBUG
-			lfcore = fopen(LOGFILE,"a");
-			fprintf(lfcore,"CORE - Couldn't load the plugin '%s'.\n",path.Path());
-			fclose(lfcore);
-		#endif
-	}
+		Debug("CORE - Couldn't load the plugin '%s'.\n",path.Path());
 	return B_OK;
 }
 //
 //	BeDiGiCam:: Check the device type
 int BeDiGiCamApp::GetDeviceType()
 {
-	#ifdef DEBUG
-		lfcore = fopen(LOGFILE,"a");
-		fprintf(lfcore,"CORE - Get device type.\n");
-		fclose(lfcore);
-	#endif
+	Debug("CORE - Get device type.\n");
 	int32 type = 0;
     BMessage reply;
    	BMessenger messenger(NULL,camera);
@@ -404,6 +368,29 @@ bool BeDiGiCamApp::IsPluginConfigPresent(char *camerastring)
 		i++;
 	}
 	return false;
+}
+
+// BeDiGiCam:: Log debug
+void BeDiGiCamApp:: Debug(const char *message,...)
+{
+	char debugString[1024];
+	
+	va_list arglist;
+	va_start(arglist,message);
+	
+	struct tm *current;
+	time_t now;
+	time(&now);
+	current = localtime(&now);
+	
+	if(pgsettings.debugFile)
+	{
+		lfcore = fopen(LOGFILE,"a");
+		vsprintf(debugString,message,arglist);
+		fprintf(lfcore,"%i:%i:%i:: %s",current->tm_hour,current->tm_min, current->tm_sec,debugString);
+		fclose(lfcore);
+	}
+	va_end(arglist);
 }
 //
 //	BeDiGiCam::main

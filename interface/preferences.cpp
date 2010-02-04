@@ -35,6 +35,7 @@ SETTINGS LoadSettingsFromFile(void)
 		printf("PREF - problem load default download path setting: %s\n",tempbuf);
 		strcpy(pgsettings.defaultDownloadPath,"/boot/home/Pictures/PhotoGrabber");
 	}
+	
 	//	Get the plugin name
 	if (prefs.GetString("pluginname", tempbufName,B_FILE_NAME_LENGTH))
 	{
@@ -45,6 +46,7 @@ SETTINGS LoadSettingsFromFile(void)
 		printf("PREF - problem load plugin name: %s\n",tempbufName);
 		strcpy(pgsettings.pluginName,"error");
 	}
+	
 	//	Get the camera name
 	if (prefs.GetString("cameraname", tempbufName,B_FILE_NAME_LENGTH))
 	{
@@ -55,6 +57,20 @@ SETTINGS LoadSettingsFromFile(void)
 		printf("PREF - problem load camera name: %s\n",tempbufName);
 		strcpy(pgsettings.deviceName,"error");
 	}
+	
+	// Get the Debugging to file parameter
+	if(prefs.GetString("file", tempbuf, 10))
+	{
+		if(!strcmp(tempbuf,"true"))
+			pgsettings.debugFile = true;
+		else
+			pgsettings.debugFile = false;
+	}
+	else
+	{
+		printf("PREF - problem loading debug file setting: %s\n",tempbuf);
+		pgsettings.debugFile = false;
+	}
 	return pgsettings;
 }
 //
@@ -62,6 +78,10 @@ SETTINGS LoadSettingsFromFile(void)
 void SaveSettingsToFile(SETTINGS pgsettings)
 {
 	BeCam_PrefSaver prefs("photograbber.prefs",10); 
+	if(pgsettings.debugFile)
+		prefs.AddField("file","true");
+	else
+		prefs.AddField("file","false");
 	// save the default download path
 	prefs.AddField("defaultdownpath",pgsettings.defaultDownloadPath);
 	//	save the plugin name for bdcp cameras

@@ -22,11 +22,7 @@ Camera::Camera(char *libName) : BLooper("cameralooper")
 	// First create the temporary directory
 	BDirectory tmpDir("/boot");
 	tmpDir.CreateDirectory("var/tmp",&tmpDir);
-	#ifdef DEBUG
-		lfcam = fopen(LOGFILE,"a");
-		fprintf(lfcam,"CAM - Plugin name is: %s.\n",libName);
-		fclose(lfcam);
-	#endif
+	app->Debug("CAM - Plugin name is: %s.\n",libName);
 	// Create the interface
 	camInterface = new CamInterface(libName);
 }
@@ -42,11 +38,7 @@ bool Camera::Start()
 {
 	// Give the system core looper to the plugin. 
 	// Then the plugin is able to send messages to the core system
-	#ifdef DEBUG
-		lfcam = fopen(LOGFILE,"a");
-		fprintf(lfcam,"CAM - Start listening to connecting digital cameras.\n");
-		fclose(lfcam);
-	#endif
+	app->Debug("CAM - Start listening to connecting digital cameras.\n");
 	BLooper::Run();
 	return B_OK;
 }
@@ -54,11 +46,7 @@ bool Camera::Start()
 //	Camera:: Stop the camera looper
 bool Camera::Stop()
 {
-	#ifdef DEBUG
-		lfcam = fopen(LOGFILE,"a");
-		fprintf(lfcam,"CAM - Stop listening to connecting digital cameras.\n");
-		fclose(lfcam);
-	#endif
+	app->Debug("CAM - Stop listening to connecting digital cameras.\n");
 	BLooper::Quit();
 	return B_OK;
 }
@@ -66,11 +54,7 @@ bool Camera::Stop()
 //	Camera:: Open Device
 bool Camera::OpenDevice()
 {
-	#ifdef DEBUG
-		lfcam = fopen(LOGFILE,"a");
-		fprintf(lfcam,"CAM - Open the digital camera.\n");
-		fclose(lfcam);
-	#endif
+	app->Debug("CAM - Open the digital camera.\n");
 	camInterface->setCoreSystemLoop(app);
 	return camInterface->open();
 }
@@ -78,11 +62,7 @@ bool Camera::OpenDevice()
 //	Camera:: Close Device
 bool Camera::CloseDevice()
 {
-	#ifdef DEBUG
-		lfcam = fopen(LOGFILE,"a");
-		fprintf(lfcam,"CAM - Close the digital camera.\n");
-		fclose(lfcam);
-	#endif
+	app->Debug("CAM - Close the digital camera.\n");
 	return	camInterface->close();
 }
 //
@@ -101,11 +81,7 @@ bool Camera::DownloadItem(uint32 itemhandle, entry_ref *copyToDir = NULL, const 
 	 	directory = BPath(copyToDir);
 	else
 		directory = CameraSavedir;
-	#ifdef DEBUG
-		lfcam = fopen(LOGFILE,"a");
-		fprintf(lfcam,"CAM - Download item with name %s\n", fileName);
-		fclose(lfcam);
-	#endif
+	app->Debug("CAM - Download item with name %s\n", fileName);
 	return	camInterface->downloadItem(itemhandle,directory, fileName);
 }
 //
@@ -124,11 +100,7 @@ bool Camera::GetCameraItems()
 	uint32 numberOfItems = camInterface->getNumberOfItems();
 	if(numberOfItems == 0)
 	{
-		#ifdef DEBUG
-			lfcam = fopen(LOGFILE,"a");
-			fprintf(lfcam,"CAM - There are no items on the camera.\n");
-			fclose(lfcam);
-		#endif
+		app->Debug("CAM - There are no items on the camera.\n");
 		message = new BMessage(GET_ITEMS_DONE);
 		app->PostMessage(message,app);
 		return(B_ERROR);
@@ -207,11 +179,7 @@ void Camera::MessageReceived(BMessage *message)
 			if(message->FindRef("copyToDir",&copyToDir) >= 0)
 				directory = &copyToDir;
 			fileName = message->FindString("name");
-			#ifdef DEBUG
-				lfcam = fopen(LOGFILE,"a");
-				fprintf(lfcam,"CAM - Message received and string 'name' value is %s\n", fileName);
-				fclose(lfcam);
-			#endif
+			app->Debug("CAM - Message received and string 'name' value is %s\n", fileName);
 			if(DownloadItem((uint32)handle,directory,fileName) == B_OK)
 			{
 				BMessage reply(DOWN_ITEM_OK);
@@ -235,11 +203,7 @@ void Camera::MessageReceived(BMessage *message)
 			break;
 		case GET_ITEM_COUNT:
 		{
-			#ifdef DEBUG
-				lfcam = fopen(LOGFILE,"a");
-				fprintf(lfcam,"CAM - Get item count.\n");
-				fclose(lfcam);
-			#endif
+			app->Debug("CAM - Get item count.\n");
 			int numberOfItems = GetNumberOfItems();
 			BMessage reply(GET_ITEM_COUNT);
 			reply.AddInt32("numofitems", (int32)numberOfItems);
@@ -249,11 +213,7 @@ void Camera::MessageReceived(BMessage *message)
 		case GET_DEVICE_TYPE:
 		{
 			int type = GetDeviceType();
-			#ifdef DEBUG
-				lfcam = fopen(LOGFILE,"a");
-				fprintf(lfcam,"CAM - Device type is: %d.\n",type);
-				fclose(lfcam);
-			#endif
+			app->Debug("CAM - Device type is: %d.\n",type);
 			BMessage reply(GET_DEVICE_TYPE);
 			reply.AddInt32("type", (int32)type);
 			message->SendReply(&reply);

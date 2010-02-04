@@ -63,14 +63,8 @@ CamInterface::CamInterface(char *libName)
 		getSymbols(addonId);
 	}
 	else
-	{
-		#ifdef DEBUG
-			FILE	*file;
-			file = fopen(LOGFILE,"a");
-			fprintf(file,"CAMINTF - Plugin '%s' couldn't be loaded.\n",libName);
-			fclose(file);
-		#endif
-	}
+		app->Debug("CAMINTF - Plugin '%s' couldn't be loaded.\n",libName);
+		
 }
 //		CamInterface::destructor
 //
@@ -193,12 +187,7 @@ bool CamInterface::open()
 	
 	if (err != B_NO_ERROR)
 	{
-		#ifdef DEBUG
-			FILE	*file;
-			file = fopen(LOGFILE,"a");
-			fprintf(file,"CAMINTF - Couldn't open the camere.\n");
-			fclose(file);
-		#endif
+		app->Debug("CAMINTF - Couldn't open the camere.\n");
 		return B_ERROR;
 	}
 	return B_OK;
@@ -213,12 +202,7 @@ bool CamInterface::close()
 		
 	if (err != B_NO_ERROR)
 	{
-		#ifdef DEBUG
-			FILE	*file;
-			file = fopen(LOGFILE,"a");
-			fprintf(file,"CAMINTF - Couldn't close the camere.\n");
-			fclose(file);
-		#endif
+		app->Debug("CAMINTF - Couldn't close the camere.\n");
 		return B_ERROR;
 	}
 	return B_OK;
@@ -261,12 +245,7 @@ bool CamInterface::downloadItem(int index,BPath path, const char *name)
 {
 	if(check_downloadPicture)
 	{
-		#ifdef DEBUG
-			FILE	*file;
-			file = fopen(LOGFILE,"a");
-			fprintf(file,"CAMINTF - File name is %s.\n", name);
-			fclose(file);
-		#endif
+		app->Debug("CAMINTF - File name is %s.\n", name);
 		setCurrentItem(index);
 		(*downloadPicture)(path,name);
 		return B_OK;

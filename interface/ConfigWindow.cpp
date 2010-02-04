@@ -1,6 +1,6 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+* Copyright (c) 2004-2010,	Jan-Rixt Van Hoye				   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
@@ -91,6 +91,19 @@ BeCam_ConfigWindow::BeCam_ConfigWindow(float xPos,float yPos,BeCam_MainWindow *m
 	Lock();
 	CreateCameraTypeMenu(r);
 	Unlock();
+	// Create the debugging group box
+	r.top = r.bottom + 10;
+	r.bottom = r.top + 80;
+	becam_debugbox = new BBox(r,"debugbox", B_FOLLOW_ALL_SIDES |
+											B_WILL_DRAW | B_NAVIGABLE,
+											B_FANCY_BORDER);
+	becam_debugbox->SetLabel(_T("Debug configuration"));
+	becam_checkFile = new BCheckBox(BRect(15,30,200,50), "file check", _T("Debug to file"),new BMessage(CHECK_FILE), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM,B_WILL_DRAW|B_NAVIGABLE);
+	if(pgsettings->debugFile)
+		becam_checkFile->SetValue(true);
+	else
+		becam_checkFile->SetValue(false);
+	becam_debugbox->AddChild(becam_checkFile);
 	// 		Add the save button the the view
 	becam_savebutton = new BButton(BRect(5, r.bottom + 5 , 105, r.bottom + 30), "name", _T("Save"),new BMessage(SAVE_CONFIGURATION), B_FOLLOW_LEFT|B_FOLLOW_BOTTOM, B_NAVIGABLE|B_WILL_DRAW);
 	becam_configView->AddChild(becam_savebutton);
@@ -100,7 +113,7 @@ BeCam_ConfigWindow::BeCam_ConfigWindow(float xPos,float yPos,BeCam_MainWindow *m
 	// 		Add the config groupbox to the view
 	becam_configView->AddChild(becam_configbox);
 	// 		Add the debug groupbox to the view
-	//becam_configView->AddChild(becam_debugbox);
+	becam_configView->AddChild(becam_debugbox);
 	AddChild(becam_configView);
 }
 
@@ -136,13 +149,14 @@ void BeCam_ConfigWindow::MessageReceived(BMessage* message)
 					}
 					i++;
 				}
-				BMessage *appmessage = new BMessage(SAVE_CONFIGURATION);
-				parent->systemcore->PostMessage(appmessage);
-				appmessage = new BMessage(RELOAD_CONFIGURATION);
-				appmessage->AddString("libname",pgsettings->pluginName);
-				parent->systemcore->PostMessage(appmessage);
-				delete(appmessage);
 			}
+			BMessage *appmessage = new BMessage(SAVE_CONFIGURATION);
+			parent->systemcore->PostMessage(appmessage);
+			appmessage = new BMessage(RELOAD_CONFIGURATION);
+			appmessage->AddString("libname",pgsettings->pluginName);
+			parent->systemcore->PostMessage(appmessage);
+			delete(appmessage);
+			
 			parent->configWindow=NULL;
  			Quit();
 			break;
@@ -156,6 +170,9 @@ void BeCam_ConfigWindow::MessageReceived(BMessage* message)
 			break;
 		case CONF_BUT:
 			OpenPluginConfig();
+			break;
+		case CHECK_FILE:
+			pgsettings->debugFile = !pgsettings->debugFile;
 			break;
 		default:
 		{
@@ -233,11 +250,12 @@ void BeCam_ConfigWindow::GetPluginDetails(char * cameraname)
 //	configWindow::OpenPluginConfiguration
 void BeCam_ConfigWindow::OpenPluginConfig()
 {
-	#ifdef DEBUG
+	if(pgsettings->debugFile)
+	{
 		lfconfigw = fopen(LOGFILE,"a");	
 		fprintf(lfconfigw,"CONFIGWINDOW - Begin open plugin\n");
 		fclose(lfconfigw);
-	#endif
+	}
 	BRect rect = Frame();
 	float Xpos,Ypos;
 	Xpos = rect.left + ((rect.right - rect.left)/2);
@@ -252,11 +270,12 @@ void BeCam_ConfigWindow::OpenPluginConfig()
 			parent->systemcore->PostMessage(&appmessage);
 	
 	}
-	#ifdef DEBUG
+	if(pgsettings->debugFile)
+	{
 		lfconfigw = fopen(LOGFILE,"a");	
 		fprintf(lfconfigw,"CONFIGWINDOW - End open plugin\n");
 		fclose(lfconfigw);
-	#endif		
+	}		
 }
 //
 //	configWindow::OpenPluginConfiguration
