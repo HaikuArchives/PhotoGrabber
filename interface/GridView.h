@@ -1,6 +1,6 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2008,	Ramshankar, Jan-Rixt Van Hoye	   *
+* Copyright (c) 2004-2010,	Ramshankar, Jan-Rixt Van Hoye	   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
@@ -40,6 +40,7 @@ class GridView : public BControl
 {
 	public:
 								GridView (BRect rect, const char* name, 
+									void (*debugfunction)(const char *,...),
 									uint32 resizeMask = B_FOLLOW_ALL,
 									uint32 flags = B_WILL_DRAW);
 		virtual					~GridView ();
@@ -84,6 +85,7 @@ class GridView : public BControl
 		uint8					SelectionCurveRadius() const;
 		void					SendKeyStrokesTo(BLooper* looper,BHandler* handler = NULL);
 		void					SortItemsBy(int sortType);
+		void					(*Debug)(const char *,...);
 				
 	private:
 		friend class			Item;

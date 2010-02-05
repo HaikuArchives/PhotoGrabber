@@ -45,7 +45,27 @@ class BeDiGiCamApp : public BApplication {
 		bool						OpenPluginConfig(char *camerastring, BPoint *interfacePoint);
 		bool						IsPluginConfigPresent(char *camerastring);
 		// Debugging functions
-		void						Debug(const char *message,...);
+		static void					Debug(const char *message,...)
+		{
+			char debugString[1024];
+	
+			va_list arglist;
+			va_start(arglist,message);
+	
+			struct tm *current;
+			time_t now;
+			time(&now);
+			current = localtime(&now);
+	
+			//if(pgsettings.debugFile)
+			//{
+				FILE *lfcore = fopen(LOGFILE,"a");
+				vsprintf(debugString,message,arglist);
+				fprintf(lfcore,"%i:%i:%i:: %s",current->tm_hour,current->tm_min, current->tm_sec,debugString);
+				fclose(lfcore);
+			//}
+			va_end(arglist);
+		}
 		CamInterface 				*interface;
 		std::vector<std::string>	supportedCams;
 		std::multimap<const char*,std::string>	pluginSupportedCams;
@@ -58,7 +78,9 @@ class BeDiGiCamApp : public BApplication {
 		class Camera				*camera;
 		BWindow						*mainWindow;
 		image_id 					addonId;
-		SETTINGS                	pgsettings;
+		
+	private:
+		SETTINGS            	pgsettings;
 		
 		
 };

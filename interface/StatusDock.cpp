@@ -1,6 +1,6 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+* Copyright (c) 2004-2010,	Jan-Rixt Van Hoye				   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
@@ -16,13 +16,12 @@
 #include "intf_global.h"
 #include "debug.h"
 //
-// Globals
-FILE *lfstatusb;
-//
 // 		StatusDock::Constructor of the view
-StatusDock::StatusDock(BRect rect, const char* name, uint32 resize,uint32 flags)
+StatusDock::StatusDock(BRect rect, const char* name, void(*debugfunction)(const char *,...), uint32 resize,uint32 flags)
 : BView (rect, name, resize, flags | B_FRAME_EVENTS)
 {
+	Debug = (*debugfunction);
+	
 	rgb_color bg_color=ui_color(B_PANEL_BACKGROUND_COLOR);
 	SetViewColor(bg_color);
 	//
@@ -73,11 +72,8 @@ void StatusDock::MessageReceived(BMessage* message)
 //		StatusDock::Update Status		
 void	StatusDock::UpdateStatus(float delta, const char *message)
 {
-	#ifdef DEBUG
-		lfstatusb = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfstatusb,"STATUSDOCK - Update status\n");
-		fclose(lfstatusb);
-	#endif
+	Debug("STATUSDOCK - Update status\n");
+	
 	if(message)
 		SetStatusMessage(message);
 	if(delta > 0)
@@ -89,11 +85,8 @@ void	StatusDock::UpdateStatus(float delta, const char *message)
 //		StatusDock:: Draw the Status Bar
 void	StatusDock::Draw(BRect rect)
 {
-	#ifdef DEBUG
-		lfstatusb = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfstatusb,"STATUSDOCK - Draw()\n");
-		fclose(lfstatusb);
-	#endif
+	Debug("STATUSDOCK - Draw()\n");
+	
 	rgb_color color_label = {0x00, 0x00, 0x00, 0xff};
 	rgb_color color_border = {0x8b, 0x8b, 0x83, 0xff};
 	BFont font = be_plain_font;
@@ -207,11 +200,8 @@ void	StatusDock::Draw(BRect rect)
 //		StatusDock:: Creation of the status bar	
 void	StatusDock::CreateStatusBar()
 {
-	#ifdef DEBUG
-		lfstatusb = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfstatusb,"STATUSDOCK - Create Statusbar\n");
-		fclose(lfstatusb);
-	#endif
+	Debug("STATUSDOCK - Create Statusbar\n");
+	
 	int margin = 15;
 	BRect r = Bounds();
 	float downBitMapWidth = 0;
@@ -237,32 +227,23 @@ void	StatusDock::CreateStatusBar()
 //	StatusDock :: Show the needed controls
 void	StatusDock::ShowChildren(int newModus)
 {
-	#ifdef DEBUG
-		lfstatusb = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfstatusb,"STATUSDOCK - Show Children()\n");
-		fclose(lfstatusb);
-	#endif
+	Debug("STATUSDOCK - Show Children()\n");
+	
 	if(modus == newModus)
 		return;
 	switch(newModus)
 	{
 		case MODE_INIT:
 		{
-			#ifdef DEBUG
-				lfstatusb = fopen(INTF_LOGFILE,"a");	
-				fprintf(lfstatusb,"STATUSDOCK - ShowChildren() - Init mode\n");
-				fclose(lfstatusb);
-			#endif
+			Debug("STATUSDOCK - ShowChildren() - Init mode\n");
+			
 			statusbar->Hide();
 			break;
 		}
 		case MODE_DOWNLOAD:
 		{
-			#ifdef DEBUG
-				lfstatusb = fopen(INTF_LOGFILE,"a");	
-				fprintf(lfstatusb,"STATUSDOCK - ShowChildren() - Download mode\n");
-				fclose(lfstatusb);
-			#endif
+			Debug("STATUSDOCK - ShowChildren() - Download mode\n");
+			
 			statusbar->Show();
 			break;
 		}
@@ -273,11 +254,8 @@ void	StatusDock::ShowChildren(int newModus)
 //	StatusDock :: AttachedToWindow()
 void StatusDock::AttachedToWindow()
 {
-	#ifdef DEBUG
-		lfstatusb = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfstatusb,"STATUSDOCK - Attached to window\n");
-		fclose(lfstatusb);
-	#endif
+	Debug("STATUSDOCK - Attached to window\n");
+	
 	BView::AttachedToWindow();
 	SetTarget(Window());
 	SetViewColor(B_TRANSPARENT_COLOR);
@@ -287,11 +265,8 @@ void StatusDock::AttachedToWindow()
 //	StatusDock :: Show
 void StatusDock::Show()
 {
-	#ifdef DEBUG
-		lfstatusb = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfstatusb,"STATUSDOCK - Show Dock\n");
-		fclose(lfstatusb);
-	#endif
+	Debug("STATUSDOCK - Show Dock\n");
+	
 	BView::Show();
 	Invoke(new BMessage(STATDOCK_SHOWED));
 }
@@ -299,11 +274,8 @@ void StatusDock::Show()
 //	StatusDock :: Hide
 void StatusDock::Hide()
 {
-	#ifdef DEBUG
-		lfstatusb = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfstatusb,"STATUSDOCK - Hide Dock\n");
-		fclose(lfstatusb);
-	#endif	
+	Debug("STATUSDOCK - Hide Dock\n");
+	
 	BView::Hide();
 	Invoke(new BMessage(STATDOCK_HIDED));
 }
@@ -311,11 +283,8 @@ void StatusDock::Hide()
 //	StatusDock :: SetMaxStatusBar
 void StatusDock::SetMaxStatusBar(float maximum)
 {
-	#ifdef DEBUG
-		lfstatusb = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfstatusb,"STATUSDOCK - Set max statusbar\n");
-		fclose(lfstatusb);
-	#endif
+	Debug("STATUSDOCK - Set max statusbar\n");
+	
 	statusbar->Reset();
 	statusbar->SetMaxValue(maximum);
 }

@@ -1,6 +1,6 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+* Copyright (c) 2004-2010,	Jan-Rixt Van Hoye				   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
@@ -19,11 +19,11 @@
 //
 // External variables
 bool tbExpanded;
-extern "C" BWindow * instantiate_mainWindow(BLooper *core, int devtype);
+extern "C" BWindow * instantiate_mainWindow(BLooper *core, int devtype, void (*debugfunction)(const char *,...));
 FILE *lfmainw;
 //
 // Exported function
-BWindow* instantiate_mainWindow(BLooper *core,int devtype)
+BWindow* instantiate_mainWindow(BLooper *core,int devtype, void (*debugfunction)(const char *,...))
 {
 	float length,height;
 	BScreen screen;
@@ -34,20 +34,16 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 	r.top = ((r.top + height/2) -(WINDOW_HEIGHT_MAIN/2));
 	r.right = r.left + WINDOW_WIDTH_MAIN;
 	r.bottom = r.top + WINDOW_HEIGHT_MAIN;
-	BWindow *mainWindow = new BeCam_MainWindow(r,core,devtype);
+	BWindow *mainWindow = new BeCam_MainWindow(r,core,devtype,(*debugfunction));
 	mainWindow->Show();
 	return mainWindow;
 }
 //		
 //	MainWindow:: Constructor
- BeCam_MainWindow::BeCam_MainWindow(BRect r,BLooper *syscore,int devtype) 
+ BeCam_MainWindow::BeCam_MainWindow(BRect r,BLooper *syscore,int devtype, void (*debugfunction)(const char *,...)) 
 				: BWindow(r,"PhotoGrabber",B_DOCUMENT_WINDOW, B_WILL_DRAW)
 {
-	#ifdef DEBUG
-		lfmainw = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfmainw,"MAINWINDOW - Create window\n");
-		fclose(lfmainw);
-	#endif
+	Debug = (*debugfunction);
 	float minWidth,maxWidth,minHeight,maxHeight;
 	GetSizeLimits(&minWidth,&maxWidth,&minHeight,&maxHeight);
 	SetSizeLimits(WINDOW_WIDTH_MAIN,maxWidth,WINDOW_HEIGHT_MAIN,maxHeight);
@@ -76,7 +72,7 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 	r.right-= B_V_SCROLL_BAR_WIDTH;
 	r.bottom= becam_view->Bounds().bottom - 70;
 	// Add the Grid View
-	becam_gridview = new GridView(r,"gridview", B_FOLLOW_ALL, B_WILL_DRAW);	
+	becam_gridview = new GridView(r,"gridview", Debug, B_FOLLOW_ALL, B_WILL_DRAW);	
 	becam_scrollview = new BScrollView(
 									"becam_scrollview",
 									becam_gridview,
@@ -92,11 +88,8 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 	AddChild(becam_view);
 	//Set the focus to the listview
 	becam_gridview->MakeFocus(true);
-	#ifdef DEBUG
-		lfmainw = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfmainw,"MAINWINDOW - Window created\n");
-		fclose(lfmainw);
-	#endif
+	// Get the main debug function;	
+	Debug("MAINWINDOW - Window created\n");
 }
 //
 // MainWindow:: Create the menubar
@@ -146,7 +139,7 @@ void BeCam_MainWindow::CreateStatusDock ()
 	
 	BRect r = becam_view->Bounds();
 	r.top = r.bottom - 68;
-	becam_statusDock = new StatusDock(r,"statusdock", B_FOLLOW_BOTTOM | B_FOLLOW_LEFT_RIGHT, B_WILL_DRAW | B_FRAME_EVENTS);
+	becam_statusDock = new StatusDock(r,"statusdock", Debug, B_FOLLOW_BOTTOM | B_FOLLOW_LEFT_RIGHT, B_WILL_DRAW | B_FRAME_EVENTS);
 	becam_statusDock->SetStatusMessage("Please connect your digital camera.");
 	becam_statusDock->ShowChildren(MODE_INIT);
 	becam_view->AddChild(becam_statusDock);
@@ -187,6 +180,7 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref copyToDir, const char *fi
 		data->downloadDir = copyToDir;
         data->gridview = becam_gridview;
         data->window = this;
+        data->Debug = Debug;
 		resume_thread(spawn_thread((status_t(*)(void*))DownloadItems,"download_items",B_DISPLAY_PRIORITY,data));
 	}
 	else
@@ -238,13 +232,9 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data)
 		// Send a message to the camera interface to get the selected item
 		message = new BMessage(DOWN_ITEM);
 		message->AddInt32("itemhandle",(int32)selectedItem->GetHandle());
-		#ifdef DEBUG
-			BPath directory;
-			directory = BPath(&data->downloadDir);
-			lfmainw = fopen(INTF_LOGFILE,"a");	
-			fprintf(lfmainw,"MAINWINDOW - The save directory is: %s\n",directory.Path());
-			fclose(lfmainw);
-		#endif
+		BPath directory;
+		directory = BPath(&data->downloadDir);
+		data->Debug("MAINWINDOW - The save directory is: %s\n",directory.Path());
 		message->AddRef("copyToDir", &refentry);
 		
 		// Wait untill the item has been downloaded
@@ -279,11 +269,8 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data)
 void BeCam_MainWindow::removeSelectedItems()
 {
 	//
-	#ifdef DEBUG
-		lfmainw = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfmainw,"MAINWINDOW - Begin remove Items\n");
-		fclose(lfmainw);
-	#endif
+	Debug("MAINWINDOW - Begin remove Items\n");
+	
 	if(becam_gridview->CurrentSelection() >= 0)
 	{
 		// Ask the user if he/she is sure to remove the files.
@@ -304,11 +291,7 @@ void BeCam_MainWindow::removeSelectedItems()
 		myAlert->SetShortcut(0, B_ENTER);
 		myAlert->Go();
 	}
-	#ifdef DEBUG
-		lfmainw = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfmainw,"MAINWINDOW - End remove Items\n");
-		fclose(lfmainw);
-	#endif
+	Debug("MAINWINDOW - End remove Items\n");
 			
 }
 //
@@ -359,12 +342,8 @@ int BeCam_MainWindow::logMainWindowError(int ErrorMes)
 			errorMessage = "MAIN WINDOW: An unexpected error occured\n";
 	}
 	// write the errorMessage into the logfile
-	#ifdef DEBUG
-		FILE	*file;
-		file = fopen(INTF_LOGFILE,"a");
-		fprintf(file,errorMessage);
-		fclose(file);
-	#endif
+	Debug(errorMessage);
+	
 	return(ErrorMes);
 }
 
@@ -493,7 +472,7 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			ItemData  *localItemData;
 			BeCam_Item *localItem;
 			message->FindPointer("item", (void **) &localItemData);
-			localItem = new BeCam_Item(localItemData);
+			localItem = new BeCam_Item(localItemData,Debug);
 			addItem(localItem);
 			break;
 		}
@@ -540,21 +519,13 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 		{
 			entry_ref copyToDirDrag;
 			const char *fileName = NULL;
-			#ifdef DEBUG
-				lfmainw = fopen(INTF_LOGFILE,"a");	
-				fprintf(lfmainw,"MAINWINDOW - Get the save directory\n");
-				fclose(lfmainw);
-			#endif
+			Debug("MAINWINDOW - Get the save directory\n");
 			message->FindRef("directory", &copyToDirDrag);
 			fileName = message->FindString("name");
-			#ifdef DEBUG
-				BPath directory;
-				directory = BPath(&copyToDirDrag);
-				lfmainw = fopen(INTF_LOGFILE,"a");	
-				fprintf(lfmainw,"MAINWINDOW - The file name is: %s\n",fileName);
-				fprintf(lfmainw,"MAINWINDOW - The save directory is: %s\n",directory.Path());
-				fclose(lfmainw);
-			#endif
+			BPath directory;
+			directory = BPath(&copyToDirDrag);
+			Debug("MAINWINDOW - The file name is: %s\n",fileName);
+			Debug("MAINWINDOW - The save directory is: %s\n",directory.Path());
 			downloadSelectedItems(copyToDirDrag, fileName);
 			break;
 		}

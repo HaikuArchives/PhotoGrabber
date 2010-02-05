@@ -45,20 +45,22 @@ struct items_data
 	entry_ref			downloadDir;
 	float				totalitems;
 	StatusDock			*statusDock;
+	void				(*Debug)(const char *,...);
 };
 
 //		Main window class
 class BeCam_MainWindow : public BWindow
 {
 	public:
-							BeCam_MainWindow(BRect r,BLooper *syscore,int devtype);
+							BeCam_MainWindow(BRect r,BLooper *syscore,int devtype, void(*debugfunction)(const char *,...));
 		virtual bool		QuitRequested();
 		virtual void		MessageReceived(BMessage* message);
 		// Other interface windows
 		class BeCam_AboutWindow		*aboutWindow;
 		class BeCam_ConfigWindow	*configWindow;
 		// system core looper
-		BLooper			*systemcore;
+		BLooper						*systemcore;
+		void						(*Debug)(const char *,...);
 		
 	private:
 	

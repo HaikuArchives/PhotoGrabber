@@ -19,7 +19,6 @@
 //
 // External variables
 class BeDiGiCamApp *app;
-FILE *lfcore;
 //
 //BeDiGiCam::Application Constructor
 BeDiGiCamApp::BeDiGiCamApp()
@@ -220,7 +219,7 @@ bool BeDiGiCamApp::CreateGUI()
 	Debug("CORE - Create GUI.\n");
 	BEntry appentry; 
 	BPath path;
-	BWindow* (*instantiate_mainWindow)(BLooper*,int);
+	BWindow* (*instantiate_mainWindow)(BLooper*,int, void (*debugfunction)(const char *,...));
 	// get the path of the application
 	int32 devType = GetDeviceType();
 	Debug("CORE - Device type is: %d.\n",devType);
@@ -236,7 +235,7 @@ bool BeDiGiCamApp::CreateGUI()
 	{
 		if (get_image_symbol(addonId, "instantiate_mainWindow", B_SYMBOL_TYPE_TEXT, (void **)&instantiate_mainWindow) == B_OK)
 	    {
-	 	   mainWindow = (*instantiate_mainWindow)(this,devType);
+	 	   mainWindow = (*instantiate_mainWindow)(this,devType,&Debug);
 	 	   BMessage message(GET_CONFIGURATION);
 	 	   mainWindow->PostMessage(&message);     
         }
@@ -249,7 +248,7 @@ bool BeDiGiCamApp::CreateGUI()
 //	BeDiGiCam:: Check the device type
 int BeDiGiCamApp::GetDeviceType()
 {
-	Debug("CORE - Get device type.\n");
+	this->Debug("CORE - Get device type.\n");
 	int32 type = 0;
     BMessage reply;
    	BMessenger messenger(NULL,camera);
@@ -285,7 +284,7 @@ bool BeDiGiCamApp::GetCameraStrings()
       		break;
     	if( entry.GetPath(&path) != B_NO_ERROR )
     	{
-    		printf( "entry.GetPath failed\n" );
+    		Debug( "entry.GetPath failed\n" );
     	}
     	else
     	{
@@ -309,7 +308,7 @@ bool BeDiGiCamApp::GetCameraStrings()
 				delete(interface);
 			}
 			else
-				printf("loading %s failed!",addonName);
+				Debug("loading %s failed!",addonName);
 		}
 	}
 	return true;
@@ -368,29 +367,6 @@ bool BeDiGiCamApp::IsPluginConfigPresent(char *camerastring)
 		i++;
 	}
 	return false;
-}
-
-// BeDiGiCam:: Log debug
-void BeDiGiCamApp:: Debug(const char *message,...)
-{
-	char debugString[1024];
-	
-	va_list arglist;
-	va_start(arglist,message);
-	
-	struct tm *current;
-	time_t now;
-	time(&now);
-	current = localtime(&now);
-	
-	if(pgsettings.debugFile)
-	{
-		lfcore = fopen(LOGFILE,"a");
-		vsprintf(debugString,message,arglist);
-		fprintf(lfcore,"%i:%i:%i:: %s",current->tm_hour,current->tm_min, current->tm_sec,debugString);
-		fclose(lfcore);
-	}
-	va_end(arglist);
 }
 //
 //	BeDiGiCam::main

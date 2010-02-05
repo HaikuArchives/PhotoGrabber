@@ -18,8 +18,7 @@
 #include "GridView.h"
 #include "debug.h"
 #include "core_global.h"
-
-FILE *lfgridv;
+#include "MainWindow.h"
 
 #define kDRAG_SLOP		4
 
@@ -27,7 +26,7 @@ float GridView::fMinHorizItemMargin = 20;	// horizontal margin
 float GridView::fMinVertItemMargin = 20;	// vertical margin
 //
 //	GridView :: Constructor
-GridView::GridView (BRect rect, const char* name, uint32 resize,uint32 flags)
+GridView::GridView (BRect rect, const char* name/*, void (*debugfunction)(const char *,...)*/,uint32 resize,uint32 flags)
 : BControl (rect, name, NULL, NULL,resize, flags | B_FRAME_EVENTS )
 	,fCachedColumnCount (-1)
 	,fSelectedItemIndex (-1)
@@ -37,6 +36,7 @@ GridView::GridView (BRect rect, const char* name, uint32 resize,uint32 flags)
 	,fKeyTargetLooper (NULL)
 	,fKeyTargetHandler (NULL)
 {
+	//Debug = (*debugfunction);
 	rgb_color color_background =  {0x42, 0x42, 0x42, 0xff};
 	SetViewColor(color_background);
 	fItemList = new BList();
@@ -46,6 +46,7 @@ GridView::GridView (BRect rect, const char* name, uint32 resize,uint32 flags)
 	fItemHeight = 120;
 	fSelectedItemIndex = -1;
 	fLastSelectedItemIndex = -1;
+	//Debug("GRIDVIEW - View Created\n");
 }
 
 //
@@ -61,6 +62,7 @@ GridView::~GridView()
 		delete fTargetMessenger;
 		fTargetMessenger = NULL;
 	}
+	//Debug("GRIDVIEW - View Destroyed\n");
 }
 
 //
@@ -74,11 +76,7 @@ void GridView::SetTarget (BMessenger& messenger)
 //	GridView :: Add Item
 void GridView::AddItem (BeCam_Item* item)
 {
-	#ifdef DEBUG
-		lfgridv = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfgridv,"GRIDVIEW - Add Item\n");
-		fclose(lfgridv);
-	#endif
+	//Debug("GRIDVIEW - Add Item\n");
 	AddItemFast (item);
 	Invalidate();
 	UpdateScrollView();
@@ -99,11 +97,7 @@ inline void GridView::AddItemFast (BeCam_Item* item)
 //	GridView :: Remove Item
 void GridView::RemoveItem(BeCam_Item* item)
 {
-	#ifdef DEBUG
-		lfgridv = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfgridv,"GRIDVIEW - Remove Item\n");
-		fclose(lfgridv);
-	#endif
+	//Debug("GRIDVIEW - Remove Item\n");
 	RemoveItemFast (item);
 	Invalidate();
 	UpdateScrollView();
@@ -135,11 +129,7 @@ void GridView::AddList (BList& list)
 // GridView :: Draw
 void GridView::Draw (BRect rect)
 {
-	#ifdef DEBUG
-		lfgridv = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfgridv,"GRIDVIEW - Draw\n");
-		fclose(lfgridv);
-	#endif
+	//Debug("GRIDVIEW - Draw\n");
 	DrawContent (rect);
 	return BView::Draw (rect);
 }
@@ -149,11 +139,7 @@ void GridView::Draw (BRect rect)
 void GridView::DrawContent (BRect /*notused*/)
 {
 
-	#ifdef DEBUG
-		lfgridv = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfgridv,"GRIDVIEW - Draw Content\n");
-		fclose(lfgridv);
-	#endif
+	//Debug("GRIDVIEW - Draw Content\n");
 	
 	SetHighColor (ViewColor());
 	if (fItemList == NULL || fItemList->CountItems() == 0)
@@ -261,11 +247,7 @@ float GridView::GetRowHeight(int32 rowCount,int32 columnCount)
 // GridView :: FrameResized
 void GridView::FrameResized (float newWidth, float newHeight)
 {
-	#ifdef DEBUG
-		lfgridv = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfgridv,"GRIDVIEW - FrameResized width: %d - height: %d\n",newWidth,newHeight);
-		fclose(lfgridv);
-	#endif
+	//Debug("GRIDVIEW - FrameResized width: %d - height: %d\n",newWidth,newHeight);
 	BView::FrameResized (newWidth, newHeight);
 	Draw (BRect (0, 0, newWidth, newHeight));	
 	UpdateScrollView();
@@ -275,11 +257,7 @@ void GridView::FrameResized (float newWidth, float newHeight)
 // GridView :: ItemRect
 BRect GridView::ItemRect (int32 index)
 {
-	#ifdef DEBUG
-		lfgridv = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfgridv,"GRIDVIEW - Item Rect of index %d\n",index);
-		fclose(lfgridv);
-	#endif
+	//Debug("GRIDVIEW - Item Rect of index %d\n",index);
 	
 	int32 columnCount = CountColumnsWithMinHorizItemMargin();
 	int32 column = (index % columnCount);
@@ -336,11 +314,8 @@ void GridView::KeyDown (const char* bytes, int32 numBytes)
 //	GridView :: MouseDown
 void GridView::MouseDown (BPoint point)
 {
-	#ifdef DEBUG
-		lfgridv = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfgridv,"GRIDVIEW - Mouse Down\n");
-		fclose(lfgridv);
-	#endif
+	//Debug("GRIDVIEW - Mouse Down\n");
+	
 	if (!Window() || Window()->IsActive() == false || !IsEnabled())
 		return;
 	
@@ -367,11 +342,8 @@ void GridView::MouseDown (BPoint point)
 		// select this item
       	if ((modifs & B_COMMAND_KEY))
       	{
-			#ifdef DEBUG
-				lfgridv = fopen(INTF_LOGFILE,"a");	
-				fprintf(lfgridv,"GRIDVIEW - Option Key down\n");
-				fclose(lfgridv);
-			#endif
+			//Debug("GRIDVIEW - Option Key down\n");
+			
 			Select(index,true);
       	}      	
       	else if((modifs & B_SHIFT_KEY))
@@ -459,11 +431,8 @@ void GridView::AttachedToWindow()
 //	GridView :: Updated ScrollView
 void GridView::UpdateScrollView ()
 {	
-	#ifdef DEBUG
-		lfgridv = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfgridv,"GRIDVIEW - Update ScrollView\n");
-		fclose(lfgridv);
-	#endif
+	//Debug("GRIDVIEW - Update ScrollView\n");
+	
 	if (fScrollView)
 	{
 		BScrollBar *vertbar = fScrollView->ScrollBar (B_VERTICAL);
@@ -508,11 +477,8 @@ void GridView::ScrollToSelection ()
 //	GridView :: Handle KeyMovement
 bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 {
-	#ifdef DEBUG
-		lfgridv = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfgridv,"GRIDVIEW - Handle KeyMovement\n");
-		fclose(lfgridv);
-	#endif
+	//Debug("GRIDVIEW - Handle KeyMovement\n");
+	
 	bool keyHandled = false;
 	int32 modifs = modifiers();
 	switch (bytes[0])
@@ -702,11 +668,8 @@ void GridView::SendKeyStrokesTo (BLooper* looper, BHandler* handler)
 //	GridView :: Select
 void GridView::Select (int32 index, bool extend)
 {
-	#ifdef DEBUG
-		lfgridv = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfgridv,"GRIDVIEW - Select Item\n");
-		fclose(lfgridv);
-	#endif
+	//Debug("GRIDVIEW - Select Item\n");
+	
 	if(!extend && !IsItemSelected(index))
 		DeselectAll();
 	BeCam_Item *item = (BeCam_Item*)(fItemList->ItemAt(index));

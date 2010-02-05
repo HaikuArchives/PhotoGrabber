@@ -1,6 +1,6 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+* Copyright (c) 2004-2010,	Jan-Rixt Van Hoye				   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
@@ -24,7 +24,7 @@
 class BeCam_Item : public BListItem 
 {
 	public:
-						BeCam_Item(ItemData *data);
+						BeCam_Item(ItemData *data, void (*debugfunction)(const char *,...));
 						BeCam_Item();
 						~BeCam_Item();
 		virtual void 	DrawItem(BView *owner, BRect frame, bool complete = false);
@@ -44,6 +44,7 @@ class BeCam_Item : public BListItem
 		float			DetailsHeight() const;
 		virtual bool	IsClickableFrame (BPoint point) const;
 		void 			RotateThumb(uint32 angle);
+		void			(*Debug)(const char *,...);
 		
 	private:
 		ItemData		*itemdata;

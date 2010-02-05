@@ -1,6 +1,6 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+* Copyright (c) 2004-2010,	Jan-Rixt Van Hoye				   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
@@ -39,6 +39,7 @@ class StatusDock : public BView, BInvoker
 {
 public:
 					StatusDock(BRect rect, const char* name, 
+									void(*debugfunction)(const char *,...),
 									uint32 resizeMask = B_FOLLOW_ALL,
 									uint32 flags = B_WILL_DRAW);
 					~StatusDock();
@@ -52,6 +53,7 @@ public:
 	void			SetMaxStatusBar(float maximum);
 	void			SetStatusMessage(const char* message);
 	void			ShowChildren(int newModus);
+	void			(*Debug)(const char *,...);
 
 private:
 	BString			*statusMessage;

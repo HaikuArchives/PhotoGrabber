@@ -1,6 +1,6 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+* Copyright (c) 2004-2010,	Jan-Rixt Van Hoye				   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
@@ -12,12 +12,12 @@
 #include "Item.h"
 #include "debug.h"
 
-FILE *lfitem;
 
 //	Item
 
-BeCam_Item::BeCam_Item(ItemData *data) : BListItem()
+BeCam_Item::BeCam_Item(ItemData *data, void(*debugfunction)(const char *,...)) : BListItem()
 {
+	Debug = (*debugfunction);
 	itemdata = data;
 	fThumbDetailsGap = 5;
 }
@@ -35,21 +35,14 @@ BeCam_Item::BeCam_Item() : BListItem()
 
 BeCam_Item::~BeCam_Item()
 {
-	#ifdef DEBUG
-		lfitem = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfitem,"ITEM - Delete Item\n");
-		fclose(lfitem);
-	#endif
+	Debug("ITEM - Delete Item\n");
 	
 	if(itemdata)
 	{
 		if(itemdata->ItemThumbBitmap)
 		{
-			#ifdef DEBUG
-				lfitem = fopen(INTF_LOGFILE,"a");	
-				fprintf(lfitem,"ITEM - Free thumb bitmap\n");
-				fclose(lfitem);
-			#endif
+			Debug("ITEM - Free thumb bitmap\n");
+			
 			free(itemdata->ItemThumbBitmap);
 			itemdata->ItemThumbBitmap = NULL;
 		}
@@ -63,11 +56,8 @@ BeCam_Item::~BeCam_Item()
 
 void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete) 
 {
-	#ifdef DEBUG
-		lfitem = fopen(INTF_LOGFILE,"a");	
-		fprintf(lfitem,"ITEM - Draw Item\n");
-		fclose(lfitem);
-	#endif
+	Debug("ITEM - Draw Item\n");
+	
 	rgb_color color;
 	rgb_color color_selected = {0xee, 0xc9, 0x00, 0xff};
 	rgb_color color_enabled = {0x00, 0x00, 0x00, 0xff};
