@@ -82,6 +82,8 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype, void (*debugfunction)
 									true,
 									B_PLAIN_BORDER
 									);
+	if(becam_scrollview == NULL)
+		Debug("MAINWINDOW - Scrollview not instantiated!\n");
     becam_view->AddChild(becam_scrollview);
     becam_gridview->TargetedByScrollView (becam_scrollview);	
 	// add view to window

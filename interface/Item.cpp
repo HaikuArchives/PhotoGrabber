@@ -19,7 +19,8 @@ BeCam_Item::BeCam_Item(ItemData *data, void(*debugfunction)(const char *,...)) :
 {
 	Debug = (*debugfunction);
 	itemdata = data;
-	fThumbDetailsGap = 5;
+	fThumbDetailsGap = 5.0f;
+	fFontHeight = 12.0f;
 }
 
 //
@@ -105,9 +106,10 @@ void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete)
 	
 	// Text Font
 	font.SetFace(B_BOLD_FACE);
+    font.SetSize(fFontHeight);
     itemView->SetFont(&font);
 	itemView->GetFontHeight (&fontHeight);
-	fFontHeight = fontHeight.ascent + fontHeight.descent - 4;
+	//fFontHeight = fontHeight.ascent + fontHeight.descent - 4;
 		
 	if(thumbnail)
 	{	

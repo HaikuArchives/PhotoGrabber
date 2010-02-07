@@ -34,6 +34,7 @@ struct list_tracking_data
 {
 	GridView	*view;
 	BPoint		start;
+	void		(*Debug)(const char *, ...);
 };
 
 class GridView : public BControl
