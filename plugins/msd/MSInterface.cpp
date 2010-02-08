@@ -9,7 +9,8 @@
 //		Local Includes
 #include "MSInterface.h"
 #include "global.h"
-#include "debug.h"
+//#include "debug.h"
+#include "logger.h"
 
 //
 // 		Includes
@@ -46,12 +47,7 @@ MSInterface::MSInterface(BLooper *mainLooper)
 		core_msg->AddString("product",_mountPoint.String());
 		if(_mainLooper != NULL)
 		{
-			#ifdef DEBUG
-				FILE *file;
-				file = fopen(LOGFILE,"a");
-				fprintf(file,"MS - Voume Mounted: Send message to the system core\n");
-				fclose(file);
-			#endif
+			LogDebug("MASS - Voume Mounted: Send message to the system core.");
 			_mainLooper->PostMessage(core_msg);
 		}
 	}
@@ -70,12 +66,7 @@ MSInterface::~MSInterface()
 //	MSInterface:: Start the mass storage interface looper
 bool MSInterface::Start()
 {
-	#ifdef DEBUG
-		FILE *file;
-		file = fopen(LOGFILE,"a");
-		fprintf(file,"MS - Start listening to device list changes.\n");
-		fclose(file);
-	#endif
+	LogDebug("MASS - Start listening to device list changes.");
 	BLooper::Run();
 	_searchMountedVolumes();
 	BDiskDeviceRoster().StartWatching(this);
@@ -85,12 +76,7 @@ bool MSInterface::Start()
 //	MSInterface:: Stop the mass storage interface looper
 bool MSInterface::Stop()
 {
-	#ifdef DEBUG
-		FILE *file;
-		file = fopen(LOGFILE,"a");
-		fprintf(file,"CAM - Stop listening to device list changes.\n");
-		fclose(file);
-	#endif
+	LogDebug("MASS - Stop listening to device list changes.");
 	BLooper::Quit();
 	BDiskDeviceRoster().StopWatching(this);
 	return B_OK;
@@ -104,22 +90,13 @@ void MSInterface::MessageReceived(BMessage *message)
 	{
 		case B_DEVICE_UPDATE:
 		{
-			#ifdef DEBUG
-				FILE *file;
-				file = fopen(LOGFILE,"a");
-				fprintf(file,"MS - Message Received :: Device update!\n");
-				fclose(file);
-			#endif
+			LogDebug("MASS - Message Received :: Device update!");
 			int32 event;
 			if(message->FindInt32("event",&event) != B_OK)
 				break;
 			switch(event) 
 			{
-				#ifdef DEBUG
-					file = fopen(LOGFILE,"a");
-					fprintf(file,"MS - Message Received :: There is an event '%d'!\n",event);
-					fclose(file);
-				#endif
+				LogDebug("MASS - Message Received :: There is an event '%d'!",event);
 				case B_DEVICE_PARTITION_MOUNTED:
 					_VolumeMounted(message);
 					break;
@@ -140,12 +117,7 @@ void MSInterface::MessageReceived(BMessage *message)
 //		MSInterface: MSD_logError
 int MSInterface::getNumberOfItems()
 {	
-	#ifdef DEBUG
-		FILE *file;
-		file = fopen(LOGFILE,"a");
-		fprintf(file,"MS - GetThumb :: There are %d items.\n",_numberOfItems);
-		fclose(file);
-	#endif
+	LogDebug("MASS - GetThumb :: There are %d items.",_numberOfItems);
 	return _numberOfItems;
 }
 //
@@ -165,12 +137,7 @@ bool MSInterface::setCurrentItem(int index)
 bool MSInterface::downloadItem(BPath path,const char *name)
 {
 	char *filename;
-	#ifdef DEBUG
-		FILE	*file;
-		file = fopen(LOGFILE,"a");
-		fprintf(file,"MS - Download file: %s to %s\n",_currentItem->ItemPath.String(),path.Path());
-		fclose(file);
-	#endif
+	LogDebug("MASS - Download file: %s to %s.",_currentItem->ItemPath.String(),path.Path());
 	int32 pathLength = strlen(path.Path());
 	int32 fileNameLength = strlen(_currentItem->ItemName.String());
 	off_t file_size = 0;
@@ -253,11 +220,7 @@ uint32 MSInterface::getXRes()
 					{
 						exif_entry_get_value(entry, value, sizeof(value));
 						intValue = atoi(value);
-						#ifdef DEBUG
-							FILE *file = fopen(LOGFILE,"a");
-							fprintf(file,"MS - GetXRes :: Resolution is %d.\n",intValue);
-							fclose(file);
-						#endif
+						LogDebug("MASS - GetXRes :: Resolution is %d.",intValue);
 					}
 				}
 			}
@@ -288,11 +251,7 @@ uint32 MSInterface::getYRes()
 					{
 						exif_entry_get_value(entry, value, sizeof(value));
 						intValue = atoi(value);
-						#ifdef DEBUG
-							FILE *file = fopen(LOGFILE,"a");
-							fprintf(file,"MS - GetYRes :: Resolution is %d.\n",intValue);
-							fclose(file);
-						#endif
+						LogDebug("MASS - GetYRes :: Resolution is %d.",intValue);
 					}
 				}
 			}
@@ -331,28 +290,15 @@ BBitmap* MSInterface::getThumb()
 	// First check the bitmap in the EXIF data
 	if (_currentBufferSize != 0) 
 	{
-		#ifdef DEBUG
-			FILE	*file;
-			file = fopen(LOGFILE,"a");
-			fprintf(file,"MS - GetThumb :: Getting EXIF data.\n");
-			fclose(file);
-		#endif
+		LogDebug("MASS - GetThumb :: Getting EXIF data.");
 		ExifData *data = exif_data_new_from_data(_currentBuffer, _currentBufferSize);
 		if (data)
 		{ 
-			#ifdef DEBUG
-				file = fopen(LOGFILE,"a");
-				fprintf(file,"MS - GetThumb :: Get the EXIF image.\n");
-				fclose(file);
-			#endif
+			LogDebug("MASS - GetThumb :: Get the EXIF image.");
 			// Check EXIF image preview.
 			if (data->data && data->size > 4) 
 			{
-				#ifdef DEBUG
-					file = fopen(LOGFILE,"a");
-					fprintf(file,"MS - GetThumb :: EXIF thumbnail, %d bytes.\n",data->size);
-					fclose(file);
-				#endif
+				LogDebug("MASS - GetThumb :: EXIF thumbnail, %d bytes.",data->size);
 				BMemoryIO in(data->data, data->size);
 				thumb = BTranslationUtils::GetBitmap(&in);
 			}
@@ -365,12 +311,7 @@ BBitmap* MSInterface::getThumb()
 	source = BTranslationUtils::GetBitmapFile(_currentItem->ItemPath.String());
     if (source) 
     {
-		#ifdef DEBUG
-			FILE *file;
-			file = fopen(LOGFILE,"a");
-			fprintf(file,"MS - GetThumb :: The source bitmap is present.\n");
-			fclose(file);
-		#endif
+		LogDebug("MASS - GetThumb :: The source bitmap is present.");
 		BRect dst(0, 0, THUMBWIDTH - 1, THUMBHEIGHT - 1);
 		BRect src = source->Bounds();
 		if (src.Width() > src.Height())
@@ -380,11 +321,7 @@ BBitmap* MSInterface::getThumb()
   		thumb = new BBitmap(dst, source->ColorSpace());
 		if (thumb) 
 		{
-			#ifdef DEBUG
-				file = fopen(LOGFILE,"a");
-				fprintf(file,"MS - RescaleBitmap :: Begin scaling the new bitmap.\n");
-				fclose(file);
-			#endif
+			LogDebug("MASS - RescaleBitmap :: Begin scaling the new bitmap.");
 			scale(source, thumb, dst.Width() / src.Width(), dst.Height() / src.Height());
 		}
     	delete source;
@@ -505,12 +442,7 @@ void MSInterface::_getMSDItems(const char* path)
 	BNodeInfo fileInfo;
 	char type[256];
 	status_t status;
-	#ifdef DEBUG
-		FILE	*logFile;
-		logFile = fopen(LOGFILE,"a");
-		fprintf(logFile,"MS - GetMSDItems :: Searching in path  '%s'.\n", path);
-		fclose(logFile);
-	#endif
+	LogDebug("MASS - GetMSDItems :: Searching in path  '%s'.", path);
 	BDirectory dir(path);
 	MSDItem *localItem;
   	if(dir.InitCheck() == B_OK)
@@ -645,12 +577,7 @@ void MSInterface::_VolumeMounted(BMessage *message)
         	return;
         	
         partition->GetMountPoint(&mountPoint);
-		#ifdef DEBUG
-			FILE	*file;
-			file = fopen(LOGFILE,"a");
-			fprintf(file,"MS - Volume Mounted :: Found new mounted volume `%s' at '%s'.\n", partition->Name(), mountPoint.Path());
-			fclose(file);
-		#endif
+		LogDebug("MASS - Volume Mounted :: Found new mounted volume `%s' at '%s'.", partition->Name(), mountPoint.Path());
 		_mountPoint.SetTo(mountPoint.Path());
 		_getItems();
 		// Send a message to the system core
@@ -659,12 +586,7 @@ void MSInterface::_VolumeMounted(BMessage *message)
 		core_msg->AddString("product",_mountPoint.String());
 		if(_mainLooper != NULL)
 		{
-			#ifdef DEBUG
-				FILE *file;
-				file = fopen(LOGFILE,"a");
-				fprintf(file,"MS - Voume Mounted: Send message to the system core\n");
-				fclose(file);
-			#endif
+			LogDebug("MASS - Voume Mounted: Send message to the system core.");
 			_mainLooper->PostMessage(core_msg);
 		}
 }
@@ -693,12 +615,7 @@ void MSInterface::_VolumeUnmounted(BMessage *message)
 			core_msg->AddString("product",mountPoint.Path());
 			if(_mainLooper != NULL)
 			{
-				#ifdef DEBUG
-					FILE *file;
-					file = fopen(LOGFILE,"a");
-					fprintf(file,"MS - Volume Unmounted: Send message to the system core\n");
-					fclose(file);
-				#endif
+				LogDebug("MASS - Volume Unmounted: Send message to the system core.");
 				_mainLooper->PostMessage(core_msg);
 			}
 		}
@@ -712,12 +629,7 @@ MSDItem* MSInterface::_getMSDItem()
 	{
 		if((*i).first == _currentItemHandle)
 		{
-			#ifdef DEBUG
-				FILE	*file;
-				file = fopen(LOGFILE,"a");
-				fprintf(file,"MS: Get MSItem\n");
-				fclose(file);
-			#endif
+			LogDebug("MASS - Get MSItem.");
 			// return the MSD Item
 			return (*i).second;
 		}
@@ -735,7 +647,7 @@ bool MSInterface::_removeMSDItem()
 		if((*i).first == _currentItemHandle)
 		{
 			//
-			printf("MSD - Delete Picture\n");
+			printf("MSD - Delete Picture.");
 			//TODO:: remove the item
 			BEntry entry((*i).second->ItemPath.String());
 			entry.Remove();
@@ -744,51 +656,6 @@ bool MSInterface::_removeMSDItem()
 		i++;
 	}
 	return true;
-}
-// 
-//		MSInterface: _logError
-int MSInterface::_logError(int ErrorMes)
-{
-	const char 				*errorMessage;
-	
-	switch(ErrorMes)
-	{
-		case MS_OPEN_CAMERA:
-			errorMessage = "MS: Could not mount the scsi device\n";
-			break;
-		case MS_CLOSE_CAMERA:
-			errorMessage = "MS: Could not unmount the scsi device\n";
-			break;
-		default:
-			errorMessage = "MS: An unexpected error occured\n";
-	}
-	// write the errorMessage into the logfile
-	#ifdef DEBUG
-		FILE	*file;
-		file = fopen(LOGFILE,"a");
-		fprintf(file,errorMessage);
-		fclose(file);
-	#endif
-	return(ErrorMes);
-}
-//
-//		MSInterface :: MSD_LogValue
-void MSInterface::_logValue(int ValueMes, int Value)
-{
-	const char 				*valueMessage;
-	
-	switch(ValueMes)
-	{
-		default:
-			valueMessage = "MS: An unexpected error occured\n";
-	}
-	// write the errorMessage into the logfile
-	#ifdef DEBUG
-		FILE	*file;
-		file = fopen(LOGFILE,"a");
-		fprintf(file,valueMessage,Value);
-		fclose(file);
-	#endif
 }
 //
 //VISITOR
@@ -814,12 +681,7 @@ bool MSMountVisitor::Visit(BPartition* partition, int32 level)
 	BString searchString(mountPoint.Path());
 	if(searchString.FindFirst("boot") == B_ERROR)
 	{
-		#ifdef DEBUG
-			FILE *file;
-			file = fopen(LOGFILE,"a");
-			fprintf(file,"MS - Search Mounted Volumes :: Found volume %s.\n", mountPoint.Path());
-			fclose(file);
-		#endif
+		LogDebug("MASS - Search Mounted Volumes :: Found volume %s.", mountPoint.Path());
 		return true;
 	}
 	return false;

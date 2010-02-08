@@ -5,9 +5,13 @@
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
 */
+//
+// Local includes
 #include "level2.h"
-#include "debug.h"
-#include "configplugin.h"
+//#include "debug.h"
+#include "logger.h"
+//
+// Includes
 #include <cstdio>
 #include <DataIO.h>
 #include <BitmapStream.h>
@@ -15,18 +19,13 @@
  
 extern BLooper* msgtarget;
 extern MSInterface *msInterface;
-FILE *lflevel2;
 
 status_t setMessageTarget(BLooper* mtarget)
 {
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");
-		if(mtarget != NULL)	
-			fprintf(lflevel2,"MS - Message Target is set\n");
-		else
-			fprintf(lflevel2,"MS - Message Target is NOT set\n");
-		fclose(lflevel2);
-	#endif
+	if(mtarget != NULL)	
+		LogDebug("MASS - Message Target is set.");
+	else
+		LogDebug("MASS - Message Target is NOT set.");
 	msgtarget = mtarget;
 	return(B_NO_ERROR);
 }
@@ -34,14 +33,10 @@ status_t setMessageTarget(BLooper* mtarget)
 status_t deletePicture()
 {
 	int ret=0;
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"MS - Delete Picture\n");
-		fclose(lflevel2);
-	#endif
+	LogDebug("MASS - Delete Picture.");
 	if(!msInterface->deleteItem())
     {
-    	logError(MSCAM_DEL_PIC_FAIL);
+    	LogError("MASS - Delete picture failed.");
 		return(B_ERROR);	
     }
     return(B_NO_ERROR);
@@ -49,11 +44,7 @@ status_t deletePicture()
 
 status_t takePicture()
 {
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"MS - Take picture\n");
-		fclose(lflevel2);
-	#endif
+	LogDebug("MASS - Take picture.");
 	return(B_NO_ERROR);
 }
 
@@ -62,7 +53,7 @@ status_t getImageName(char* &name)
 	name = msInterface->getName();
 	if(name == "")
 	{
-		logError(MSCAM_GET_NAME_FAIL);
+		LogError("MASS - Couldn't get the name of the item.");
 		return(B_ERROR);
 	}
 	return(B_NO_ERROR);
@@ -70,22 +61,14 @@ status_t getImageName(char* &name)
 
 status_t getImageSize(int &size)
 {
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"MS - Get image size\n");
-		fclose(lflevel2);
-	#endif
+	LogDebug("MASS - Get image size.");
 	size = msInterface->getSize();
 	return(B_NO_ERROR);
 }
 
 status_t getImageDate(char* &date)
 {
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"MS - Get image date\n");
-		fclose(lflevel2);
-	#endif
+	LogDebug("MASS - Get image date.");
 	date = msInterface->getDate();
 	return(B_NO_ERROR);
 }
@@ -93,11 +76,7 @@ status_t getImageDate(char* &date)
 status_t getThumbnail(BBitmap* &bitmap)
 {
 	
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"MS - Get thumbnail\n");
-		fclose(lflevel2);
-	#endif
+	LogDebug("MASS - Get thumbnail.");
 	bitmap = msInterface->getThumb();
 	
 	return(B_NO_ERROR);
@@ -105,38 +84,21 @@ status_t getThumbnail(BBitmap* &bitmap)
 
 status_t getImageHeight(int &height)
 {
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"MS - Get image height\n");
-		fclose(lflevel2);
-	#endif
+	LogDebug("MASS - Get image height.");
 	height = msInterface->getYRes();
 	return(B_NO_ERROR);
 }
 
 status_t getImageWidth(int &width)
 {
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"MS - Get image width\n");
-		fclose(lflevel2);
-	#endif
+	LogDebug("MASS - Get image width.");
 	width = msInterface->getXRes();
 	return(B_NO_ERROR);
 }
 
 status_t getDeviceType(int &type)
 {
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"MS - Get the type of device\n");
-		fclose(lflevel2);
-	#endif
+	LogDebug("MASS - Get the type of device.");
 	type =  TYPE_USB;
 	return(B_NO_ERROR);
-}
-BWindow* configurePlugin(BPoint middle)
-{
-	return(new configplugin(BRect(middle.x - 74,middle.y - 122,
-								  middle.x + 74,middle.y + 122 )));
 }

@@ -187,6 +187,7 @@ ptp_transaction_new (PTPParams* params, PTPContainer* ptp,
 		return PTP_ERROR_BADPARAM;
 	}
 	// get response 
+	ptp_debug(params,"ptp2/ptp_transaction_new : Get the response.");
 	CHECK_PTP_RC(params->getresp_func(params, ptp));
 	ptp_debug(params,"ptp2/ptp_transaction_new : Check sequence number.");
 	if (ptp->Transaction_ID != params->transaction_id-1) 

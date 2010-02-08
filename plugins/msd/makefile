@@ -42,12 +42,8 @@ TYPE := SHARED
 #		If you leave this blank, then all *.c *.cpp *.S *.s *.asm files
 #		in the top level local directory are automatically included.
 SRCS := MSInterface.cpp		\
-		debug.cpp			\
 		level2.cpp			\
-		prefsaver.cpp		\
-		preferences.cpp		\
 		level1.cpp			\
-		configplugin.cpp	\
 		scale.cpp					
 
 #       specify the resource files to use 

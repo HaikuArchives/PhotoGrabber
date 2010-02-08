@@ -13,10 +13,13 @@
 // Includes
 #include <String.h>
 #include <storage/StorageDefs.h>
+#include <FindDirectory.h>
+#include <Path.h>
+#include <stdio.h>
+#include <stdlib.h>
 //
 // Local includes
 #include "settings.h"
-//#include "prefsaver.h"
 //	Variables
 static char 	**field ;
 static char 	**values;

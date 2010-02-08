@@ -102,8 +102,8 @@ class MSInterface : public BLooper
 			bool 					_saveItem (MSDItem *item, const char *filename);
 			void					_VolumeMounted(BMessage *message);
 			void					_VolumeUnmounted(BMessage *message);
-			int 					_logError(int ErrorMes);
-			void					_logValue(int ValueMes, int Value);
+			/*int 					_logError(int ErrorMes);
+			void					_logValue(int ValueMes, int Value);*/
 			
 };
 //

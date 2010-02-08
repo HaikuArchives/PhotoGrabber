@@ -288,7 +288,7 @@ ptp_usb_getdata (PTPParams* params, PTPContainer* ptp, PTPDataHandler *handler)
 			ret = PTP_ERROR_IO;
 			break;
 		}
-		ptp_usb_debug(params,"ptp2/usb_getdata : Get USB Type");
+		ptp_usb_debug(params,"ptp2/usb_getdata : Check USB data %d", usbdata.type);
 		if (dtoh16(usbdata.type) != PTP_USB_CONTAINER_DATA)
 		{
 			/* We might have got a response instead. On error for instance. */
@@ -489,40 +489,45 @@ ptp_usb_getresp (PTPParams* params, PTPContainer* resp)
 	unsigned long		rlen;
 	PTPUSBBulkContainer	usbresp;
 	
-	ptp_usb_debug (params, "ptp2/ptp_usb_getresp : reading response");
+	ptp_usb_debug (params, "ptp2/ptp_usb_getresp : Reading the response");
 	PTP_CNT_INIT(usbresp);
 	/* read response, it should never be longer than sizeof(usbresp) */
 	ret = ptp_usb_getpacket(params, &usbresp, &rlen);
 
 	if (ret!=PTP_RC_OK) 
 	{
+		ptp_usb_debug (params, "ptp2/ptp_usb_getresp : Return code was not OK.");
 		ret = PTP_ERROR_IO;
 	} 
 	else
 		if (dtoh16(usbresp.type) != PTP_USB_CONTAINER_RESPONSE) {
+			ptp_usb_debug (params, "ptp2/ptp_usb_getresp : Error response expected");
 			ret = PTP_ERROR_RESP_EXPECTED;
 		} else
 			if (dtoh16(usbresp.code)!=resp->Code) {
+				ptp_usb_debug (params, "ptp2/ptp_usb_getresp : Response code is not the expected response code.");
 				ret = dtoh16(usbresp.code);
+				ptp_usb_debug (params, "ptp2/ptp_usb_getresp : Return code is is now 0x%04x.",ret);
 			}
 	if (ret != PTP_RC_OK) 
 	{
 		ptp_usb_error (params, "ptp2/usb_getresp : request code 0x%04x getting resp error 0x%04x", resp->Code, ret);
 		return ret;
 	}
+	else
+		ptp_usb_debug (params, "ptp2/ptp_usb_getresp : Return code still OK.");
 	/* build an appropriate PTPContainer */
 	resp->Code=dtoh16(usbresp.code);
 	resp->SessionID=params->session_id;
 	resp->Transaction_ID=dtoh32(usbresp.trans_id);
-	//if (resp->Transaction_ID != params->transaction_id - 1) {
-	//	if (MTP_ZEN_BROKEN_HEADER(camera->pl)) {
-	//		gp_log (GP_LOG_DEBUG, "ptp2/ptp_usb_getresp", "Read broken PTP header (transid is %08x vs %08x), compensating.",
-	//			resp->Transaction_ID, params->transaction_id - 1
-	//		);
-	//		resp->Transaction_ID=params->transaction_id-1;
-	//	}
-		/* else will be handled by ptp.c as error. */
-	//}
+	/*if (resp->Transaction_ID != params->transaction_id - 1) {
+		if (MTP_ZEN_BROKEN_HEADER(camera->pl)) {
+			ptp_usb_debug(params, "ptp2/ptp_usb_getresp", "Read broken PTP header (transid is %08x vs %08x), compensating.",
+				resp->Transaction_ID, params->transaction_id - 1);
+			resp->Transaction_ID=params->transaction_id-1;
+		}
+		// else will be handled by ptp.c as error.
+	}*/
 	ptp_usb_debug(params,"ptp2/usb_getresp : Set parameter 1 to 5");
 	resp->Param1 = dtoh32(usbresp.payload.params.param1);
 	resp->Param2 = dtoh32(usbresp.payload.params.param2);

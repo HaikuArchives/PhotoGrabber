@@ -45,7 +45,7 @@ GridView::GridView (BRect rect, const char* name,uint32 resize,uint32 flags)
 	fItemHeight = 120;
 	fSelectedItemIndex = -1;
 	fLastSelectedItemIndex = -1;
-	LogDebug("GRIDVIEW - View Created\n");
+	LogDebug("GRIDVIEW - View Created.");
 }
 
 //
@@ -61,7 +61,7 @@ GridView::~GridView()
 		delete fTargetMessenger;
 		fTargetMessenger = NULL;
 	}
-	LogDebug("GRIDVIEW - View Destroyed\n");
+	LogDebug("GRIDVIEW - View Destroyed.");
 }
 
 //
@@ -75,7 +75,7 @@ void GridView::SetTarget (BMessenger& messenger)
 //	GridView :: Add Item
 void GridView::AddItem (BeCam_Item* item)
 {
-	LogDebug("GRIDVIEW - Add Item\n");
+	LogDebug("GRIDVIEW - Add Item.");
 	AddItemFast (item);
 	Invalidate();
 	UpdateScrollView();
@@ -96,7 +96,7 @@ inline void GridView::AddItemFast (BeCam_Item* item)
 //	GridView :: Remove Item
 void GridView::RemoveItem(BeCam_Item* item)
 {
-	LogDebug("GRIDVIEW - Remove Item\n");
+	LogDebug("GRIDVIEW - Remove Item.");
 	RemoveItemFast (item);
 	Invalidate();
 	UpdateScrollView();
@@ -128,7 +128,7 @@ void GridView::AddList (BList& list)
 // GridView :: Draw
 void GridView::Draw (BRect rect)
 {
-	LogDebug("GRIDVIEW - Draw\n");
+	LogDebug("GRIDVIEW - Draw.");
 	DrawContent (rect);
 	return BView::Draw (rect);
 }
@@ -138,7 +138,7 @@ void GridView::Draw (BRect rect)
 void GridView::DrawContent (BRect /*notused*/)
 {
 
-	LogDebug("GRIDVIEW - Draw Content\n");
+	LogDebug("GRIDVIEW - Draw Content.");
 	
 	SetHighColor (ViewColor());
 	if (fItemList == NULL || fItemList->CountItems() == 0)
@@ -246,7 +246,7 @@ float GridView::GetRowHeight(int32 rowCount,int32 columnCount)
 // GridView :: FrameResized
 void GridView::FrameResized (float newWidth, float newHeight)
 {
-	LogDebug("GRIDVIEW - FrameResized width: %d - height: %d\n",newWidth,newHeight);
+	LogDebug("GRIDVIEW - FrameResized width: %d - height: %d.",newWidth,newHeight);
 	BView::FrameResized (newWidth, newHeight);
 	Draw (BRect (0, 0, newWidth, newHeight));	
 	UpdateScrollView();
@@ -256,7 +256,7 @@ void GridView::FrameResized (float newWidth, float newHeight)
 // GridView :: ItemRect
 BRect GridView::ItemRect (int32 index)
 {
-	LogDebug("GRIDVIEW - Item Rect of index %d\n",index);
+	LogDebug("GRIDVIEW - Item Rect of index %d.",index);
 	
 	int32 columnCount = CountColumnsWithMinHorizItemMargin();
 	int32 column = (index % columnCount);
@@ -313,7 +313,7 @@ void GridView::KeyDown (const char* bytes, int32 numBytes)
 //	GridView :: MouseDown
 void GridView::MouseDown (BPoint point)
 {
-	LogDebug("GRIDVIEW - Mouse Down\n");
+	LogDebug("GRIDVIEW - Mouse Down.");
 	
 	if (!Window() || Window()->IsActive() == false || !IsEnabled())
 		return;
@@ -340,11 +340,7 @@ void GridView::MouseDown (BPoint point)
        	int32 modifs = modifiers();
 		// select this item
       	if ((modifs & B_COMMAND_KEY))
-      	{
-			//Debug("GRIDVIEW - Option Key down\n");
-			
 			Select(index,true);
-      	}      	
       	else if((modifs & B_SHIFT_KEY))
       	{
       		Select(fSelectedItemIndex,index,true);
@@ -433,29 +429,29 @@ void GridView::UpdateScrollView ()
 {	
 	if (fScrollView)
 	{
-		LogDebug("GRIDVIEW - Update ScrollView\n");
+		LogDebug("GRIDVIEW - Update ScrollView.");
 		BScrollBar *vertbar = fScrollView->ScrollBar (B_VERTICAL);
 		if (vertbar)
 		{
-			LogDebug("GRIDVIEW - Set scrollbar range\n");
+			LogDebug("GRIDVIEW - Set scrollbar range.");
 			float row = CountRows();
 			float columnCount = CountColumnsWithMinHorizItemMargin();
-			LogDebug("GRIDVIEW - Row: %f - Columns: %f.\n", row, columnCount);
+			LogDebug("GRIDVIEW - Row: %f - Columns: %f.", row, columnCount);
 			float maxV = GetTop(row,columnCount) + GetRowHeight(row,columnCount) + ItemVertMargin();
-			LogDebug("GRIDVIEW - Maximum vertical range: %f.\n",maxV);
+			LogDebug("GRIDVIEW - Maximum vertical range: %f.",maxV);
 			if (maxV - Bounds().Height() > 0)
 			{
-				LogDebug("GRIDVIEW - Set scrollbar range (%d,%f).\n",0,maxV - Bounds().Height());
+				LogDebug("GRIDVIEW - Set scrollbar range (%d,%f).",0,maxV - Bounds().Height());
 				vertbar->SetRange (0, maxV - Bounds().Height());
 			} 
 			else
 			{
-				LogDebug("GRIDVIEW - Set scrollbar range (0,0).\n");
+				LogDebug("GRIDVIEW - Set scrollbar range (0,0).");
 				vertbar->SetRange (0, 0);
 			}
-			LogDebug("GRIDVIEW - ItemHeight: %f.\n",ItemHeight());
-			LogDebug("GRIDVIEW - ItemVertMargin: %f.\n",ItemVertMargin());
-			LogDebug("GRIDVIEW - Set scrollbar steps: %f.\n",(ItemHeight() + ItemVertMargin()), (ItemHeight() + ItemVertMargin()));
+			LogDebug("GRIDVIEW - ItemHeight: %f.",ItemHeight());
+			LogDebug("GRIDVIEW - ItemVertMargin: %f.",ItemVertMargin());
+			LogDebug("GRIDVIEW - Set scrollbar steps: %f.",(ItemHeight() + ItemVertMargin()), (ItemHeight() + ItemVertMargin()));
 			vertbar->SetSteps ((ItemHeight() + ItemVertMargin()), (ItemHeight() + ItemVertMargin()));
 		}
 	}
@@ -464,7 +460,7 @@ void GridView::UpdateScrollView ()
 //	GridView :: ScrollToSelection
 void GridView::ScrollToSelection ()
 {
-	LogDebug("GRIDVIEW - Scroll to selection\n");
+	LogDebug("GRIDVIEW - Scroll to selection.");
 	
 	if (!fLastSelectedItem)
 		return;
@@ -482,13 +478,13 @@ void GridView::ScrollToSelection ()
 		ScrollTo (0, rect.top + 2 - (Bounds().Height() - /*ItemHeight()*/(rect.bottom - rect.top) -ItemVertMargin()));	
 	else if (rect.top <= currentPosition)				// up
 		ScrollTo (0, rect.top - 4);
-	LogDebug("GRIDVIEW - Scolled to selection\n");
+	LogDebug("GRIDVIEW - Scolled to selection.");
 }
 //
 //	GridView :: Handle KeyMovement
 bool GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */)
 {
-	LogDebug("GRIDVIEW - Handle KeyMovement\n");
+	LogDebug("GRIDVIEW - Handle KeyMovement.");
 	
 	bool keyHandled = false;
 	int32 modifs = modifiers();
@@ -679,7 +675,7 @@ void GridView::SendKeyStrokesTo (BLooper* looper, BHandler* handler)
 //	GridView :: Select
 void GridView::Select (int32 index, bool extend)
 {
-	LogDebug("GRIDVIEW - Select Item\n");
+	LogDebug("GRIDVIEW - Select Item.");
 	
 	if(!extend && !IsItemSelected(index))
 		DeselectAll();
@@ -852,11 +848,11 @@ status_t GridView::TrackItem(list_tracking_data *data)
     while (1) 
     {
         // make sure window is still valid
-        LogDebug("GRIDVIEW - TrackItem - Lock the window.\n");
+        LogDebug("GRIDVIEW - TrackItem - Lock the window.");
         if (data->view->Window()->Lock()) 
         {
             data->view->GetMouse(&point, &buttons);
-            LogDebug("GRIDVIEW - TrackItem - Unlock the window.\n");
+            LogDebug("GRIDVIEW - TrackItem - Unlock the window.");
             data->view->Window()->Unlock();
         }
         // not?  then why bother tracking
@@ -870,7 +866,7 @@ status_t GridView::TrackItem(list_tracking_data *data)
         if ((abs((int)(data->start.x - point.x)) > kDRAG_SLOP) || (abs((int)(data->start.y - point.y)) > kDRAG_SLOP))
         {
             // make sure window is still valid
-            LogDebug("GRIDVIEW - TrackItem - Lock the window.\n");
+            LogDebug("GRIDVIEW - TrackItem - Lock the window.");
             if (data->view->Window()->Lock()) 
             {
                 BBitmap	 *drag_bits;
@@ -907,7 +903,7 @@ status_t GridView::TrackItem(list_tracking_data *data)
                         offscreen_view = new BView(drag_bits->Bounds(), "",B_FOLLOW_NONE, 0);
                         drag_bits->AddChild(offscreen_view);
                         // lock it so we can draw
-                        LogDebug("GRIDVIEW - TrackItem -  Lock the Bitmap.\n");
+                        LogDebug("GRIDVIEW - TrackItem -  Lock the Bitmap.");
                         drag_bits->Lock();
                         // fill bitmap with black
                         offscreen_view->SetHighColor(0, 0, 0, 0);
@@ -944,7 +940,7 @@ status_t GridView::TrackItem(list_tracking_data *data)
                         	offscreen_view->DrawString(numberOfItemsSelectedString.String());
                         }
                         //
-                        LogDebug("GRIDVIEW - TrackItem - Unlock the bitmap.\n");
+                        LogDebug("GRIDVIEW - TrackItem - Unlock the bitmap.");
                         drag_bits->Unlock();
                         // initiate drag from center
                         // of bitmap
@@ -957,7 +953,7 @@ status_t GridView::TrackItem(list_tracking_data *data)
                         data->view->DragMessage(&drag_msg,BRect(0, 0, B_LARGE_ICON - 1,B_LARGE_ICON - 1));
 					}
                 } // endif item
-               LogDebug("GRIDVIEW - TrackItem - Unlock the window.\n");
+               LogDebug("GRIDVIEW - TrackItem - Unlock the window.");
                data->view->Window()->Unlock();
             } // endif window lock
             break;

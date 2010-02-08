@@ -83,7 +83,7 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 									B_PLAIN_BORDER
 									);
 	if(becam_scrollview == NULL)
-		LogDebug("MAINWINDOW - Scrollview not instantiated!\n");
+		LogDebug("MAINWINDOW - Scrollview not instantiated!");
     becam_view->AddChild(becam_scrollview);
     becam_gridview->TargetedByScrollView (becam_scrollview);	
 	// add view to window
@@ -91,7 +91,7 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 	//Set the focus to the listview
 	becam_gridview->MakeFocus(true);
 	// Get the main debug function;	
-	LogDebug("MAINWINDOW - Window created\n");
+	LogDebug("MAINWINDOW - Window created.");
 }
 //
 // MainWindow:: Create the menubar
@@ -236,7 +236,7 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data)
 		message->AddInt32("itemhandle",(int32)selectedItem->GetHandle());
 		BPath directory;
 		directory = BPath(&data->downloadDir);
-		LogDebug("MAINWINDOW - The save directory is: %s\n",directory.Path());
+		LogDebug("MAINWINDOW - The save directory is: %s.",directory.Path());
 		message->AddRef("copyToDir", &refentry);
 		
 		// Wait untill the item has been downloaded
@@ -271,7 +271,7 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data)
 void BeCam_MainWindow::removeSelectedItems()
 {
 	//
-	LogDebug("MAINWINDOW - Begin remove Items\n");
+	LogDebug("MAINWINDOW - Begin remove Items.");
 	
 	if(becam_gridview->CurrentSelection() >= 0)
 	{
@@ -293,7 +293,7 @@ void BeCam_MainWindow::removeSelectedItems()
 		myAlert->SetShortcut(0, B_ENTER);
 		myAlert->Go();
 	}
-	LogDebug("MAINWINDOW - End remove Items\n");
+	LogDebug("MAINWINDOW - End remove Items.");
 			
 }
 //
@@ -338,10 +338,10 @@ int BeCam_MainWindow::logMainWindowError(int ErrorMes)
 	switch(ErrorMes)
 	{
 		case MAINW_DEV_NO_FIND:
-			errorMessage = "MAIN WINDOW: No PTP device is present\n";	
+			errorMessage = "MAIN WINDOW: No PTP device is present.";	
 			break;
 		default:
-			errorMessage = "MAIN WINDOW: An unexpected error occured\n";
+			errorMessage = "MAIN WINDOW: An unexpected error occured.";
 	}
 	// write the errorMessage into the logfile
 	LogDebug(errorMessage);
@@ -521,13 +521,13 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 		{
 			entry_ref copyToDirDrag;
 			const char *fileName = NULL;
-			LogDebug("MAINWINDOW - Get the save directory\n");
+			LogDebug("MAINWINDOW - Get the save directory.");
 			message->FindRef("directory", &copyToDirDrag);
 			fileName = message->FindString("name");
 			BPath directory;
 			directory = BPath(&copyToDirDrag);
-			LogDebug("MAINWINDOW - The file name is: %s\n",fileName);
-			LogDebug("MAINWINDOW - The save directory is: %s\n",directory.Path());
+			LogDebug("MAINWINDOW - The file name is: %s.",fileName);
+			LogDebug("MAINWINDOW - The save directory is: %s.",directory.Path());
 			downloadSelectedItems(copyToDirDrag, fileName);
 			break;
 		}

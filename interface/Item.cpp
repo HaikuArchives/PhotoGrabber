@@ -35,13 +35,13 @@ BeCam_Item::BeCam_Item() : BListItem()
 
 BeCam_Item::~BeCam_Item()
 {
-	LogDebug("ITEM - Delete Item\n");
+	LogDebug("ITEM - Delete Item.");
 	
 	if(itemdata)
 	{
 		if(itemdata->ItemThumbBitmap)
 		{
-			LogDebug("ITEM - Free thumb bitmap\n");
+			LogDebug("ITEM - Free thumb bitmap.");
 			
 			free(itemdata->ItemThumbBitmap);
 			itemdata->ItemThumbBitmap = NULL;
@@ -56,7 +56,7 @@ BeCam_Item::~BeCam_Item()
 
 void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete) 
 {
-	LogDebug("ITEM - Draw Item\n");
+	LogDebug("ITEM - Draw Item.");
 	
 	rgb_color color;
 	rgb_color color_selected = {0xee, 0xc9, 0x00, 0xff};

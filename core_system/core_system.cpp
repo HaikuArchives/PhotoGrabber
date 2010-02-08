@@ -48,7 +48,7 @@ void BeDiGiCamApp::ReadyToRun()
 	// Create a camera object if a plugin has been chosen
 	if(pgsettings.pluginName != NULL)
 	{
-		LogDebug("CORE - Create camera looper.\n");
+		LogDebug("CORE - Create camera looper.");
 		camera = new Camera(pgsettings.pluginName);
 		camera->Start();
 		// Open the device
@@ -73,7 +73,7 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
 		{
 			case CAM_CONNECTED:
 			{
-				LogDebug("CORE - Camera connected.\n");
+				LogDebug("CORE - Camera connected.");
 				mainWindow->PostMessage(message);
 				if(GetDeviceType() == TYPE_USB)
 				{	
@@ -87,7 +87,7 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
 				break;
 			case CAM_DISCONNECTED:
 			{	
-				LogDebug("CORE - Camera disconnected.\n");
+				LogDebug("CORE - Camera disconnected.");
 				mainWindow->PostMessage(message);
 				break;
 			}
@@ -131,7 +131,7 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
 				break;
 			case RELOAD_CONFIGURATION:
             {
-                LogDebug("CORE - Reloading the new plugin.\n");
+                LogDebug("CORE - Reloading the new plugin.");
 				// Close the old plugin
                 camera->PostMessage(new BMessage(CLOSE_DEVICE));
                 // Get new Camera Interface
@@ -154,7 +154,7 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
             }
             case SAVE_CONFIGURATION:
             {
-            	LogDebug("CORE - Saving the new settings.\n");
+            	LogDebug("CORE - Saving the new settings.");
 				SaveSettingsToFile(pgsettings);
             	break;
             }
@@ -217,13 +217,13 @@ void BeDiGiCamApp::MessageReceived(BMessage* message)
 //	BeDiGiCam:: MainWindow of the Application
 bool BeDiGiCamApp::CreateGUI()
 {
-	LogDebug("CORE - Create GUI.\n");
+	LogDebug("CORE - Create GUI.");
 	BEntry appentry; 
 	BPath path;
 	BWindow* (*instantiate_mainWindow)(BLooper*,int);
 	// get the path of the application
 	int32 devType = GetDeviceType();
-	LogDebug("CORE - Device type is: %d.\n",devType);
+	LogDebug("CORE - Device type is: %d.",devType);
 	app_info info; 
   	app->GetAppInfo(&info); 
   	appentry.SetTo(&info.ref); 
@@ -242,14 +242,14 @@ bool BeDiGiCamApp::CreateGUI()
         }
 	}
 	else
-		LogDebug("CORE - Couldn't load the plugin '%s'.\n",path.Path());
+		LogDebug("CORE - Couldn't load the plugin '%s'.",path.Path());
 	return B_OK;
 }
 //
 //	BeDiGiCam:: Check the device type
 int BeDiGiCamApp::GetDeviceType()
 {
-	LogDebug("CORE - Get device type.\n");
+	LogDebug("CORE - Get device type.");
 	int32 type = 0;
     BMessage reply;
    	BMessenger messenger(NULL,camera);
@@ -285,7 +285,7 @@ bool BeDiGiCamApp::GetCameraStrings()
       		break;
     	if( entry.GetPath(&path) != B_NO_ERROR )
     	{
-    		LogDebug( "entry.GetPath failed\n" );
+    		LogDebug( "CORE - entry.GetPath failed." );
     	}
     	else
     	{
@@ -309,7 +309,7 @@ bool BeDiGiCamApp::GetCameraStrings()
 				delete(interface);
 			}
 			else
-				LogDebug("loading %s failed!",addonName);
+				LogDebug("CORE - loading %s failed!",addonName);
 		}
 	}
 	return true;

@@ -15,9 +15,8 @@
 //		User Includes
 #include "level1.h"
 #include "level2.h"
-#include "debug.h"
-//
-FILE *lflevel1;
+//#include "debug.h"
+#include "logger.h"
 
 int get_BDCP_API_Revision(void)
 {
@@ -43,11 +42,7 @@ void getSupportedCameras(std::vector<std::string> & listofcams)
 status_t openCamera(void)
 {
 	// Check Mass Storage Devices
-	#ifdef DEBUG
-		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"MS - Start the MSD Interface\n");
-		fclose(lflevel1);
-	#endif
+	LogDebug("MASS - Start the MSD Interface.");
 	msInterface = new MSInterface(msgtarget);
 	msInterface->Start();
 	return(B_NO_ERROR);
@@ -55,18 +50,10 @@ status_t openCamera(void)
 
 status_t closeCamera(void)
 {
-	#ifdef DEBUG
-		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"MS - Stopping MSD Interface\n");
-		fclose(lflevel1);
-	#endif
+	LogDebug("MASS - Stopping MSD Interface.");
 	msInterface->Stop();
 	//delete(msInterface);
-	#ifdef DEBUG
-		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"MS - MSD Interface stopped\n");
-		fclose(lflevel1);
-	#endif
+	LogDebug("MASS - MSD Interface stopped.");
 	return(B_NO_ERROR);
 }
 
@@ -74,38 +61,22 @@ status_t getNumberofPics(int &number)
 {
 	int i=0;
 	number = 0;
-	#ifdef DEBUG
-		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"MS - Get number of pictures\n");
-		fclose(lflevel1);
-	#endif
+	LogDebug("MASS - Get number of pictures.");
 	number = msInterface->getNumberOfItems();	
 	return(B_NO_ERROR);
 }
 
 status_t setCurrentPicture(int picturenum)
 {
-	#ifdef DEBUG
-		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"MS - Set current picture\n");
-		fclose(lflevel1);
-	#endif
+	LogDebug("MASS - Set current picture.");
 	msInterface->setCurrentItem(picturenum);
-	#ifdef DEBUG
-		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"MS - Current picnumber is: %d\n",picturenum);
-		fclose(lflevel1);
-	#endif
+	LogDebug("MASS - Current picnumber is: %d.",picturenum);
 	return(B_NO_ERROR);
 }
 
 status_t downloadPicture(BPath savedir, const char *name)
 {
-	#ifdef DEBUG
-		lflevel1 = fopen(LOGFILE,"a");
-		fprintf(lflevel1,"MS - Download picture with name %s\n",name);
-		fclose(lflevel1);
-	#endif
+	LogDebug("MASS - Download picture with name %s.",name);
 	msInterface->downloadItem(savedir, name);
 	return(B_NO_ERROR);
 }

@@ -1,31 +1,29 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+* Copyright (c) 2004-2010,	Jan-Rixt Van Hoye				   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
 */
+//
+// Local Includes
 #include "level2.h"
-#include "debug.h"
-#include "configplugin.h"
+#include "logger.h"
+//
+// Includes
 #include <cstdio>
 #include <DataIO.h>
 #include <BitmapStream.h>
 #include <TranslatorRoster.h>
  
 extern BLooper* msgtarget;
-FILE *lflevel2;
 
 status_t setMessageTarget(BLooper* mtarget)
 {
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");
-		if(mtarget != NULL)	
-			fprintf(lflevel2,"PTP - Message Target is set\n");
-		else
-			fprintf(lflevel2,"PTP - Message Target is NOT set\n");
-		fclose(lflevel2);
-	#endif
+	if(mtarget != NULL)	
+		LogDebug("PTP - Message Target is set.");
+	else
+		LogDebug("PTP - Message Target is NOT set.");
 	msgtarget = mtarget;
 	return(B_NO_ERROR);
 }
@@ -33,46 +31,30 @@ status_t setMessageTarget(BLooper* mtarget)
 status_t deletePicture()
 {
 	int ret=0;
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"PTP - Delete Picture\n");
-		fclose(lflevel2);
-	#endif
+	LogDebug("PTP - Delete Picture.");
 	ret = ptp_deleteobject(params,(*params).handles.Handler[currentpicturenumber],0);
 	if(ret == PTP_RC_OK)
 	{
         return(B_NO_ERROR);
     }
-    logError(PTPCAM_DEL_PIC_FAIL);
+    LogError("PTP - Delete picture failed.");
 	return(B_ERROR);	
 }
 
 status_t takePicture()
 {
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"PTP - Take picture\n");
-		fclose(lflevel2);
-	#endif
+	LogDebug("PTP - Take picture.");
 	return(B_NO_ERROR);
 }
 
 status_t getImageName(char* &name)
 {
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"PTP - Get image name from picture %d\n",currentpicturenumber);
-		fclose(lflevel2);
-	#endif
+	LogDebug("PTP - Get image name from picture %d.",currentpicturenumber);
 	name = (*params).objectinfo[currentpicturenumber].Filename;
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"PTP - Image name: %s\n",name);
-		fclose(lflevel2);
-	#endif
+	LogDebug("PTP - Image name: %s.",name);
 	if(name == "")
 	{
-		logError(PTPCAM_GET_NAME_FAIL);
+		LogError("PTP - Could not get picture name.");
 		return(B_ERROR);
 	}
 	return(B_NO_ERROR);
@@ -80,11 +62,7 @@ status_t getImageName(char* &name)
 
 status_t getImageSize(int &size)
 {
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"PTP - Get image size\n");
-		fclose(lflevel2);
-	#endif
+	LogDebug("PTP - Get image size.");
 	size = (*params).objectinfo[currentpicturenumber].ObjectCompressedSize;
 	return(B_NO_ERROR);
 }
@@ -94,11 +72,7 @@ status_t getImageDate(char* &date)
 	struct tm *ptr;
 	char *tmpdate;
 	tmpdate = new char[10];
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"PTP - Get image date\n");
-		fclose(lflevel2);
-	#endif
+	LogDebug("PTP - Get image date.");
 	ptr = gmtime(&(*params).objectinfo[currentpicturenumber].CaptureDate);
 	strftime(tmpdate,100,"%d/%m/%Y",ptr);
 	date = tmpdate;
@@ -111,85 +85,54 @@ status_t getThumbnail(BBitmap* & bitmap)
 	unsigned char	*image = NULL;
 	long int 		size=0,width=0,height=0;
 	
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"PTP - Get thumbnail\n");
-		fclose(lflevel2);
-	#endif
+	LogDebug("PTP - Get thumbnail.");
+
 	ret = ptp_getthumb(params,(*params).handles.Handler[currentpicturenumber],&image);
 	if(ret == PTP_RC_OK)
 	{
-		#ifdef DEBUG
-			lflevel2 = fopen(LOGFILE,"a");	
-			fprintf(lflevel2,"PTP - ptp_getthumb function went ok\n");
-			fclose(lflevel2);
-		#endif
+		LogDebug("PTP - ptp_getthumb function went ok.");
+
 		size = (*params).objectinfo[currentpicturenumber].ThumbCompressedSize;
 		width = (*params).objectinfo[currentpicturenumber].ThumbPixWidth;
 		height = (*params).objectinfo[currentpicturenumber].ThumbPixHeight;
-		#ifdef DEBUG
-			lflevel2 = fopen(LOGFILE,"a");
-			fprintf(lflevel2,"PTP - conversion OK\n");
-			fclose(lflevel2);
-		#endif
+		LogDebug("PTP - conversion OK.");
+
 		BMemoryIO in(image,size);
 		bitmap = BTranslationUtils::GetBitmap(&in);
-		#ifdef DEBUG
-			lflevel2 = fopen(LOGFILE,"a");
-			fprintf(lflevel2,"PTP - insert into bitmap OK\n");
-			fclose(lflevel2);
-		#endif
+		LogDebug("PTP - insert into bitmap OK.");
 		delete(image);
 		image = NULL;
 		return(B_NO_ERROR);
 	}
 	else
 	{
-		#ifdef DEBUG
-			lflevel2 = fopen(LOGFILE,"a");
-			fprintf(lflevel2,"No thumbnail present\n");
-			fclose(lflevel2);
-		#endif
+		LogDebug("PTP - No thumbnail present.");
 		bitmap = NULL;
 	}
-	logError(PTPCAM_GETTHUMB_FAIL);
+	LogError("PTP - Could not get the thumbnail from the device.");
 	return(B_ERROR);
 }	
 
 status_t getImageHeight(int &height)
 {
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"PTP - Get image height\n");
-		fclose(lflevel2);
-	#endif
+	LogDebug("PTP - Get image height.");
+
 	height = (*params).objectinfo[currentpicturenumber].ImagePixHeight;
 	return(B_NO_ERROR);
 }
 
 status_t getImageWidth(int &width)
 {
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");	
-		fprintf(lflevel2,"PTP - Get image width\n");
-		fclose(lflevel2);
-	#endif
+	LogDebug("PTP - Get image width.");
+
 	width = (*params).objectinfo[currentpicturenumber].ImagePixWidth;
 	return(B_NO_ERROR);
 }
 
 status_t getDeviceType(int &type)
 {
-	#ifdef DEBUG
-		lflevel2 = fopen(LOGFILE,"a");		
-		fprintf(lflevel2,"PTP - Get the type of device\n");
-		fclose(lflevel2);
-	#endif
+	LogDebug("PTP - Get the type of device.");
+
 	type =  TYPE_USB;
 	return(B_NO_ERROR);
 }
-/*BWindow* configurePlugin(BPoint middle)
-{
-	return(new configplugin(BRect(middle.x - 74,middle.y - 122,
-								  middle.x + 74,middle.y + 122 )));
-}*/

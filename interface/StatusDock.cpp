@@ -71,7 +71,7 @@ void StatusDock::MessageReceived(BMessage* message)
 //		StatusDock::Update Status		
 void	StatusDock::UpdateStatus(float delta, const char *message)
 {
-	LogDebug("STATUSDOCK - Update status\n");
+	LogDebug("STATUSDOCK - Update status.");
 	
 	if(message)
 		SetStatusMessage(message);
@@ -84,7 +84,7 @@ void	StatusDock::UpdateStatus(float delta, const char *message)
 //		StatusDock:: Draw the Status Bar
 void	StatusDock::Draw(BRect rect)
 {
-	LogDebug("STATUSDOCK - Draw()\n");
+	LogDebug("STATUSDOCK - Draw().");
 	
 	rgb_color color_label = {0x00, 0x00, 0x00, 0xff};
 	rgb_color color_border = {0x8b, 0x8b, 0x83, 0xff};
@@ -199,7 +199,7 @@ void	StatusDock::Draw(BRect rect)
 //		StatusDock:: Creation of the status bar	
 void	StatusDock::CreateStatusBar()
 {
-	LogDebug("STATUSDOCK - Create Statusbar\n");
+	LogDebug("STATUSDOCK - Create Statusbar.");
 	
 	int margin = 15;
 	BRect r = Bounds();
@@ -226,7 +226,7 @@ void	StatusDock::CreateStatusBar()
 //	StatusDock :: Show the needed controls
 void	StatusDock::ShowChildren(int newModus)
 {
-	LogDebug("STATUSDOCK - Show Children()\n");
+	LogDebug("STATUSDOCK - Show Children().");
 	
 	if(modus == newModus)
 		return;
@@ -234,14 +234,14 @@ void	StatusDock::ShowChildren(int newModus)
 	{
 		case MODE_INIT:
 		{
-			LogDebug("STATUSDOCK - ShowChildren() - Init mode\n");
+			LogDebug("STATUSDOCK - ShowChildren() - Init mode.");
 			
 			statusbar->Hide();
 			break;
 		}
 		case MODE_DOWNLOAD:
 		{
-			LogDebug("STATUSDOCK - ShowChildren() - Download mode\n");
+			LogDebug("STATUSDOCK - ShowChildren() - Download mode.");
 			
 			statusbar->Show();
 			break;
@@ -253,7 +253,7 @@ void	StatusDock::ShowChildren(int newModus)
 //	StatusDock :: AttachedToWindow()
 void StatusDock::AttachedToWindow()
 {
-	LogDebug("STATUSDOCK - Attached to window\n");
+	LogDebug("STATUSDOCK - Attached to window.");
 	
 	BView::AttachedToWindow();
 	SetTarget(Window());
@@ -264,7 +264,7 @@ void StatusDock::AttachedToWindow()
 //	StatusDock :: Show
 void StatusDock::Show()
 {
-	LogDebug("STATUSDOCK - Show Dock\n");
+	LogDebug("STATUSDOCK - Show Dock.");
 	
 	BView::Show();
 	Invoke(new BMessage(STATDOCK_SHOWED));
@@ -273,7 +273,7 @@ void StatusDock::Show()
 //	StatusDock :: Hide
 void StatusDock::Hide()
 {
-	LogDebug("STATUSDOCK - Hide Dock\n");
+	LogDebug("STATUSDOCK - Hide Dock.");
 	
 	BView::Hide();
 	Invoke(new BMessage(STATDOCK_HIDED));
@@ -282,7 +282,7 @@ void StatusDock::Hide()
 //	StatusDock :: SetMaxStatusBar
 void StatusDock::SetMaxStatusBar(float maximum)
 {
-	LogDebug("STATUSDOCK - Set max statusbar\n");
+	LogDebug("STATUSDOCK - Set max statusbar.");
 	
 	statusbar->Reset();
 	statusbar->SetMaxValue(maximum);

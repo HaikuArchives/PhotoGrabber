@@ -41,12 +41,8 @@ TYPE := SHARED
 #       in folder names do not work well with this makefile. 
 #		If you leave this blank, then all *.c *.cpp *.S *.s *.asm files
 #		in the top level local directory are automatically included.
-SRCS := configplugin.cpp			\
-		debug.cpp			\
-		level1.cpp			\
+SRCS := level1.cpp			\
 		level2.cpp			\
-		preferences.cpp			\
-		prefsaver.cpp			\
 		PTPInterface.cpp
 
 
@@ -119,7 +115,7 @@ SYMBOLS :=
 #       specify debug settings 
 #       if TRUE will allow application to be run from a source-level 
 #       debugger.  Note that this will disable all optimzation. 
-DEBUGGER := 
+DEBUGGER := TRUE
 
 #       specify additional compiler flags for all files 
 COMPILER_FLAGS := 
