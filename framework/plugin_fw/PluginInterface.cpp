@@ -13,6 +13,7 @@
 
 #include "PluginInterface.h"
 #include "core_system.h"
+#include "logger.h"
 
 //
 //		External variables
@@ -63,7 +64,7 @@ CamInterface::CamInterface(char *libName)
 		getSymbols(addonId);
 	}
 	else
-		app->Debug("CAMINTF - Plugin '%s' couldn't be loaded.\n",libName);
+		LogDebug("CAMINTF - Plugin '%s' couldn't be loaded.\n",libName);
 		
 }
 //		CamInterface::destructor
@@ -187,7 +188,7 @@ bool CamInterface::open()
 	
 	if (err != B_NO_ERROR)
 	{
-		app->Debug("CAMINTF - Couldn't open the camere.\n");
+		LogDebug("CAMINTF - Couldn't open the camere.\n");
 		return B_ERROR;
 	}
 	return B_OK;
@@ -202,7 +203,7 @@ bool CamInterface::close()
 		
 	if (err != B_NO_ERROR)
 	{
-		app->Debug("CAMINTF - Couldn't close the camere.\n");
+		LogDebug("CAMINTF - Couldn't close the camere.\n");
 		return B_ERROR;
 	}
 	return B_OK;
@@ -245,7 +246,7 @@ bool CamInterface::downloadItem(int index,BPath path, const char *name)
 {
 	if(check_downloadPicture)
 	{
-		app->Debug("CAMINTF - File name is %s.\n", name);
+		LogDebug("CAMINTF - File name is %s.\n", name);
 		setCurrentItem(index);
 		(*downloadPicture)(path,name);
 		return B_OK;

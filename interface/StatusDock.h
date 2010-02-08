@@ -18,7 +18,6 @@
 // Local includes
 #include "intf_global.h"
 #include "core_global.h"
-#include "debug.h"
 //
 // defines
 #define MODE_INIT				0
@@ -39,7 +38,6 @@ class StatusDock : public BView, BInvoker
 {
 public:
 					StatusDock(BRect rect, const char* name, 
-									void(*debugfunction)(const char *,...),
 									uint32 resizeMask = B_FOLLOW_ALL,
 									uint32 flags = B_WILL_DRAW);
 					~StatusDock();
@@ -53,7 +51,6 @@ public:
 	void			SetMaxStatusBar(float maximum);
 	void			SetStatusMessage(const char* message);
 	void			ShowChildren(int newModus);
-	void			(*Debug)(const char *,...);
 
 private:
 	BString			*statusMessage;

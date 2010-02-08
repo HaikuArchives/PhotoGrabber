@@ -16,14 +16,15 @@
 #include "MainWindow.h"
 #include "core_global.h"
 #include "PictureLabelButton.h"
+#include "logger.h"
 //
 // External variables
 bool tbExpanded;
-extern "C" BWindow * instantiate_mainWindow(BLooper *core, int devtype, void (*debugfunction)(const char *,...));
+extern "C" BWindow * instantiate_mainWindow(BLooper *core, int devtype);
 FILE *lfmainw;
 //
 // Exported function
-BWindow* instantiate_mainWindow(BLooper *core,int devtype, void (*debugfunction)(const char *,...))
+BWindow* instantiate_mainWindow(BLooper *core,int devtype)
 {
 	float length,height;
 	BScreen screen;
@@ -34,16 +35,15 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype, void (*debugfunction)
 	r.top = ((r.top + height/2) -(WINDOW_HEIGHT_MAIN/2));
 	r.right = r.left + WINDOW_WIDTH_MAIN;
 	r.bottom = r.top + WINDOW_HEIGHT_MAIN;
-	BWindow *mainWindow = new BeCam_MainWindow(r,core,devtype,(*debugfunction));
+	BWindow *mainWindow = new BeCam_MainWindow(r,core,devtype);
 	mainWindow->Show();
 	return mainWindow;
 }
 //		
 //	MainWindow:: Constructor
- BeCam_MainWindow::BeCam_MainWindow(BRect r,BLooper *syscore,int devtype, void (*debugfunction)(const char *,...)) 
+ BeCam_MainWindow::BeCam_MainWindow(BRect r,BLooper *syscore,int devtype) 
 				: BWindow(r,"PhotoGrabber",B_DOCUMENT_WINDOW, B_WILL_DRAW)
 {
-	Debug = (*debugfunction);
 	float minWidth,maxWidth,minHeight,maxHeight;
 	GetSizeLimits(&minWidth,&maxWidth,&minHeight,&maxHeight);
 	SetSizeLimits(WINDOW_WIDTH_MAIN,maxWidth,WINDOW_HEIGHT_MAIN,maxHeight);
@@ -72,7 +72,7 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype, void (*debugfunction)
 	r.right-= B_V_SCROLL_BAR_WIDTH;
 	r.bottom= becam_view->Bounds().bottom - 70;
 	// Add the Grid View
-	becam_gridview = new GridView(r,"gridview", Debug, B_FOLLOW_ALL, B_WILL_DRAW);	
+	becam_gridview = new GridView(r,"gridview",B_FOLLOW_ALL, B_WILL_DRAW);	
 	becam_scrollview = new BScrollView(
 									"becam_scrollview",
 									becam_gridview,
@@ -83,7 +83,7 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype, void (*debugfunction)
 									B_PLAIN_BORDER
 									);
 	if(becam_scrollview == NULL)
-		Debug("MAINWINDOW - Scrollview not instantiated!\n");
+		LogDebug("MAINWINDOW - Scrollview not instantiated!\n");
     becam_view->AddChild(becam_scrollview);
     becam_gridview->TargetedByScrollView (becam_scrollview);	
 	// add view to window
@@ -91,7 +91,7 @@ BWindow* instantiate_mainWindow(BLooper *core,int devtype, void (*debugfunction)
 	//Set the focus to the listview
 	becam_gridview->MakeFocus(true);
 	// Get the main debug function;	
-	Debug("MAINWINDOW - Window created\n");
+	LogDebug("MAINWINDOW - Window created\n");
 }
 //
 // MainWindow:: Create the menubar
@@ -141,7 +141,7 @@ void BeCam_MainWindow::CreateStatusDock ()
 	
 	BRect r = becam_view->Bounds();
 	r.top = r.bottom - 68;
-	becam_statusDock = new StatusDock(r,"statusdock", Debug, B_FOLLOW_BOTTOM | B_FOLLOW_LEFT_RIGHT, B_WILL_DRAW | B_FRAME_EVENTS);
+	becam_statusDock = new StatusDock(r,"statusdock",B_FOLLOW_BOTTOM | B_FOLLOW_LEFT_RIGHT, B_WILL_DRAW | B_FRAME_EVENTS);
 	becam_statusDock->SetStatusMessage("Please connect your digital camera.");
 	becam_statusDock->ShowChildren(MODE_INIT);
 	becam_view->AddChild(becam_statusDock);
@@ -182,7 +182,7 @@ void BeCam_MainWindow::downloadSelectedItems(entry_ref copyToDir, const char *fi
 		data->downloadDir = copyToDir;
         data->gridview = becam_gridview;
         data->window = this;
-        data->Debug = Debug;
+        //data->Debug = Debug;
 		resume_thread(spawn_thread((status_t(*)(void*))DownloadItems,"download_items",B_DISPLAY_PRIORITY,data));
 	}
 	else
@@ -236,7 +236,7 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data)
 		message->AddInt32("itemhandle",(int32)selectedItem->GetHandle());
 		BPath directory;
 		directory = BPath(&data->downloadDir);
-		data->Debug("MAINWINDOW - The save directory is: %s\n",directory.Path());
+		LogDebug("MAINWINDOW - The save directory is: %s\n",directory.Path());
 		message->AddRef("copyToDir", &refentry);
 		
 		// Wait untill the item has been downloaded
@@ -271,7 +271,7 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data)
 void BeCam_MainWindow::removeSelectedItems()
 {
 	//
-	Debug("MAINWINDOW - Begin remove Items\n");
+	LogDebug("MAINWINDOW - Begin remove Items\n");
 	
 	if(becam_gridview->CurrentSelection() >= 0)
 	{
@@ -293,7 +293,7 @@ void BeCam_MainWindow::removeSelectedItems()
 		myAlert->SetShortcut(0, B_ENTER);
 		myAlert->Go();
 	}
-	Debug("MAINWINDOW - End remove Items\n");
+	LogDebug("MAINWINDOW - End remove Items\n");
 			
 }
 //
@@ -344,7 +344,7 @@ int BeCam_MainWindow::logMainWindowError(int ErrorMes)
 			errorMessage = "MAIN WINDOW: An unexpected error occured\n";
 	}
 	// write the errorMessage into the logfile
-	Debug(errorMessage);
+	LogDebug(errorMessage);
 	
 	return(ErrorMes);
 }
@@ -474,7 +474,7 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 			ItemData  *localItemData;
 			BeCam_Item *localItem;
 			message->FindPointer("item", (void **) &localItemData);
-			localItem = new BeCam_Item(localItemData,Debug);
+			localItem = new BeCam_Item(localItemData);
 			addItem(localItem);
 			break;
 		}
@@ -521,13 +521,13 @@ void BeCam_MainWindow::MessageReceived(BMessage* message)
 		{
 			entry_ref copyToDirDrag;
 			const char *fileName = NULL;
-			Debug("MAINWINDOW - Get the save directory\n");
+			LogDebug("MAINWINDOW - Get the save directory\n");
 			message->FindRef("directory", &copyToDirDrag);
 			fileName = message->FindString("name");
 			BPath directory;
 			directory = BPath(&copyToDirDrag);
-			Debug("MAINWINDOW - The file name is: %s\n",fileName);
-			Debug("MAINWINDOW - The save directory is: %s\n",directory.Path());
+			LogDebug("MAINWINDOW - The file name is: %s\n",fileName);
+			LogDebug("MAINWINDOW - The save directory is: %s\n",directory.Path());
 			downloadSelectedItems(copyToDirDrag, fileName);
 			break;
 		}

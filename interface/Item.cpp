@@ -10,14 +10,13 @@
 //		Local includes
 
 #include "Item.h"
-#include "debug.h"
+#include "logger.h"
 
 
 //	Item
 
-BeCam_Item::BeCam_Item(ItemData *data, void(*debugfunction)(const char *,...)) : BListItem()
+BeCam_Item::BeCam_Item(ItemData *data) : BListItem()
 {
-	Debug = (*debugfunction);
 	itemdata = data;
 	fThumbDetailsGap = 5.0f;
 	fFontHeight = 12.0f;
@@ -36,13 +35,13 @@ BeCam_Item::BeCam_Item() : BListItem()
 
 BeCam_Item::~BeCam_Item()
 {
-	Debug("ITEM - Delete Item\n");
+	LogDebug("ITEM - Delete Item\n");
 	
 	if(itemdata)
 	{
 		if(itemdata->ItemThumbBitmap)
 		{
-			Debug("ITEM - Free thumb bitmap\n");
+			LogDebug("ITEM - Free thumb bitmap\n");
 			
 			free(itemdata->ItemThumbBitmap);
 			itemdata->ItemThumbBitmap = NULL;
@@ -57,7 +56,7 @@ BeCam_Item::~BeCam_Item()
 
 void BeCam_Item::DrawItem(BView *owner, BRect frame, bool complete) 
 {
-	Debug("ITEM - Draw Item\n");
+	LogDebug("ITEM - Draw Item\n");
 	
 	rgb_color color;
 	rgb_color color_selected = {0xee, 0xc9, 0x00, 0xff};

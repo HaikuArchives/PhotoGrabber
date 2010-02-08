@@ -24,7 +24,7 @@
 class BeCam_Item : public BListItem 
 {
 	public:
-						BeCam_Item(ItemData *data, void (*debugfunction)(const char *,...));
+						BeCam_Item(ItemData *data);
 						BeCam_Item();
 						~BeCam_Item();
 		virtual void 	DrawItem(BView *owner, BRect frame, bool complete = false);
@@ -44,7 +44,6 @@ class BeCam_Item : public BListItem
 		float			DetailsHeight() const;
 		virtual bool	IsClickableFrame (BPoint point) const;
 		void 			RotateThumb(uint32 angle);
-		void			(*Debug)(const char *,...);
 		
 	private:
 		ItemData		*itemdata;

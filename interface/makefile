@@ -48,8 +48,7 @@ SRCS := AboutWindow.cpp			\
 		Item.cpp				\
 		MainView.cpp			\
 		MainWindow.cpp			\
-		preferences.cpp			\
-		prefsaver.cpp			\
+		../core_system/prefsaver.cpp			\
 		GridView.cpp			\
 		StatusDock.cpp		
 

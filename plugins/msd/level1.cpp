@@ -28,11 +28,11 @@ void getPluginVersion(version_info &ver)
 {
 	ver.major = 3;
 	ver.middle = 0;
-	ver.minor = 0;
+	ver.minor = 1;
 	ver.variety = 0;
 	ver.internal = 0;
 	sprintf(ver.short_info,"Jan-Rixt Van Hoye 2010");
-	sprintf(ver.long_info,"BDCP Mass Storage Cameras Plugin");
+	sprintf(ver.long_info,"Mass Storage Cameras Plugin");
 }
 
 void getSupportedCameras(std::vector<std::string> & listofcams)

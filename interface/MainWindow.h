@@ -18,7 +18,6 @@
 #include "AboutWindow.h"
 #include "ConfigWindow.h"
 #include "settings.h"
-#include "debug.h"
 #include "StatusDock.h"
 //
 //		Includes
@@ -52,7 +51,7 @@ struct items_data
 class BeCam_MainWindow : public BWindow
 {
 	public:
-							BeCam_MainWindow(BRect r,BLooper *syscore,int devtype, void(*debugfunction)(const char *,...));
+							BeCam_MainWindow(BRect r,BLooper *syscore,int devtype);
 		virtual bool		QuitRequested();
 		virtual void		MessageReceived(BMessage* message);
 		// Other interface windows
@@ -60,7 +59,6 @@ class BeCam_MainWindow : public BWindow
 		class BeCam_ConfigWindow	*configWindow;
 		// system core looper
 		BLooper						*systemcore;
-		void						(*Debug)(const char *,...);
 		
 	private:
 	

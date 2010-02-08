@@ -14,7 +14,7 @@
 
 //		Local Includes
 #include "ConfigWindow.h"
-#include "debug.h"
+#include "logger.h"
 //
 FILE *lfconfigw;
 //
@@ -115,7 +115,7 @@ BeCam_ConfigWindow::BeCam_ConfigWindow(float xPos,float yPos,BeCam_MainWindow *m
 	// 		Add the debug groupbox to the view
 	becam_configView->AddChild(becam_debugbox);
 	AddChild(becam_configView);
-	parent->Debug("CONFIGWINDOW - Window created\n");
+	LogDebug("CONFIGWINDOW - Window created\n");
 }
 
 //
@@ -123,7 +123,7 @@ BeCam_ConfigWindow::BeCam_ConfigWindow(float xPos,float yPos,BeCam_MainWindow *m
 bool BeCam_ConfigWindow::QuitRequested()
 {
 	parent->configWindow=NULL;
-	parent->Debug("CONFIGWINDOW - Window destroyed\n");
+	LogDebug("CONFIGWINDOW - Window destroyed\n");
 	return BWindow::QuitRequested();
 }
 
@@ -160,13 +160,13 @@ void BeCam_ConfigWindow::MessageReceived(BMessage* message)
 			delete(appmessage);
 			
 			parent->configWindow=NULL;
-			parent->Debug("CONFIGWINDOW - Close Window.\n");
+			LogDebug("CONFIGWINDOW - Close Window.\n");
  			Quit();
 			break;
 		}
 		case CANCEL:
 			parent->configWindow=NULL;
-			parent->Debug("CONFIGWINDOW - Close Window.\n");
+			LogDebug("CONFIGWINDOW - Close Window.\n");
 			Quit();
 			break;
 		case CONF_MITM:
@@ -254,7 +254,7 @@ void BeCam_ConfigWindow::GetPluginDetails(char * cameraname)
 //	configWindow::OpenPluginConfiguration
 void BeCam_ConfigWindow::OpenPluginConfig()
 {
-	parent->Debug("CONFIGWINDOW - Begin open plugin\n");
+	LogDebug("CONFIGWINDOW - Begin open plugin\n");
 	BRect rect = Frame();
 	float Xpos,Ypos;
 	Xpos = rect.left + ((rect.right - rect.left)/2);
@@ -269,7 +269,7 @@ void BeCam_ConfigWindow::OpenPluginConfig()
 			parent->systemcore->PostMessage(&appmessage);
 	
 	}
-	parent->Debug("CONFIGWINDOW - End open plugin\n");		
+	LogDebug("CONFIGWINDOW - End open plugin\n");		
 }
 //
 //	configWindow::OpenPluginConfiguration

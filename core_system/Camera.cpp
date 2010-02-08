@@ -11,6 +11,7 @@
 //	Local includes
 #include "Camera.h"
 #include "core_system.h"
+#include "logger.h"
 //
 //		External variables
 extern class BeDiGiCamApp *app;
@@ -22,7 +23,7 @@ Camera::Camera(char *libName) : BLooper("cameralooper")
 	// First create the temporary directory
 	BDirectory tmpDir("/boot");
 	tmpDir.CreateDirectory("var/tmp",&tmpDir);
-	app->Debug("CAM - Plugin name is: %s.\n",libName);
+	LogDebug("CAM - Plugin name is: %s.\n",libName);
 	// Create the interface
 	camInterface = new CamInterface(libName);
 }
@@ -38,7 +39,7 @@ bool Camera::Start()
 {
 	// Give the system core looper to the plugin. 
 	// Then the plugin is able to send messages to the core system
-	app->Debug("CAM - Start listening to connecting digital cameras.\n");
+	LogDebug("CAM - Start listening to connecting digital cameras.\n");
 	BLooper::Run();
 	return B_OK;
 }
@@ -46,7 +47,7 @@ bool Camera::Start()
 //	Camera:: Stop the camera looper
 bool Camera::Stop()
 {
-	app->Debug("CAM - Stop listening to connecting digital cameras.\n");
+	LogDebug("CAM - Stop listening to connecting digital cameras.\n");
 	BLooper::Quit();
 	return B_OK;
 }
@@ -54,7 +55,7 @@ bool Camera::Stop()
 //	Camera:: Open Device
 bool Camera::OpenDevice()
 {
-	app->Debug("CAM - Open the digital camera.\n");
+	LogDebug("CAM - Open the digital camera.\n");
 	camInterface->setCoreSystemLoop(app);
 	return camInterface->open();
 }
@@ -62,7 +63,7 @@ bool Camera::OpenDevice()
 //	Camera:: Close Device
 bool Camera::CloseDevice()
 {
-	app->Debug("CAM - Close the digital camera.\n");
+	LogDebug("CAM - Close the digital camera.\n");
 	return	camInterface->close();
 }
 //
@@ -81,7 +82,7 @@ bool Camera::DownloadItem(uint32 itemhandle, entry_ref *copyToDir = NULL, const 
 	 	directory = BPath(copyToDir);
 	else
 		directory = CameraSavedir;
-	app->Debug("CAM - Download item with name %s\n", fileName);
+	LogDebug("CAM - Download item with name %s\n", fileName);
 	return	camInterface->downloadItem(itemhandle,directory, fileName);
 }
 //
@@ -100,7 +101,7 @@ bool Camera::GetCameraItems()
 	uint32 numberOfItems = camInterface->getNumberOfItems();
 	if(numberOfItems == 0)
 	{
-		app->Debug("CAM - There are no items on the camera.\n");
+		LogDebug("CAM - There are no items on the camera.\n");
 		message = new BMessage(GET_ITEMS_DONE);
 		app->PostMessage(message,app);
 		return(B_ERROR);
@@ -179,7 +180,7 @@ void Camera::MessageReceived(BMessage *message)
 			if(message->FindRef("copyToDir",&copyToDir) >= 0)
 				directory = &copyToDir;
 			fileName = message->FindString("name");
-			app->Debug("CAM - Message received and string 'name' value is %s\n", fileName);
+			LogDebug("CAM - Message received and string 'name' value is %s\n", fileName);
 			if(DownloadItem((uint32)handle,directory,fileName) == B_OK)
 			{
 				BMessage reply(DOWN_ITEM_OK);
@@ -203,7 +204,7 @@ void Camera::MessageReceived(BMessage *message)
 			break;
 		case GET_ITEM_COUNT:
 		{
-			app->Debug("CAM - Get item count.\n");
+			LogDebug("CAM - Get item count.\n");
 			int numberOfItems = GetNumberOfItems();
 			BMessage reply(GET_ITEM_COUNT);
 			reply.AddInt32("numofitems", (int32)numberOfItems);
@@ -213,7 +214,7 @@ void Camera::MessageReceived(BMessage *message)
 		case GET_DEVICE_TYPE:
 		{
 			int type = GetDeviceType();
-			app->Debug("CAM - Device type is: %d.\n",type);
+			LogDebug("CAM - Device type is: %d.\n",type);
 			BMessage reply(GET_DEVICE_TYPE);
 			reply.AddInt32("type", (int32)type);
 			message->SendReply(&reply);

@@ -1,6 +1,6 @@
 /*
 ****************************************************************
-* Copyright (c) 2004-2008,	Jan-Rixt Van Hoye				   *
+* Copyright (c) 2004-2010,	Jan-Rixt Van Hoye				   *
 * All rights reserved.										   *
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
@@ -16,7 +16,6 @@
 
 // defenitions
 #define APP_SIG           			"application/x-vnd.Jixt.PhotoGrabber"
-#define LOGFILE 					"/boot/home/Desktop/photograbber.log"
 #define	THUMBHEIGHT					120
 #define THUMBWIDTH					160
 //#define DEBUG						1

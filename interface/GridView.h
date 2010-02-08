@@ -34,14 +34,12 @@ struct list_tracking_data
 {
 	GridView	*view;
 	BPoint		start;
-	void		(*Debug)(const char *, ...);
 };
 
 class GridView : public BControl
 {
 	public:
 								GridView (BRect rect, const char* name, 
-									void (*debugfunction)(const char *,...),
 									uint32 resizeMask = B_FOLLOW_ALL,
 									uint32 flags = B_WILL_DRAW);
 		virtual					~GridView ();
@@ -86,7 +84,6 @@ class GridView : public BControl
 		uint8					SelectionCurveRadius() const;
 		void					SendKeyStrokesTo(BLooper* looper,BHandler* handler = NULL);
 		void					SortItemsBy(int sortType);
-		void					(*Debug)(const char *,...);
 				
 	private:
 		friend class			Item;

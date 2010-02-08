@@ -18,7 +18,6 @@
 //
 //	Local includes
 #include "intf_global.h"
-#include "debug.h"
 //
 // defines
 #define PLB_MIN_BITMAP_HEIGHT	48
