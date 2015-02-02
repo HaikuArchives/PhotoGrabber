@@ -12,5 +12,5 @@ make clean
 # Build the ptp plugin
 make
 # Copy the binaries to the build directory
-cp ./obj.x86/libptp2.a /boot/home/Development/photograbber/plugins/ptp/libptp
+cp ./obj.x86/libptp2.a ..
 

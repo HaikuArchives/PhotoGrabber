@@ -77,7 +77,7 @@ BeCam_AboutView::BeCam_AboutView(BRect rect):BView(rect, "aboutview", B_FOLLOW_L
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgGreen); 
     creditsTextView->Insert("PhotoGrabber\n");
     creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &pgBlue);
-    creditsTextView->Insert("\thttp://dev.osdrawer.net/projects/show/photograbber\n\n");
+    creditsTextView->Insert("\thttps://github.com/HaikuArchives/PhotoGrabber\n\n");
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange);
     creditsTextView->Insert(_T("\tVersion:\n")); 
     creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &pgDarkgrey);

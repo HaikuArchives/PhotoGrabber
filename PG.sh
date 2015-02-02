@@ -9,7 +9,7 @@
 
 #	Global Variables
 VERSION=2.2
-REVISION=$(svn info 2> /dev/null | grep 'Revision:' | cut -f 2 -d ' ')
+REVISION=114
 
 # 	Cleaning the build system
 make clean
@@ -41,15 +41,6 @@ make
 cd ../
 # 	Build the msd plugin
 cd ./msd
-PRIVATEDIR="./private"
-if [ ! -d "$PRIVATEDIR" ] ; then
-	mkdir private
-	cd ./private
-	svn checkout svn://svn.berlios.de/haiku/haiku/trunk/headers/private/storage storage
-	svn checkout svn://svn.berlios.de/haiku/haiku/trunk/headers/private/shared shared
-	svn checkout svn://svn.berlios.de/haiku/haiku/trunk/headers/private/mount mount
-	cd ..
-fi
 make
 cd ../..
 # 	Make the package
