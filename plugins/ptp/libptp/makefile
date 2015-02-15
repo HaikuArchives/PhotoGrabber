@@ -8,7 +8,7 @@
 ## Application Specific Settings 
 
 # specify the name of the binary 
-NAME := libptp2.a
+NAME := libptp2
 
 # specify the type of binary 
 #       APP:    Application 

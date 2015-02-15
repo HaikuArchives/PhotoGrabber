@@ -1,6 +1,6 @@
 ## *****************************************************************
-## * Copyright (c) 2004-2010, Jan-Rixt Van Hoye aka'Jixt'		   *
-##,* 							and Luc Schrijvers aka 'Begasus'   *
+## * Copyright (c) 2004-2010, Jan-Rixt Van Hoye aka 'Jixt'		   *
+## * 							and Luc Schrijvers aka 'Begasus'   *
 ## * All rights reserved.										   *
 ## * Distributed under the terms of the MIT License.               *
 ## *****************************************************************
@@ -15,18 +15,19 @@ REVISION=114
 make clean
 cd interface
 make clean
-cd ../plugins/ptp
+cd ../plugins/ptp/libptp
+make clean
+cd ..
 make clean
 cd ../..
+pwd
 BUILDDIR="./build"
 if [ -d "$BUILDDIR" ] ; then
 	rm -r build
 fi
 # 	Creating target dirs
-mkdir build
-mkdir ./build/PhotoGrabber
-mkdir ./build/PhotoGrabber/interface
-mkdir ./build/PhotoGrabber/plugins
+mkdir -p build/PhotoGrabber/interface
+mkdir -p build/PhotoGrabber/plugins
 # 	Build the core
 make
 # 	Build the interface
@@ -36,11 +37,14 @@ make
 cd ../plugins/ptp/libptp
 make
 cd ..
-#cd ../plugins/ptp
 make
-cd ../
+cd ..
+# 	Build the msac plugin
+cd msac
+make
+cd ..
 # 	Build the msd plugin
-cd ./msd
+cd msd
 make
 cd ../..
 # 	Make the package

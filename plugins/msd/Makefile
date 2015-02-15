@@ -6,6 +6,7 @@
 
 # The name of the binary.
 NAME = libbdcp_msd
+TARGET_DIR := ../../build/PhotoGrabber/plugins
 
 # The type of binary, must be one of:
 #	APP:	Application
@@ -72,11 +73,10 @@ SYSTEM_INCLUDE_PATHS = "/system/develop/headers/private/storage" "/system/develo
 #	#include "header". Directories that contain the files in SRCS are
 #	automatically included.
 LOCAL_INCLUDE_PATHS = "../../core_system"
-TARGET_DIR := ../../build/PhotoGrabber/plugins
 
 #	Specify the level of optimization that you want. Specify either NONE (O0),
 #	SOME (O1), FULL (O2), or leave blank (for the default optimization level).
-OPTIMIZE := FULL
+OPTIMIZE = 
 
 # 	Specify the codes for languages you are going to support in this
 # 	application. The default "en" one must be provided too. "make catkeys"
