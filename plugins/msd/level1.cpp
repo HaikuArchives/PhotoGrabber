@@ -36,7 +36,7 @@ void getPluginVersion(version_info &ver)
 
 void getSupportedCameras(std::vector<std::string> & listofcams)
 {
-	listofcams.push_back("MSC(Mass Storage) camera");
+	listofcams.push_back("MSC (Mass Storage) camera");
 }
 
 status_t openCamera(void)

@@ -139,7 +139,7 @@ void getPluginVersion(version_info &ver)
 
 void getSupportedCameras(std::vector<std::string> & listofcams)
 {
-	listofcams.push_back("PTP(Picture Transfer Protocol) camera");
+	listofcams.push_back("PTP (Picture Transfer Protocol) camera");
 }
 
 status_t openCamera(void)
