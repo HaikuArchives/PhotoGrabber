@@ -1,6 +1,6 @@
 #include "preferences.h"
 #include <Application.h>
-#include <iostream.h>
+#include <iostream>
 #include <stdio.h>
 #include <StatusBar.h>
 #include <TextControl.h>

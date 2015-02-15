@@ -10,7 +10,7 @@
 #include <vector>
 #include <map>
 #include <Looper.h>
-#include <iostream.h>
+#include <iostream>
 #include "preferences.h"
 #include <SerialPort.h>
 
@@ -18,12 +18,13 @@
 
 #include "packet.h"
 
+using namespace std;
 
 class MSAC_SR1
 {
 	public:
-		MSAC_SR1::MSAC_SR1(BString &serialsettings, data_rate &serialspeed);
-		MSAC_SR1::~MSAC_SR1();
+		MSAC_SR1(BString &serialsettings, data_rate &serialspeed);
+		~MSAC_SR1();
 
 		status_t init();
 		status_t openCamera(void);
@@ -64,7 +65,7 @@ class MSAC_SR1
 		status_t 	ReadPacket(Packet *p);
 		status_t 	WritePacket(Packet *p);
 		status_t 	Converse(Packet *p, const unsigned char *buffer, int length);
-		status_t MSAC_SR1::CheckPacket(Packet *p);
+		status_t	CheckPacket(Packet *p);
 	
 	private:
 		BSerialPort *ComPort;

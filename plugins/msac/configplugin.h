@@ -3,6 +3,9 @@
 #include <string>
 #include <Window.h>
 #include <String.h>
+#include <RadioButton.h>
+#include <PopUpMenu.h>
+
 #define SPEED115200 'SP0'
 #define SPEED57600 'SP1'
 #define SPEED38400 'SP2'
