@@ -193,11 +193,11 @@ static bool SaveFile(void)
 }
 //
 //		Load the settings from the file
-static SETTINGS LoadSettingsFromFile(void)
+static PG_Settings LoadSettingsFromFile(void)
 {
 	//BeCam_PrefSaver prefs("photograbber.prefs",4);	
 	GetFields("photograbber.prefs",4);
-	SETTINGS pgsettings;
+	PG_Settings pgsettings;
     char tempbuf[10];
 	//	Default download path
 	char tempbufName[B_FILE_NAME_LENGTH];
@@ -250,7 +250,7 @@ static SETTINGS LoadSettingsFromFile(void)
 };
 //
 // Save the settings to the file
-static void SaveSettingsToFile(SETTINGS pgsettings)
+static void SaveSettingsToFile(PG_Settings pgsettings)
 {
 	//BeCam_PrefSaver prefs("photograbber.prefs",4); 
 	GetFields("photograbber.prefs",4);

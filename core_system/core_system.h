@@ -6,7 +6,7 @@
 ****************************************************************
 */
 //
-// File defenition
+// File definition
 #ifndef CORESYS_H
 #define CORESYS_H
 
@@ -31,42 +31,33 @@
 //
 // classes
 class BeDiGiCamApp : public BApplication {
-	public:
-									BeDiGiCamApp(void);
-									~BeDiGiCamApp(void);
-		virtual void				MessageReceived(BMessage* message);
-		virtual void				ReadyToRun(void);
-		virtual bool				QuitRequested(void);
-		bool						CreateGUI(void);
-		int							GetDeviceType();
-		// Configuration part
-		bool						GetCameraStrings();
-		bool						GetPluginDetails(char *camerastring);
-		bool						OpenPluginConfig(char *camerastring, BPoint *interfacePoint);
-		bool						IsPluginConfigPresent(char *camerastring);
-		CamInterface 				*interface;
-		std::vector<std::string>	supportedCams;
-		std::multimap<const char*,std::string>	pluginSupportedCams;
-		version_info				plugininfo;
-		BWindow						*pluginconfwindow;
-		//
-		char*						globalPath;
-		char						*title,*bgcolor,*HTMLpath;
-		int							column,picborder;
-		class Camera				*camera;
-		BWindow						*mainWindow;
-		image_id 					addonId;
-		
-	private:
-		SETTINGS            	pgsettings;
-		
-		
+public:
+                                    BeDiGiCamApp();
+                                    ~BeDiGiCamApp();
+    virtual void                    MessageReceived(BMessage* message);
+    virtual void                    ReadyToRun();
+    bool                            CreateGUI();
+    int                             GetDeviceType();
+    // Configuration part
+    bool                            GetCameraStrings();
+    bool                            GetPluginDetails(char *camerastring);
+    bool                            OpenPluginConfig(char *camerastring, BPoint *interfacePoint);
+    bool                            IsPluginConfigPresent(char *camerastring);
+    CamInterface*                   interface;
+    vector<string>                  supportedCams;
+    multimap<const char*, string>   pluginSupportedCams;
+    version_info                    plugininfo;
+    BWindow*                        pluginconfwindow;
+    //
+    class Camera*                   camera;
+    BWindow*                        mainWindow;
+
+private:
+    PG_Settings                     pgsettings;
 };
 
-// defenitions
+// definitions
 
-#define CLI_OFFSET				55
-
+#define CLI_OFFSET                  55
 
 #endif /* __CORESYS_H__ */
-

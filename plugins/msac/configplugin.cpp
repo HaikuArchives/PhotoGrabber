@@ -109,7 +109,8 @@ void configplugin::MessageReceived(BMessage* message)
 	{
 		case CANCELPORTWINDOW:
 		{
-			serialportsetting.SetTo(menu->FindMarked()->Label());
+                        if (menu->FindMarked())
+                            serialportsetting.SetTo(menu->FindMarked()->Label());
 			SaveSettingsToFile();
  			Quit();
 			break;

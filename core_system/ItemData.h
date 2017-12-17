@@ -27,7 +27,7 @@ typedef struct  {
 	uint32		ItemThumbXres;
 	uint32		ItemThumbYres;
 	char		*ItemPath;
-}ItemData;
+} ItemData;
 
 #endif
 

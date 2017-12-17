@@ -6,7 +6,7 @@
 ****************************************************************
 */
 //
-// File defenition
+// File definition
 #ifndef CONFIGWINDOW_H
 #define CONFIGWINDOW_H
 //
@@ -28,7 +28,6 @@
 #include <map>
 #include <string>
 #include <AppFileInfo.h>
-
 //
 //		Local includes
 #include "intf_global.h"
@@ -36,50 +35,35 @@
 #include "settings.h"
 #include "MainWindow.h"
 
+using namespace std;
 //
-//		Config View class
-class BeCam_ConfigView : public BView
-{
-	public:
-					BeCam_ConfigView(BRect r,float xPos,float yPos);
-					~BeCam_ConfigView(void);
-	private:
-			
-};
+//	Config window Class
+class BeCam_ConfigWindow : public BWindow {
+public:
+					BeCam_ConfigWindow(float xPos,float yPos,class BeCam_MainWindow *parent);
+	virtual bool	QuitRequested();
+	virtual void	MessageReceived(BMessage* message);
 
-//
-//		Config window Class
-class BeCam_ConfigWindow : public BWindow
-{
-	public:
-						BeCam_ConfigWindow(float xPos,float yPos,class BeCam_MainWindow *parent);
-		virtual bool	QuitRequested();
-		virtual void	MessageReceived(BMessage* message);
-
-	private:
-		BeCam_ConfigView	*becam_configView;
-		//	Configuration section
-		BBox				*becam_configbox;
-		BPopUpMenu			*becam_cameraMenu;
-		BMenuField			*becam_cameraPopup;
-		BStringView			*becam_pluginName;
-		BStringView			*becam_pluginSource;
-		BStringView			*becam_pluginVersion;
-		BButton				*becam_pluginConfig;
-		// Debugging section
-		BBox				*becam_debugbox;
-		BCheckBox			*becam_checkFile;
-		//	Screen section
-		BButton				*becam_savebutton;
-		BButton				*becam_cancelbutton;
-		void				CreateCameraTypeMenu(BRect r);
-		void				GetPluginDetails(char *cameraname = NULL);
-		void				OpenPluginConfig();
-		bool				IsPluginConfigPresent();
-		std::multimap<const char*,std::string>	*pluginSupportedCams;
-		class BeCam_MainWindow    *parent;
-		version_info		versioninfo;
-		SETTINGS            *pgsettings;
+private:
+	//	Configuration section
+	BPopUpMenu					*cameraMenu;
+	BMenuField					*cameraPopup;
+	BStringView					*pluginName;
+	BStringView					*pluginSource;
+	BStringView					*pluginVersion;
+	BButton						*pluginConfig;
+	// Debugging section
+	BCheckBox					*checkFile;
+	//	Screen section
+	void						FillPluginMenu(BMenu* menu);
+	void						GetPluginDetails(const char *cameraname = NULL);
+	void						OpenPluginConfig();
+	bool						IsPluginConfigPresent();
+	multimap<const char*, string>	
+								*pluginSupportedCams;
+	class BeCam_MainWindow		*parent;
+	version_info				versioninfo;
+	PG_Settings					*pgsettings;
 };
 
 #define	CONF_OFFSET				1055
@@ -87,9 +71,9 @@ class BeCam_ConfigWindow : public BWindow
 #define CONF_MITM				CONF_OFFSET + 2
 
 // Size
-#define CONFIG_WINDOW				4
-#define WINDOW_HEIGHT_CONFIG		300
-#define	WINDOW_WIDTH_CONFIG			350
+#define CONFIG_WINDOW			4
+#define WINDOW_HEIGHT_CONFIG	300
+#define	WINDOW_WIDTH_CONFIG		350
 
 #endif
 

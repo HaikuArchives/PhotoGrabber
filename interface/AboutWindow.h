@@ -43,30 +43,28 @@ private:
 };
 //
 //		About View class
-class BeCam_AboutView : public BView
-{
-	public:
-					BeCam_AboutView(BRect r);
-					~BeCam_AboutView(void);
+class BeCam_AboutView : public BView {
+public:
+									BeCam_AboutView(BRect r);
+									~BeCam_AboutView(void);
 
 private:
-		AboutBitmapView	*aboutBitmapView;
-		BView 			*creditsView;
-		BTextView		*creditsTextView;
+	AboutBitmapView					*aboutBitmapView;
+	BView							*creditsView;
+	BTextView						*creditsTextView;
 };
 
 //
 //		About window Class
-class BeCam_AboutWindow : public BWindow
-{
-	public:
-						BeCam_AboutWindow(float xPos,float yPos, class BeCam_MainWindow *mainWindow);
-		virtual bool	QuitRequested();
-		virtual void	MessageReceived(BMessage* message);
+class BeCam_AboutWindow : public BWindow {
+public:
+									BeCam_AboutWindow(float xPos,float yPos, 
+                                            class BeCam_MainWindow *mainWindow);
+    virtual bool                    QuitRequested();
 
-	private:
-		BeCam_AboutView					*view;
-		class BeCam_MainWindow			*parent;
+private:
+    BeCam_AboutView					*view;
+    class BeCam_MainWindow			*parent;
 };
 
 #define ABOUT_WINDOW				1

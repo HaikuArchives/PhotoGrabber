@@ -19,6 +19,6 @@ typedef struct {
  char defaultDownloadPath[B_FILE_NAME_LENGTH]; // Default path to download the pictures
  char deviceName[B_FILE_NAME_LENGTH];      // Camera name
  char pluginName[B_FILE_NAME_LENGTH];      // Plugin name 
-} SETTINGS;
+} PG_Settings;
 
 #endif

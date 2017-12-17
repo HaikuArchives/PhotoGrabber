@@ -23,30 +23,29 @@
 
 //		define classes
 //
-class Camera  : public BLooper
-{
-	public:
-						Camera(char *libName = NULL);
-						~Camera();
-		virtual void	MessageReceived(BMessage *message);
-		bool			Start();
-		bool			Stop();	
-		bool			OpenDevice();
-		bool			CloseDevice();
-		bool			SetDownloadProps(BPath savedir);
-		CamInterface	*camInterface;
+class Camera  : public BLooper {
+public:
+								Camera(char *libName = NULL);
+								~Camera();
+	virtual void				MessageReceived(BMessage *message);
+	bool						Start();
+	bool						Stop();	
+	bool						OpenDevice();
+	bool						CloseDevice();
+	bool						SetDownloadProps(BPath savedir);
+	CamInterface				*camInterface;
 
-	private:
-		bool			GetCameraItems();
-		int				GetDeviceType();
-		void			GetDeviceProperties();
-		int	 			GetNumberOfItems();
-		bool			DownloadItem(uint32 itemhandle,entry_ref *dir, const char *fileName);
-		bool			RemoveItem(uint32 itemhandle);
-		
-		int				CameraNumberOfItems;
-		BPath 			CameraSavedir;
+private:
+	bool						GetCameraItems();
+	int							GetDeviceType();
+	void						GetDeviceProperties();
+	bool						GetDeviceCapability(pluginCaps capability);
+	int							GetNumberOfItems();
+	bool						DownloadItem(uint32 itemhandle,entry_ref *dir, const char *fileName);
+	bool						RemoveItem(uint32 itemhandle);
 
+	int							CameraNumberOfItems;
+	BPath						CameraSavedir;
 };
 
 // Camera error messages

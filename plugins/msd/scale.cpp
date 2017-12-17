@@ -8,6 +8,7 @@
 #include "scale.h"
 #include <malloc.h>
 #include <Bitmap.h>
+#include <OS.h>
 
 
 typedef struct {

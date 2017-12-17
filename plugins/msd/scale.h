@@ -5,6 +5,7 @@
 * Distributed under the terms of the MIT License.              *
 ****************************************************************
 */
+#include <OS.h>
 #include "imaging.h"
 
 class BBitmap;

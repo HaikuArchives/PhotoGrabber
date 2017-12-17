@@ -6,7 +6,7 @@
 
 # The name of the binary.
 NAME = libbdcp_msac
-TARGET_DIR := ../../build/PhotoGrabber/plugins
+TARGET_DIR := $(PLUGIN_TARGET_DIR)
 
 # The type of binary, must be one of:
 #	APP:	Application
@@ -129,6 +129,7 @@ APP_VERSION :=
 DRIVER_PATH = 
 
 ## Include the Makefile-Engine
-DEVEL_DIRECTORY := \
-	$(shell findpaths -r "makefile_engine" B_FIND_PATH_DEVELOP_DIRECTORY)
-include $(DEVEL_DIRECTORY)/etc/makefile-engine
+DEVEL_DIRECTORY = \
+	$(shell findpaths -e B_FIND_PATH_DEVELOP_DIRECTORY etc/makefile-engine)
+include $(DEVEL_DIRECTORY)
+

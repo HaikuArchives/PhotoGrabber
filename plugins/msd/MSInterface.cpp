@@ -94,9 +94,9 @@ void MSInterface::MessageReceived(BMessage *message)
 			int32 event;
 			if(message->FindInt32("event",&event) != B_OK)
 				break;
+			LogDebug("MASS - Message Received :: There is an event '%d'!",event);
 			switch(event) 
 			{
-				LogDebug("MASS - Message Received :: There is an event '%d'!",event);
 				case B_DEVICE_PARTITION_MOUNTED:
 					_VolumeMounted(message);
 					break;

@@ -6,14 +6,13 @@
 ****************************************************************
 */
 //
-// File defenition
+// File definition
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 //
 // local Includes
 #include "intf_global.h"
-#include "Item.h"
-#include "MainView.h"
+#include "PicItem.h"
 #include "GridView.h"
 #include "AboutWindow.h"
 #include "ConfigWindow.h"
@@ -37,62 +36,55 @@
 #include <Path.h>
 //
 //	Struct 
-struct items_data 
-{
-	BeCam_MainWindow	*window;
-	GridView			*gridview;
-	entry_ref			downloadDir;
-	float				totalitems;
-	StatusDock			*statusDock;
-	void				(*Debug)(const char *,...);
+struct items_data {
+	BeCam_MainWindow            *window;
+	entry_ref                   downloadDir;
+	void                        (*Debug)(const char *,...);
 };
 
 //		Main window class
-class BeCam_MainWindow : public BWindow
-{
-	public:
-							BeCam_MainWindow(BRect r,BLooper *syscore,int devtype);
-		virtual bool		QuitRequested();
-		virtual void		MessageReceived(BMessage* message);
-		// Other interface windows
-		class BeCam_AboutWindow		*aboutWindow;
-		class BeCam_ConfigWindow	*configWindow;
-		// system core looper
-		BLooper						*systemcore;
+class BeCam_MainWindow : public BWindow {
+public:
+								BeCam_MainWindow(BLooper *syscore,int devtype);
+	virtual bool				QuitRequested();
+	virtual void				MessageReceived(BMessage* message);
+	// Other interface windows
+	class BeCam_AboutWindow		*aboutWindow;
+	class BeCam_ConfigWindow	*configWindow;
+	// system core looper
+	BLooper						*systemcore;
 		
-	private:
-	
-		bool				becam_connected;
-		int					logMainWindowError(int ErrorMes);
-		void				addItem(class BeCam_Item *item);
-		void				removeItem(class BeCam_Item *item);
-		void				clearItems();
-		void				downloadSelectedItems(entry_ref copyToDir, const char *fileName = NULL);
-		void				removeSelectedItems();
-		static status_t 	RemoveItems(items_data *data);
-		static status_t 	DownloadItems(items_data *data);
-		void				addMenuBar();
-		void				CreateActionDock();
-		void				CreateStatusDock();
-		void                CreateConfigWindow();
-		void                CreateAboutWindow();
-		void                ShowStatusDock(float totalbytes, const char *message);
-		void                UpdateStatusDock(uint32 delta, const char *message);
-		void                HideStatusDock(void);
-		void                CalculatePos(float *xPos,float *yPos,int winType);
-		// GUI components
-		GridView			*becam_gridview;
-		BeCam_MainView		*becam_view;
-		BMenuBar			*becam_menubar;
-		BMenu				*becam_fileMenu;
-		BMenu				*becam_actionsMenu;
-		BMenu				*becam_viewMenu;
-		BMenuItem 			*sortTitleMenu;
-		BMenuItem 			*sortDateMenu;
-		BScrollView			*becam_scrollview;
-		StatusDock			*becam_statusDock;
-		int					devicetype;
-		SETTINGS			*pgsettings;
+private:
+	bool						becam_connected;
+	int							logMainWindowError(int ErrorMes);
+	void						addItem(class PicItem *item);
+	void						removeItem(class PicItem *item);
+	void						clearItems();
+	void						downloadSelectedItems(entry_ref copyToDir, const char *fileName = NULL);
+	void						removeSelectedItems();
+	static status_t                                 RemoveItems(items_data *data);
+	static status_t             DownloadItems(items_data *data);
+	void                        addMenuBar();
+    void                        adaptActionMenu(bool enabled);
+	void                        CreateActionDock();
+	void                        CreateStatusDock();
+	void                        CreateConfigWindow();
+	void                        CreateAboutWindow();
+	void                        ShowStatusDock(Modus modus, const char *status = NULL, float total = -1.0f);
+	void                        UpdateStatusDock(uint32 delta, const char *message = NULL);
+	void						CalculatePos(float *xPos,float *yPos,int winType);
+	// GUI components
+	GridView					*fGridView;
+	BMenuBar*					fMenubar;
+	BMenu						*becam_fileMenu;
+	BMenu						*becam_actionsMenu;
+	BMenu						*becam_viewMenu;
+	BMenuItem					*sortTitleMenu;
+	BMenuItem					*sortDateMenu;
+	BScrollView					*fGridScrollView;
+	StatusDock					*fStatusDock;
+	int							devicetype;
+	PG_Settings					*pgsettings;
 };
 
 // Main Window error messages
