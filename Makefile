@@ -143,7 +143,7 @@ DRIVER_PATH =
 subsystem: $(TARGET_DIR)/$(NAME)
 	$(MAKE) -C ./plugins/msac "PLUGIN_TARGET_DIR=$(PLUGIN_TARGET_DIR)" "DEBUGGER=$(DEBUGGER)"
 	$(MAKE) -C ./plugins/msd "PLUGIN_TARGET_DIR=$(PLUGIN_TARGET_DIR)" "DEBUGGER=$(DEBUGGER)"
-#	$(MAKE) -C ../bdcpPTP "DEBUGGER=$(DEBUGGER)" && cp ../bdcpPTP/Build/bdcpPTP $(PLUGIN_TARGET_DIR)
+	$(MAKE) -C ./plugins/bdcpPTP "PLUGIN_TARGET_DIR=$(PLUGIN_TARGET_DIR)" "DEBUGGER=$(DEBUGGER)"
 #	$(MAKE) -C ./plugins/ptp --eval "PLUGIN_TARGET_DIR=$(PLUGIN_TARGET_DIR)" $(MKFLAGS)
 
 ## Include the Makefile-Engine
