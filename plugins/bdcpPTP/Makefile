@@ -46,5 +46,7 @@ MENU_LINKS=
 APP_MENU=
 
 
-## include the makefile-engine
-include $(BUILDHOME)/etc/makefile-engine
+## Include the Makefile-Engine
+DEVEL_DIRECTORY := \
+	$(shell findpaths -r "makefile_engine" B_FIND_PATH_DEVELOP_DIRECTORY)
+include $(DEVEL_DIRECTORY)/etc/makefile-engine
