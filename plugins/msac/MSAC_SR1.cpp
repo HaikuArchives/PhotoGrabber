@@ -37,9 +37,9 @@ static const unsigned char END_PACKET				= 193;
 Packet CameraInvalid 			= {0, 2, {131,125}, 93};
 Packet ResendPacket 			= {0, 4, {129,2,'1',0}, 'L'};
 unsigned char PacketCodes[2] 	= {192,193};
-char ESC_START_STRING[]			= { 0x7d, 0xe0 };
-char ESC_END_STRING[]			= { 0x7d, 0xe1 };
-char ESC_ESC_STRING[]			= { 0x7d, 0x5d };
+unsigned char ESC_START_STRING[]			= { 0x7d, 0xe0 };
+unsigned char ESC_END_STRING[]			= { 0x7d, 0xe1 };
+unsigned char ESC_ESC_STRING[]			= { 0x7d, 0x5d };
 
 
 MSAC_SR1::MSAC_SR1(BString &serialsettings, data_rate &serialspeed) {
