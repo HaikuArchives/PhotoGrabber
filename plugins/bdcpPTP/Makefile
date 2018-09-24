@@ -16,11 +16,8 @@ RDEFS= bdcpPTP.rdef
 #%}
 APP_VERSION= -app 0 9 0 b 1 -short "bdcpPTP" -long "bdcpPTP© Fishpond 2014-2017"
 LIBS= root be translation $(STDCPPLIBS) device tracker
-#LIBS= root be translation stdc++ device
 LIBPATHS=
-SYSTEM_INCLUDE_PATHS= /boot/develop/headers/be \
-	/boot/system/develop/headers/cpp \
-	/boot/system/develop/headers/posix
+SYSTEM_INCLUDE_PATHS=
 
 LOCAL_INCLUDE_PATHS= .
 OPTIMIZE=FULL
