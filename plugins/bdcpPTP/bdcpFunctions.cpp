@@ -184,8 +184,8 @@ status_t getfiledata() {
     return B_NO_ERROR;
 }
 
-status_t getDeviceType(int* deviceType) {
-    *deviceType = TYPE_USB;
+status_t getDeviceType(int &deviceType) {
+    deviceType = TYPE_USB;
     return B_OK;
 }
 
@@ -214,13 +214,13 @@ status_t connectStateChanged(PTPCamera* camera) {
     return B_ERROR;
 }
 
-status_t getImageHeight(int* height) {
-    *height = Camera->Pictures()->CurrentItem()->YRes;
+status_t getImageHeight(int &height) {
+    height = Camera->Pictures()->CurrentItem()->YRes;
     return B_OK;
 }
 
-status_t getImageWidth(int* width) {
-    *width = Camera->Pictures()->CurrentItem()->XRes;
+status_t getImageWidth(int &width) {
+    width = Camera->Pictures()->CurrentItem()->XRes;
     return B_OK;
 }
 

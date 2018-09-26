@@ -40,9 +40,9 @@ extern "C" BWindow* configurePlugin(BPoint middle);
 extern "C" status_t getThumbnail(BBitmap* &picture);
 extern "C" status_t getLevel3FunctionNames(map<char*, char*> &menunames);
 extern "C" status_t setMessageTarget(BLooper* mtarget);
-extern "C" status_t getDeviceType(int *deviceType);
-extern "C" status_t getImageHeight(int* height);
-extern "C" status_t getImageWidth(int* width);
+extern "C" status_t getDeviceType(int &deviceType);
+extern "C" status_t getImageHeight(int &height);
+extern "C" status_t getImageWidth(int &width);
 
 /* Helper functions */
 int CameraIdentify(BUSBDevice* dev);
