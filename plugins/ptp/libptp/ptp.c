@@ -263,9 +263,9 @@ ptp_init_send_memory_handler(PTPDataHandler *handler,
 ) {
 	PTPMemHandlerPrivate* priv;
 	priv = malloc (sizeof(PTPMemHandlerPrivate));
+	handler->priv = priv;
 	if (!priv)
 		return PTP_RC_GeneralError;
-	handler->priv = priv;
 	handler->getfunc = memory_getfunc;
 	handler->putfunc = memory_putfunc;
 	priv->data = data;
@@ -2009,8 +2009,8 @@ ptp_canon_eos_setdevicepropvalue (PTPParams* params,
 	if (params->nrofcanon_props == i)
 		return PTP_RC_Undefined;
 	if (datatype != PTP_DTC_STR) {
-		data = calloc(sizeof(uint32_t),3);
 		size = sizeof(uint32_t)*3;
+		data = calloc(size, 1);
 	} else {
 		 /* FIXME! */
 		return PTP_RC_Undefined;

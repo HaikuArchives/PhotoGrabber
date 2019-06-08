@@ -164,7 +164,7 @@ ptp_usb_senddata (PTPParams* params, PTPContainer* ptp,
 	res = ptp_write_func((char*)&usbdata, wlen, params->data);
 	if (res != wlen) 
 	{
-		ptp_usb_error(params, "ptp2/usb_senddata : request code 0x%04x sending data error 0x%04x",ptp->Code,ret);
+		ptp_usb_error(params, "ptp2/usb_senddata : request code 0x%04x sending data error 0x%04x", ptp->Code, res);
 		return PTP_ERROR_IO;
 	}
 	if (size <= datawlen) 
