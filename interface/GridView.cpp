@@ -27,7 +27,7 @@ using namespace std;
 //
 //	GridView :: Constructor
 GridView::GridView (const char* name, BMessage* InvokeMsg, BMessage* SelectMsg)
-  : BControl(name, NULL, NULL, B_WILL_DRAW | B_FRAME_EVENTS),
+  : BControl(name, NULL, NULL, B_WILL_DRAW | B_FRAME_EVENTS | B_SCROLL_VIEW_AWARE),
     BObjectList<PicItem>(),
     fSelected(),
     fColumnCount(-1),
@@ -53,22 +53,22 @@ GridView::~GridView() {
     PicList::MakeEmpty();
 	if (fSelectMsg) delete fSelectMsg;
     if (fInvokeMsg) delete fInvokeMsg;
-    
+
     LogDebug("GRIDVIEW - View Destroyed.");
 }
 
-void 
-GridView::AttachedToWindow() {	
+void
+GridView::AttachedToWindow() {
     fScrollView = dynamic_cast<BScrollView*>(Parent());
     BFont font = be_plain_font;
     font.SetFace(B_BOLD_FACE);
     SetFont(&font);
     Layout();
 }
-bool 
+bool
 GridView::AddItem(PicItem* item) {
     bool added = PicList::AddItem(item);
-    if (!Layout()) 
+    if (!Layout())
         InvalidateItem(IndexOf(item));
     return added;
 }
@@ -79,24 +79,24 @@ GridView::RemoveItem(PicItem* item) {
 }
 
 PicItem*
-GridView::RemoveItemAt(listIndex index) { 
-    PicItem* removed = PicList::RemoveItemAt(index); 
+GridView::RemoveItemAt(listIndex index) {
+    PicItem* removed = PicList::RemoveItemAt(index);
     if (removed) {
         fSelected.RemoveItem(removed, false);
         if (!Layout())
             InvalidateItem(index);
     }
-    return (removed); 
+    return (removed);
 }
 
 void
-GridView::MakeEmpty() { 
-    PicList::MakeEmpty(true); 
+GridView::MakeEmpty() {
+    PicList::MakeEmpty(true);
     fSelected.MakeEmpty(false);
-    Layout(); 
+    Layout();
 }
 
-void 
+void
 GridView::AddList (BObjectList<PicItem>* list) {
     PicList::AddList(list);
     Layout();
@@ -104,13 +104,13 @@ GridView::AddList (BObjectList<PicItem>* list) {
 
 //
 // GridView :: Draw
-void 
+void
 GridView::Draw(BRect updateRect) {
     SetHighColor (ViewColor());
     FillRect(updateRect);
 
     if (IsEmpty()) return;
-	
+
     BRect bounds = Frame();
 
     int32 column = 0;
@@ -120,14 +120,14 @@ GridView::Draw(BRect updateRect) {
         PicItem *item = ItemAt(i);
         BRect itemRect = ItemRect(i);
         if(updateRect.Intersects(itemRect.InsetByCopy(
-                -fItemSpacing.width / 2, 
+                -fItemSpacing.width / 2,
                 -fItemSpacing.height / 2)))
             DrawItem(item, itemRect);
     }
 }
 //
 // GridView :: GetTop
-float 
+float
 GridView::GetTop(int32 row) {
     return fRowTops[row];
 }
@@ -139,7 +139,7 @@ GridView::GetRowHeight(int32 row) {
 }
 //
 // GridView :: FrameResized
-void 
+void
 GridView::FrameResized (float newWidth, float newHeight) {
     LogDebug("GRIDVIEW - FrameResized width: %d - height: %d.", newWidth, newHeight);
     Layout();
@@ -159,7 +159,7 @@ GridView::Layout() {
     BSize   newItemSize(0, 0);
 
     vector<float> newRowTops;
-    
+
     font_height fontHeight;
     GetFontHeight(&fontHeight);
     fDetailHeight = ceil(fontHeight.ascent + fontHeight.leading);
@@ -170,23 +170,23 @@ GridView::Layout() {
     if (frame.Width() != bounds.Width()) {
         this->ResizeTo(frame.Width(), bounds.Height());
     }
-    
+
     for (listIndex i = 0; i < CountItems(); i++) {
         PicItem* item = ItemAt(i);
         if (item->ThumbWidth() > newItemSize.width)
             newItemSize.width = item->ThumbWidth();
         if (item->ThumbHeight() > newItemSize.height)
             newItemSize.height = item->ThumbHeight();
-        
+
     }
     if (newItemSize.width == 0) newItemSize.width = DEFAULT_ITEM_WIDTH;
     if (newItemSize.height == 0) newItemSize.height = DEFAULT_ITEM_HEIGHT;
-    
-    newColumnCount = (int32)(bounds.Width() / 
+
+    newColumnCount = (int32)(bounds.Width() /
             (newItemSize.width + fMinItemSpacing.width));
 
     if (newColumnCount < 1) newColumnCount = 1;
-    
+
     newRowCount = (count + newColumnCount - 1) / newColumnCount;
     newItemSpacing.width = ceil((bounds.Width() - newColumnCount * newItemSize.width) /
             newColumnCount);
@@ -206,10 +206,10 @@ GridView::Layout() {
         }
         lastTop += (newItemHeight + fItemSpacing.height + fDetailSpacing + fDetailHeight);
         newRowTops.push_back(lastTop);
-    } 
+    }
 
-    if (newColumnCount != fColumnCount || 
-        newRowCount != fRowCount || 
+    if (newColumnCount != fColumnCount ||
+        newRowCount != fRowCount ||
         newItemSpacing != fItemSpacing ||
         newItemSize != fItemSize ||
         !(newRowTops == fRowTops)) {
@@ -220,7 +220,7 @@ GridView::Layout() {
         fItemSize               = newItemSize;
         fRowsPerPage            = (int32)(bounds.Height() / fItemSize.height);
         Invalidate();
-        
+
         BScrollBar *vertbar = fScrollView->ScrollBar(B_VERTICAL);
         float scrollRange = fRowTops[fRowCount] - Bounds().Height();
         vertbar->SetRange (0, (scrollRange > 0) ? scrollRange : 0);
@@ -232,22 +232,22 @@ GridView::Layout() {
         return false;
 }
 
-void 
+void
 GridView::DrawItem(PicItem* item, BRect frame) {
     bool enabled  = true;
-    
+
     rgb_color color_selected = {0xee, 0xc9, 0x00, 0xff};
     rgb_color color_enabled = {0x00, 0x00, 0x00, 0xff};
     rgb_color color_disabled = {0x77, 0x00, 0x00, 0xff};
     rgb_color color_border = enabled ? color_enabled : color_disabled;
     rgb_color color_picture = {0x8b, 0x8b, 0x83, 0xff};
-    
+
     if (!frame.IsValid())
         frame = ItemRect(IndexOf(item));
-    
+
     SetHighColor(ViewColor());
     FillRect(frame);
-    
+
     BRect thumbRect(frame);
     thumbRect.InsetBy(fItemSpacing.width / 2, fItemSpacing.height / 2);
     thumbRect.bottom -= (fDetailSpacing + fDetailHeight);
@@ -256,13 +256,13 @@ GridView::DrawItem(PicItem* item, BRect frame) {
         BRect picRect   = thumbnail->Bounds();
         thumbRect.InsetBy((thumbRect.Width() - picRect.Width()) / 2,
                                         (thumbRect.Height() - picRect.Height()) / 2);
-        
+
         DrawBitmap(thumbnail, thumbnail->Bounds(), thumbRect);
     } else {
         SetHighColor(color_picture);
         FillRect(thumbRect);
     }
-    
+
     SetHighColor(color_border);
     StrokeRect(thumbRect);
 
@@ -273,7 +273,7 @@ GridView::DrawItem(PicItem* item, BRect frame) {
         StrokeRoundRect(thumbRect.InsetByCopy(-1, -1), fSelectionRadius, fSelectionRadius);
         SetPenSize(1);
     }
-    
+
     float stringWidth = StringWidth(item->Name());
     BPoint descPos(frame.left + (frame.Width() - stringWidth) / 2, frame.bottom - fItemSpacing.height / 2);
     DrawString(item->Name(), descPos);
@@ -284,12 +284,12 @@ GridView::InvalidateItem(listIndex index) {
     Invalidate(ItemRect(index));
 }
 
-// Returns Rectangle including the maximum thumbnail area 
-BRect 
+// Returns Rectangle including the maximum thumbnail area
+BRect
 GridView::ItemRect(listIndex index) {
     int32 column = (index % fColumnCount);
     int32 row = index / fColumnCount;
-    return BRect(column * (fItemSpacing.width + fItemSize.width), fRowTops[row], 
+    return BRect(column * (fItemSpacing.width + fItemSize.width), fRowTops[row],
                  (column + 1) * (fItemSpacing.width + fItemSize.width) - 1, fRowTops[row + 1] - 1);
 }
 //
@@ -300,7 +300,7 @@ GridView::CountColumns () const {
 }
 //
 //	GridView :: CountRows
-int32 
+int32
 GridView::CountRows () const {
     return fRowCount;
 }
@@ -321,13 +321,13 @@ GridView::KeyDown (const char* bytes, int32 numBytes) {
 
 //
 //	GridView :: MouseDown
-void 
+void
 GridView::MouseDown(BPoint point) {
     LogDebug("GRIDVIEW - Mouse Down.");
-	
+
     if (!Window() || !Window()->IsActive() || !IsEnabled())
         return;
-	
+
     BMessage* msg = Window()->CurrentMessage();
     int32 clicks = msg->FindInt32 ("clicks");
     int32 button = msg->FindInt32 ("buttons");
@@ -341,12 +341,12 @@ GridView::MouseDown(BPoint point) {
         clickCount = 1;
 
     lastButton = button;
-	
+
     // Check if the user clicked once and intends to drag
     listIndex index = IndexAt(point);
-    if (index < 0 || index >= CountItems()) 
+    if (index < 0 || index >= CountItems())
         return;
-	
+
     if (clickCount == 1 && button == B_PRIMARY_MOUSE_BUTTON) {
        	int32 modifs = modifiers();
 		// select this item
@@ -401,14 +401,14 @@ GridView::ScrollToSelection() {
 
     BRect rect = ItemRect(IndexOf(fSelected.LastItem()));
     if (rect.bottom >= scrollPosition + Bounds().Height())		// down
-        ScrollTo(0, rect.top - (Bounds().Height() - rect.Height() - fItemSpacing.height));	
+        ScrollTo(0, rect.top - (Bounds().Height() - rect.Height() - fItemSpacing.height));
     else if (rect.top <= scrollPosition)				// up
         ScrollTo (0, rect.top );
     LogDebug("GRIDVIEW - Scrolled to selection.");
 }
 //
 //	GridView :: Handle KeyMovement
-bool 
+bool
 GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */) {
     LogDebug("GRIDVIEW - Handle KeyMovement.");
 
@@ -436,16 +436,16 @@ GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */) {
             keyHandled = true;
             newSelected = lastSelected - 1;
             if (newSelected >= 0) {
-                if (extend) 
+                if (extend)
                     SelectRange(firstSelected, newSelected);
                 else
                     Select(newSelected);
             }
             break;
 
-        case B_DOWN_ARROW: 
+        case B_DOWN_ARROW:
             keyHandled = true;
-            
+
             newSelected = lastSelected + fColumnCount;
             if (newSelected < CountItems()) {
                 if (extend)
@@ -480,7 +480,7 @@ GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */) {
             ScrollToSelection ();
             break;
 
-        case B_PAGE_DOWN: 
+        case B_PAGE_DOWN:
             keyHandled = true;
 
             newSelected = lastSelected + fRowsPerPage * fColumnCount;
@@ -489,7 +489,7 @@ GridView::HandleKeyMovement (const char* bytes, int32 /* _unused */) {
             ScrollToSelection();
             break;
 
-        case B_PAGE_UP: 
+        case B_PAGE_UP:
             keyHandled = true;
 
             newSelected = lastSelected - fRowsPerPage * fColumnCount;
@@ -536,54 +536,54 @@ GridView::SelectedItem(int32 index) {
         return fSelected.ItemAt(index);
 }
 
-void 
+void
 GridView::SetSelectionCurveRadius (uint8 radius)
 {
     // internally subtract one because of how we
     // actually handle it in Draw()
 	// So basically if they specify radius of zero (0) meaning no curve, ONLY
 	// if we subtract one do we get that effect
-	
+
 	fSelectionRadius = MIN (radius - 1, 6);
     if (!fSelected.IsEmpty())
         Invalidate();
 }
 
-uint8 
+uint8
 GridView::SelectionCurveRadius () const {
     return fSelectionRadius + 1;
 }
 
-void 
+void
 GridView::SendKeyStrokesTo (BLooper* looper, BHandler* handler) {
     fKeyTargetLooper = looper;
     fKeyTargetHandler = handler;
 }
 
 //	GridView :: Select
-void 
+void
 GridView::Select(listIndex index, bool extend) {
     LogDebug("GRIDVIEW - Select Item.");
 
     PicItem *item = ItemAt(index);
     bool isSelected = (fSelected.IndexOf(item) >= 0);
-    
+
     if (extend) {
         if (!isSelected && item) {
             fSelected.AddItem(item);
-            InvalidateItem(index); 
+            InvalidateItem(index);
         }
     } else {
         DeselectAll();
         if (item) {
             fSelected.AddItem(item);
-            InvalidateItem(index); 
+            InvalidateItem(index);
         }
-    }   
+    }
 }
 
 //	GridView :: Select From To
-void 
+void
 GridView::SelectRange(listIndex fromIndex, listIndex toIndex) {
 	PicItem *item;
 	if (fromIndex > toIndex) {
@@ -629,7 +629,7 @@ void GridView::Deselect(listIndex index) {
 	}
 }
 
-void 
+void
 GridView::DeselectAll() {
     PicItem* item;
     while (item = fSelected.LastItem()) {
@@ -644,18 +644,18 @@ listIndex
 GridView::SelectedIndex(int32 index) {
 	if (index < 0 || index >= fSelected.CountItems())
         return -1;
-            
+
 	return IndexOf(fSelected.ItemAt(index));
 }
 
-bool	
+bool
 GridView::ItemSelected(listIndex index) {
     if (index < 0 || index >= CountItems())
         return -1;
     return (fSelected.IndexOf(ItemAt(index)) >= 0);
 }
 
-bool	
+bool
 GridView::ItemSelected(PicItem* item) {
     return (fSelected.IndexOf(item) >= 0);
 }
@@ -667,13 +667,13 @@ GridView::Selected() {
 
 //
 //		GridView::Get the number of selected items
-int32 
+int32
 GridView::CountSelected() {
     return fSelected.CountItems();
 }
 
 //		GridView::TrackItem
-status_t 
+status_t
 GridView::TrackItem(list_tracking_data *data) {
     uint32  buttons;
     BPoint  point;
@@ -707,7 +707,7 @@ GridView::TrackItem(list_tracking_data *data) {
                 PicItem *item = data->view->fSelected.LastItem();
                 // get the selected item
                 if (item) {
-                    // add types 
+                    // add types
                     drag_msg.AddString("be:types", B_FILE_MIME_TYPE);
                     //some useful information
                     drag_msg.AddInt32("handle",item->Handle());
@@ -791,7 +791,7 @@ GridView::TrackItem(list_tracking_data *data) {
     return B_NO_ERROR;
 }
 
-void 
+void
 GridView::ActionCopy(BMessage *request) {
     entry_ref directory;
     request->FindRef("directory", &directory);
@@ -800,7 +800,7 @@ GridView::ActionCopy(BMessage *request) {
 	Window()->PostMessage(request);
 }
 
-listIndex 
+listIndex
 GridView::IndexAt(BPoint point) {
 	int32 row = 0, column = 0;
 	for (listIndex itemIndex = 0; itemIndex < CountItems(); itemIndex++) {
@@ -812,7 +812,7 @@ GridView::IndexAt(BPoint point) {
     return -1;
 }
 
-void 
+void
 GridView::SortItemsBy(int sortType) {
 	switch(sortType) {
 		case ITEM_SORT_BY_TITLE:
@@ -829,7 +829,7 @@ GridView::SortItemsBy(int sortType) {
 //
 // GridView :: Compare item titles
 // return: -1:first<second 0:first==second 1:first>second
-int 
+int
 GridView::CompareTitles(const PicItem* first, const PicItem* second) {
 	BString firstTitle(((PicItem*)first)->Name());
 	return firstTitle.ICompare(((PicItem*)second)->Name());
@@ -837,7 +837,7 @@ GridView::CompareTitles(const PicItem* first, const PicItem* second) {
 //
 // GridView :: Compare item dates
 // return: -1:first<second 0:first==second 1:first>second
-int 
+int
 GridView::CompareDates(const PicItem* first, const PicItem* second) {
 	BString firstDate(((PicItem*)first)->Date());
     return firstDate.ICompare(((PicItem*)second)->Date());
