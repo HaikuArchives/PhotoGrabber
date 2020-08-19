@@ -80,17 +80,14 @@ BeCam_AboutView::BeCam_AboutView(BRect rect)
     BAppFileInfo appFileInfo;
     BFile appFile;
 
-    char version[20] = "\t\t2.3.3-3\n";
-    char revision[20] = "\t\tunknown\n";
-    
+    char version[20] = "\t\t0.0.0\n";
+
     if (be_app->GetAppInfo(&appInfo) == B_OK &&
             appFile.SetTo(&appInfo.ref, B_READ_ONLY) == B_OK &&
             appFile.InitCheck() == B_OK &&
             appFileInfo.SetTo(&appFile) == B_OK &&
-            appFileInfo.GetVersionInfo(&versionInfo, B_APP_VERSION_KIND) == B_OK) {
+            appFileInfo.GetVersionInfo(&versionInfo, B_APP_VERSION_KIND) == B_OK)
         snprintf(version, sizeof(version), "\t\t%d.%d.%d\n",versionInfo.major, versionInfo.middle, versionInfo.minor);
-        snprintf(revision, sizeof(revision),"\t\t%d\n", versionInfo.variety);
-    }
 
     BFont font(be_bold_font); 
     font.SetSize(font.Size() + 4); 
@@ -102,10 +99,6 @@ BeCam_AboutView::BeCam_AboutView(BRect rect)
     creditsTextView->Insert(_T("\tVersion:\n")); 
     creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &pgDarkgrey);
     creditsTextView->Insert(version);
-    creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange);
-    creditsTextView->Insert(_T("\tRevision:\n")); 
-    creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &pgDarkgrey);
-    creditsTextView->Insert(revision);
     creditsTextView->SetFontAndColor(&font, B_FONT_ALL, &pgOrange); 
     creditsTextView->Insert(_T("\tTeam Lead:\n")); 
     creditsTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &pgDarkgrey);
