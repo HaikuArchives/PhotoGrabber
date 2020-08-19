@@ -130,8 +130,8 @@ LINKER_FLAGS =
 #	This may also be specified in a resource.
 V_MAJOR = 2
 V_MIDDLE = 3
-V_MINOR = 3
-V_BUILD = 3
+V_MINOR = 4
+V_BUILD = 1
 APP_VERSION := $(V_MAJOR).$(V_MIDDLE).$(V_MINOR)-$(V_BUILD)
 
 #	(Only used when "TYPE" is "DRIVER"). Specify the desired driver install
