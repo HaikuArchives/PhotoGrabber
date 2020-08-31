@@ -1,0 +1,116 @@
+# Russian translation by Burshtyn Nikolay (amber8706@mail.ru)
+
+###########
+# MainWindow.cpp
+###########
+
+"File"													"Файл"
+"Extra"													"Экстра"
+"Download"												"Скачать"
+"Delete"												"Удалить"
+"Generate HTML"											"Создать HTML"
+"Preferences"											"Опции"
+"About PhotoGrabber"										"О PhotoGrabber"
+"Quit"													"Выход"
+"Status"												"Статус"
+"Remove files"											"Удалить файлы"
+"Are you sure you want to erase the selected files?"	"Вы уверены, что хотите удалить выбранные файлы?"
+"No"													"Нет"
+"Yes"													"Да"
+"Connected to: "										"Подключён к: "
+" disconnected"											" не подключен"
+"Downloading number NUMBER of the TOTAL selected files"	"Загрузка файла NUMBER из TOTAL"
+"Generating HTML page..."								"Создание HTML страницы..."
+"HTML page has been generated."							"HTML страница создана."
+"Downloading items..."									"Загрузка файлов..."
+"All items have been downloaded."						"Все файлы загружены."
+# version	0.4.2			
+"BDCP Actions"						"BDCP Действия"
+"Connect"						"Подключить"
+"Disconnect"						"Отключить"
+"more..."						"ещё..."
+"In:"						"В:"
+"Status"						"Статус"
+"Generating number NUMBER of the TOTAL selected files"						"Создание файла NUMBER из TOTAL"
+"Select"						"Выбрать" 
+
+############
+# AboutWindow.cpp
+############
+
+
+"PhotoGrabber version 0.4.2"								"PhotoGrabber версия 0.4.2"
+"By Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"			"От Jan-Rixt Van Hoye 'Jixt' (jixt@bebug.be)"
+"PTP - USB Digital camera download utility."			"PTP - USB Утилита загрузки с цифровой камеры."
+
+#############
+# StatusWindow.cpp
+#############
+
+"PhotoGrabber download status"								"Статус загрузки PhotoGrabber"
+
+#######
+# Item.cpp
+#######
+
+"Name: NAME"											"Имя: NAME"
+"Height: PIXELS pixels."								"Высота: PIXELS пикселей."
+"Width: PIXELS pixels."									"Ширина: PIXELS пикселей."
+"Size: BYTES bytes."									"Размер: BYTES байт."
+"Date: DATE"											"Дата: DATE"
+"No thumbnail"											"Нет миниатюры"
+
+#############
+# ConfigWindow.cpp
+#############
+
+"Camera Configuration"									"Настройки камеры"
+
+"Please select your type of camera. To know the type you can visit www.bebug.be/projects/jixt/."	"Выберите тип камеры. Чтобы узнать тип, можете посетить www.bebug.be/projects/jixt."
+"Type:"													"Тип:"
+"Debug Configuration"									"Нстройка отладки"
+"Debug to terminal"										"Отладка в терминал"
+"Debug to file"											"Отладка в файл"
+# version 0.4.2
+"PTP USB Camera"											"PTP USB камера"	
+"Type"											"Тип"
+"BDCP Camera"											"BDCP камера"		
+"Plugin:"											"Подключён к:"						
+
+#############
+# HTMLWindow.cpp
+#############
+
+"Options"											"Опции"
+"Title:"											"Заголовок:"
+"Your Pictures"											"Изображения"
+"Number of Columns:"											"Число столбцов:"
+"Background color:"											"Цвет фона:"
+"Picture border:"											"Граница изображения:"
+"Path:"											"Путь:"
+"Select..."											"Выбор..."
+"Generate!"											"Создать!"
+
+## version 2.0
+## AboutWindow
+"About PhotoGrabber"											"О PhotoGrabber"
+"About"											"О программе"								
+"Team Lead:\n"											"Руководитель группы:\n"							
+"Developers:\n"											"Разработчики:\n"							
+"Special Thanks To:\n"											"Особая благодарность:\n"						
+"Credits"											"А так же"								
+
+## ConfigWindow
+"Please select your type of camera."											"Укажите тип камеры."
+"PhotoGrabber Configuration"											"Настройка PhotoGrabber"
+"Plugin Name:"											"Имя:"
+"Plugin Source:"											"Источник:"
+"Plugin Version:"											"Версия:"
+"Plugin Configuration"											"Настройка"
+"Actions"											"Действия"
+
+## ConfigPlugin
+"Type:"											"Тип:"
+"Communications"											"Взаимодействие"
+"Endpoint:"											"Устройство:"
+"OK"
