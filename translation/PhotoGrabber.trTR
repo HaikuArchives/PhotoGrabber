@@ -1,121 +1,113 @@
-# Tercümesi: TürkBUG Ekibi
-# alpaslan@turkbug.org
-
 ############
 # MainWindow.cpp
 ############
 
-"File"
-"Extra"	
-"Download"											"Resimleri indir"
-"Delete"												"Dijital Kamera'dan sil"
-"Genarate HTML"										"Resimler ile HTML Sayfası oluştur"
-"Preferences"											
-"About PhotoGrabber"										"PhotoGrabber hakkında"
-"Quit"												"Bitir"
-"Status"												"İşlem"
-"Remove files"											"Dosyaları sil"
-"Are you sure you want to erase the selected files?"			"Seçilen dosyaları silmeye eminmisiniz?"
-"No"													"Hayır"
-"Yes"												"Evet"
-"Connected to: "										"Bağlanılan Kamera: "
-" disconnected"										" Bağlantı yok!"
-"Downloading number NUMBER of the TOTAL selected files"	"TOTAL  mevcut öğe'den indirilen öğe: NUMBER  "
-"Generating HTML page..."								
-"HTML page has been generated."							
-"Downloading items..."									
-"All items have been downloaded."	
+"File"    "Dosya"
+"Extra"    "Ek"
+"Download"    "Aktar"
+"Delete"    "Sil"
+"Genarate HTML"    "HTML oluştur"
+"Preferences"    "Tercihler"											
+"About PhotoGrabber"    "PhotoGrabber hakkında"
+"Quit"    "Çık"
+"Status"    "Durum"
+"Remove files"    "Dosyaları kaldır"
+"Are you sure you want to erase the selected files?"    "Seçili dosyaları silmek istediğinizden emin misiniz?"
+"No"    "Hayır"
+"Yes"    "Evet"
+"Connected to: "    "Şuraya bağlı: "
+" disconnected"    " bağlantısı kesildi"
+"Downloading number NUMBER of the TOTAL selected files"    "NUMBER/TOTAL seçili dosya aktarılıyor"
+"Generating HTML page..."    "HTML sayfası oluşturuluyor..."								
+"HTML page has been generated."    "HTML sayfası oluşturuldu."
+"Downloading items..."    "Ögeler aktarılıyor..."						
+"All items have been downloaded."    "Tüm ögeler aktarıldı."
 # version	0.4.2			
-"BDCP Actions"
-"Connect"
-"Disconnect"
-"more..."
-"In:"
-"Status"
-"Generating number NUMBER of the TOTAL selected files"
-"Select"
+"BDCP Actions"    "BDCP eylemleri"
+"Connect"    "Bağlan"
+"Disconnect"    "Bağlantıyı kes"
+"more..."    "daha fazla..."
+"In:"    "Şurada:"
+"Status"    "Durum"
+"Generating number NUMBER of the TOTAL selected files"    "NUMBER/TOTAL seçili dosya oluşturuluyor"
+"Select"    "Seç"
 
 ############
 # AboutWindow.cpp
 ############
 
-"PhotoGrabber version 0.4.2"								"PhotoGrabber Versiyon 0.4.2"
-"By Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"				"Yazılım Gelişitirici: Jan-Rixt Van Hoye AKA Jixt (jixt@bebug.be)"
-"PTP - USB Digital camera download utility."					"PTP - Protokolü bazlı Dijital USB-Kamera Resim indirim aracı."
+"PhotoGrabber version 0.4.2"    "PhotoGrabber sürüm 0.4.2"
+"By Jan-Rixt Van Hoye aka Jixt (jixt@bebug.be)"    "Yazan: Jan-Rixt Van Hoye (Jixt - jixt@bebug.be)"
+"PTP - USB Digital camera download utility."    "PTP - USB dijital kamera dosya aktarım izlencesi"
 
 #############
 # StatusWindow.cpp
 #############
 
-"PhotoGrabber download status"							"PhotoGrabber indirme işlem durumu:"
+"PhotoGrabber download status"							"PhotoGrabber aktarma durumu:"
 
 #######
 # Item.cpp
 #######
 
-"Name: NAME"											"Adı: NAME"
-"Height: PIXELS pixels."									"Yüklekliği: PIXELS pixels."
-"Width: PIXELS pixels."									"Genişliği: PIXELS pixels."
-"Size: BYTES bytes."									"Größe: BYTES bytes."
-"Date: DATE"											"Tarihi: DATE"
-"No thumbnail"										"Öngörünümsüz"
+"Name: NAME"    "Ad: NAME"
+"Height: PIXELS pixels."    "Boy: PIXELS piksel"
+"Width: PIXELS pixels."    "En: PIXELS piksel"
+"Size: BYTES bytes."    "Boyut: BYTES bayt"
+"Date: DATE"    "Tarih: DATE"
+"No thumbnail"    "Küçük resim yok"
 
 #############
 # ConfigWindow.cpp
 #############
 
-"Camera Configuration"									"Kamera Ayarları"
+"Camera Configuration"    "Kamera yapılandırması"
 
-"Please select your type of camera. To know the type you can visit www.bebug.be/projects/jixt/."	"Lütfen Kamera tipini seçiniz. Kameranızın tipi hakkında http://www.bebug.be/projects/jixt/ sayfasında ingilizce olarak ayrıntılı bilgi alabilmeniz mümkün."
-"Type:"												"Tip:"
-"Debug Configuration"									"Debug Ayarları"
-"Debug to terminal"									"Debug Bilgileri Terminal'e yönlendir"
-"Debug to file"											"Debug Bilgileri dosyaya yaz"
+"Please select your type of camera. To know the type you can visit www.bebug.be/projects/jixt/."    "Lütfen kamera türünü seçiniz. Kameranızın türü hakkında bilgi almak için http://www.bebug.be/projects/jixt/ sayfasını ziyaret edin."
+"Type:"    "Tür:"
+"Debug Configuration"    "Hata ayıklama yapılandırması"
+"Debug to terminal"    "Uçbirimde hata ayıkla"
+"Debug to file"    "Dosyada hata ayıkla
 # version 0.4.2
-"PTP USB Camera"	
-"Type"
-"BDCP Camera"		
-"Plugin:"							
+"PTP USB Camera"    "PTP USB kamera"
+"Type"    "Tür"
+"BDCP Camera"    "BDCP kamera"	
+"Plugin:"    "Eklenti:"
 
 #############
 # HTMLWindow.cpp
 #############
 
-"Options"
-"Title:"
-"Your Pictures"
-"Number of Columns:"
-"Background color:"
-"Picture border:"
-"Path:"
-"Select..."
-"Generate!"
-
-
-
+"Options"    "Seçenekler"
+"Title:"    "Başlık:"
+"Your Pictures"    "Resimleriniz"
+"Number of Columns:"    "Sütun sayısı:"
+"Background color:"    "Arka plan rengi:"
+"Picture border:"    "Resim kenarlığı:"
+"Path:"    "Yol:"
+"Select..."    "Seç..."
+"Generate!"    "Oluştur!"
 
 ## version 2.0
 ## AboutWindow
-"About PhotoGrabber"
-"About"								
-"Team Lead:\n"							
-"Developers:\n"							
-"Special Thanks To:\n"						
-"Credits"								
+"About PhotoGrabber"    "PhotoGrabber hakkında"
+"About"    "Hakkında"
+"Team Lead:\n"    "Takım lideri:\n"				
+"Developers:\n"    "Geliştiriciler:\n"
+"Special Thanks To:\n"    "Özel teşekkürler:\n"
+"Credits"    "Katkıda bulunanlar"
 
 ## ConfigWindow
-"Please select your type of camera."
-"PhotoGrabber Configuration"
-"Plugin Name:"
-"Plugin Source:"
-"Plugin Version:"
-"Plugin Configuration"
-"Actions"
+"Please select your type of camera."    "Kamera türünü seçin."
+"PhotoGrabber Configuration"    "PhotoGrabber yapılandırması"
+"Plugin Name:"    "Eklenti adı:"
+"Plugin Source:"    "Eklenti kaynağı:"
+"Plugin Version:"    "Eklenti sürümü:"
+"Plugin Configuration"    "Eklenti yapılandırması"
+"Actions"    "Eylemler"
 
 ## ConfigPlugin
-"Type:"
-"Communications"
-"Endpoint:"
-"OK"
-
-
+"Type:"    "Tür:"
+"Communications"    "İletişim"
+"Endpoint:"    "Bitiş noktası:"
+"OK"    "Tamam"
