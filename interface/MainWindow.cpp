@@ -24,9 +24,9 @@
 bool tbExpanded;
 
 FILE *lfmainw;
-//		
+//
 //  MainWindow:: Constructor
- BeCam_MainWindow::BeCam_MainWindow(BLooper *syscore, int devtype) 
+ BeCam_MainWindow::BeCam_MainWindow(BLooper *syscore, int devtype)
   : BWindow(BRect(0, 0, 100, 100),"PhotoGrabber",B_DOCUMENT_WINDOW, B_WILL_ACCEPT_FIRST_CLICK),
     becam_connected(false),
     devicetype(devtype),
@@ -64,7 +64,7 @@ FILE *lfmainw;
     		.AddItem(sortTitleMenu = new BMenuItem(_T("Sort By Title"), new BMessage(CAM_SORT_TITLE)))
     		.AddItem(sortDateMenu = new BMenuItem(_T("Sort By Date"), new BMessage(CAM_SORT_DATE)))
     	.End()
-    #ifdef DEBUG	
+    #ifdef DEBUG
         .AddMenu(_T("Debugging"))
         	.AddItem(_T("Open Statuswindow"), OPN_STATUS)
             .AddItem("Show Layout", SHOW_LAYOUT)
@@ -80,7 +80,7 @@ FILE *lfmainw;
 	AddChild(fMenubar);
 
     fStatusDock = new StatusDock("statusdock");
-    fGridView = new GridView("gridview");	
+    fGridView = new GridView("gridview");
     fGridScrollView = new BScrollView("becam_scrollview", fGridView,
             B_FOLLOW_ALL_SIDES, false, true, B_PLAIN_BORDER);
 
@@ -92,13 +92,13 @@ FILE *lfmainw;
     fGridScrollView->SetExplicitAlignment(BAlignment(B_ALIGN_USE_FULL_WIDTH, B_ALIGN_TOP));
     fStatusDock->SetExplicitAlignment(BAlignment(B_ALIGN_USE_FULL_WIDTH, B_ALIGN_BOTTOM));
     Layout(true);
-    ShowStatusDock(MODE_INIT, _T("Please connect your digital camera."));    
+    ShowStatusDock(MODE_INIT, _T("Please connect your digital camera."));
     fGridView->MakeFocus(true);
-    
 
-    // Get the main debug function;	
+
+    // Get the main debug function;
     LogDebug("MAINWINDOW - Window created.");
-    
+
 }
 
 void
@@ -131,7 +131,7 @@ BeCam_MainWindow::adaptActionMenu(bool enabled) {
 }
 //
 // MainWindow:: Add item to the listview
-void 
+void
 BeCam_MainWindow::addItem(class PicItem *item) {
     Lock();
     fGridView->AddItem(item);
@@ -146,7 +146,7 @@ void BeCam_MainWindow::removeItem(class PicItem *item) {
 }
 //
 // MainWindow:: Clear the listview
-void 
+void
 BeCam_MainWindow::clearItems() {
     Lock();
     fGridView->MakeEmpty();
@@ -179,18 +179,18 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data) {
     char    tmpBuffer[100];
     BMessenger coreMessenger(data->window->systemcore);
     refentry = data->downloadDir;
-	
+
     // Show the status dock
     snprintf(tmpBuffer, 100, "Downloading number %u of the %ld selected files",
              1, totalSelected);
     data->window->ShowStatusDock(MODE_DOWNLOAD, tmpBuffer, totalSelected);
-	
+
     // Update the status dock
     for (int32 selIndex = 0; selIndex < totalSelected; selIndex++) {
     	snprintf(tmpBuffer, 100, "Downloading number %u of the %ld selected files",
                  selIndex + 1, totalSelected);
         data->window->UpdateStatusDock(1, tmpBuffer);
-		
+
         // Get selected item
         PicItem* item = selection.ItemAt(selIndex);
 
@@ -201,11 +201,11 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data) {
         BMessage reply;
         coreMessenger.SendMessage(coreMsg, &reply);
         if(reply.what == DOWN_ITEM_OK) {
-            count++;	
+            count++;
         } else {
-            BAlert *myAlert = new BAlert(_T("Error"), 
-                    _T("Failed to copy an item."), _T("Ok"), 
-                    NULL, NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);	
+            BAlert *myAlert = new BAlert(_T("Error"),
+                    _T("Failed to copy an item."), _T("Ok"),
+                    NULL, NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
             myAlert->SetShortcut(0, B_ENTER);
             myAlert->Go();
             break;
@@ -220,10 +220,10 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data) {
 }
 //
 // MainWindow:: Remove the selected items
-void 
+void
 BeCam_MainWindow::removeSelectedItems() {
     LogDebug("MAINWINDOW - Begin remove Items.");
-	
+
     if (fGridView->SelectedIndex() >= 0) {
         // Ask the user if he/she is sure to remove the files.
         BAlert *myAlert = new BAlert(_T("Remove files"), _T("Are you sure you want to erase the selected files?"),_T("No"), _T("Yes"),NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
@@ -234,8 +234,8 @@ BeCam_MainWindow::removeSelectedItems() {
             data->window = this;
             resume_thread(spawn_thread((status_t(*)(void*))RemoveItems,"remove_items",B_DISPLAY_PRIORITY,data));
         }
-    } else {	
-        BAlert *myAlert = new BAlert(_T("Remove"), _T("Please select some files."),_T("Ok"), NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);	
+    } else {
+        BAlert *myAlert = new BAlert(_T("Remove"), _T("Please select some files."),_T("Ok"), NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
         myAlert->SetShortcut(0, B_ENTER);
         myAlert->Go();
     }
@@ -243,16 +243,16 @@ BeCam_MainWindow::removeSelectedItems() {
 }
 //
 //	MainWindow:: Remove Items thread function
-status_t 
+status_t
 BeCam_MainWindow::RemoveItems(items_data *data) {
     status_t status = B_OK;
     BMessage *cam_message;
     BObjectList<PicItem> selection;
     selection.AddList(data->window->fGridView->Selected());
-    
+
     for (listIndex i = 0; i < selection.CountItems(); i++) {
         PicItem* item = selection.ItemAt(i);
-        // Send a message to the camera 
+        // Send a message to the camera
     	// to get the selected item
         cam_message = new BMessage(REM_ITEM);
         cam_message->AddInt32("itemhandle", item->Handle());
@@ -273,19 +273,19 @@ BeCam_MainWindow::RemoveItems(items_data *data) {
 }
 //
 //	MainWindow:: Error messages
-int 
+int
 BeCam_MainWindow::logMainWindowError(int ErrorMes) {
     const char *errorMessage;
     switch(ErrorMes) {
 	case MAINW_DEV_NO_FIND:
-	    errorMessage = "MAIN WINDOW: No PTP device is present.";	
+	    errorMessage = "MAIN WINDOW: No PTP device is present.";
 	    break;
 	default:
             errorMessage = "MAIN WINDOW: An unexpected error occured.";
     }
     // write the errorMessage into the logfile
     LogDebug(errorMessage);
-	
+
     return(ErrorMes);
 }
 
@@ -300,7 +300,7 @@ bool BeCam_MainWindow::QuitRequested() {
 //	BeCam_MainWindow:: Open the Configuration Window
 void BeCam_MainWindow::CreateConfigWindow() {
     float xPos=0,yPos=0;
-	
+
     if (!configWindow) {
 		CalculatePos(&xPos, &yPos, CONFIG_WINDOW);
 		configWindow = new BeCam_ConfigWindow(xPos, yPos, this);
@@ -310,10 +310,10 @@ void BeCam_MainWindow::CreateConfigWindow() {
 
 //
 //	BeCam_MainWindow:: Open the About Window
-void 
+void
 BeCam_MainWindow::CreateAboutWindow() {
-    float xPos=0, yPos=0;	
-	
+    float xPos=0, yPos=0;
+
     if(!aboutWindow) {
         CalculatePos(&xPos, &yPos, ABOUT_WINDOW);
         aboutWindow = new BeCam_AboutWindow(xPos, yPos, this);
@@ -332,7 +332,7 @@ BeCam_MainWindow::ShowStatusDock(Modus modus, const char *status, float total) {
 }
 //
 //		BeCam_MainWindow::Update the Status Window
-void 
+void
 BeCam_MainWindow::UpdateStatusDock(uint32 delta, const char *status) {
     BMessage* message = new BMessage(UPDATE_STAT);
     message->AddFloat("count", delta);
@@ -343,7 +343,7 @@ BeCam_MainWindow::UpdateStatusDock(uint32 delta, const char *status) {
 
 //
 //	BeCam_MainWindow:: Calculate the windowposition
-void 
+void
 BeCam_MainWindow::CalculatePos(float *xPos,float *yPos,int winType) {
     float length, height;
     BRect mainRect = Frame();
@@ -362,7 +362,7 @@ BeCam_MainWindow::CalculatePos(float *xPos,float *yPos,int winType) {
 }
 //
 //		BeCam_MainWin::MessageRecieved
-void 
+void
 BeCam_MainWindow::MessageReceived(BMessage* message) {
     const char *product;
 
@@ -376,16 +376,16 @@ BeCam_MainWindow::MessageReceived(BMessage* message) {
         product = message->FindString("product");
         devicetype = message->GetInt32("type", 0);
         adaptActionMenu(false);
-        
+
         BString msgText(_T("Connected to: "));
         msgText += product;
         ShowStatusDock(MODE_CONNECTED, msgText.String());
 	    break;
 	}
-    case GET_ITEMS_START: 
+    case GET_ITEMS_START:
         ShowStatusDock(MODE_CONNECTED, _T("Processing images..."), message->GetFloat("total", 0));
         break;
-        
+
 	case GET_ITEMS_DONE: {
         ShowStatusDock(MODE_CONNECTED, _T("All images received from camera."));
         adaptActionMenu(true);
@@ -393,7 +393,7 @@ BeCam_MainWindow::MessageReceived(BMessage* message) {
         break;
 	}
 	case CAM_DISCONNECTED: {
-	    becam_connected = false;	
+	    becam_connected = false;
 	    clearItems();
 	    ShowStatusDock(MODE_INIT, _T("Please connect your digital camera."));
         adaptActionMenu(false);
@@ -401,11 +401,11 @@ BeCam_MainWindow::MessageReceived(BMessage* message) {
 	}
 	case CAM_SHOT_TAKEN:
             break;
-            
+
 	case CAM_TAKE_SHOT:
             systemcore->PostMessage(message);
             break;
-            
+
 	case ADD_ITEM: {
 	    ItemData  *localItemData;
 	    PicItem *localItem;
@@ -423,24 +423,24 @@ BeCam_MainWindow::MessageReceived(BMessage* message) {
 	    messenger.SendMessage(&cam_message,&reply);
 	    if (reply.what == CAM_CONNECT_OK) {
                 systemcore->PostMessage(message);
-                connect = becam_actionsMenu->FindItem(_T("Connect"));	
+                connect = becam_actionsMenu->FindItem(_T("Connect"));
                 connect->SetEnabled(false);
-                disconnect = becam_actionsMenu->FindItem(_T("Disconnect"));	
+                disconnect = becam_actionsMenu->FindItem(_T("Disconnect"));
                 disconnect->SetEnabled(true);
                 //
                 ShowStatusDock(MODE_CONNECTED, _T("Connecting to the digital camera..."), -1);
-            } else {	
+            } else {
                 BAlert *myAlert = new BAlert(_T("Connect"), _T("Could not connect to the camera"),_T("Ok"), NULL,NULL,B_WIDTH_AS_USUAL,B_WARNING_ALERT);
                 myAlert->SetShortcut(0, B_ENTER);
                 myAlert->Go();
-            }	
+            }
 	    break;
 	}
-	case CAM_DISCON: {	
+	case CAM_DISCON: {
 	    BMenuItem *connect,*disconnect;
-	    systemcore->PostMessage(message);	
+	    systemcore->PostMessage(message);
 	    connect = becam_actionsMenu->FindItem(_T("Connect"));
-	    connect->SetEnabled(true);	
+	    connect->SetEnabled(true);
 	    disconnect = becam_actionsMenu->FindItem(_T("Disconnect"));
 	    disconnect->SetEnabled(false);
 	    break;
@@ -462,7 +462,7 @@ BeCam_MainWindow::MessageReceived(BMessage* message) {
 	    removeSelectedItems();
 	    break;
 	}
-	case OPN_STATUS: {	
+	case OPN_STATUS: {
 	    char	tmpBuffer[100];
 	    snprintf(tmpBuffer, 100, "Downloading number %ld of the %ld selected files", 0, 0);
 	    ShowStatusDock(MODE_DOWNLOAD, tmpBuffer, 0);
@@ -471,15 +471,15 @@ BeCam_MainWindow::MessageReceived(BMessage* message) {
 	case B_ABOUT_REQUESTED:
 	    CreateAboutWindow();
 	    break;
-            
+
 	case CONFIG:
 	    CreateConfigWindow();
 	    break;
-            
+
 	case B_SELECT_ALL:
 	    fGridView->SelectAll();
 	    break;
-            
+
 	case GET_CONFIGURATION: {
 	    // Get the settings from the system core
 	    BMessage reply;
@@ -491,39 +491,39 @@ BeCam_MainWindow::MessageReceived(BMessage* message) {
 	    break;
 	}
 	case RELOAD_CONFIGURATION: {
-	    becam_connected = false;	
+	    becam_connected = false;
 	    clearItems();
 	    adaptActionMenu(true);
 	    break;
 	}
 	case STATDOCK_SHOW: {
-        this->DispatchMessage(message, fStatusDock);    
+        this->DispatchMessage(message, fStatusDock);
 	    break;
 	}
 #ifdef DEBUG
-    case SHOW_LAYOUT: 
+    case SHOW_LAYOUT:
         for (int32 i = 0; i < CountChildren(); i++)
             FrameView(ChildAt(i));
         FrameLayout(GetLayout());
         break;
-        
+
     case SHOW_SD_HIDDEN:
         ShowStatusDock(MODE_HIDDEN);
         break;
-        
+
     case SHOW_SD_INIT:
         ShowStatusDock(MODE_INIT, "Init Mode");
         break;
-        
+
     case SHOW_SD_CONNECTED:
         ShowStatusDock(MODE_CONNECTED, "Connected Mode");
         break;
-        
+
     case SHOW_SD_DOWNLOAD:
         ShowStatusDock(MODE_DOWNLOAD, "Download Mode", 100);
         break;
-        
-#endif        
+
+#endif
 	case STATDOCK_SHOWED: {
         float statusDockHeight = fStatusDock->IsHidden() ? 0 : fStatusDock->Bounds().Height();
 	    fGridScrollView->ResizeTo(Bounds().Width(), Bounds().Height() - statusDockHeight - fMenubar->Bounds().Height());
@@ -532,7 +532,7 @@ BeCam_MainWindow::MessageReceived(BMessage* message) {
         fStatusDock->MoveTo(Bounds().LeftBottom() - fStatusDock->Bounds().LeftBottom());
 	    break;
 	}
-/*        
+/*
 	case STATDOCK_HIDDEN: {
 	    becam_gridview->SetEnabled(true);
 	    becam_scrollview->ResizeTo(becam_scrollview->Frame().Width(),becam_scrollview->Bounds().Height() + becam_statusDock->Bounds().Height());
