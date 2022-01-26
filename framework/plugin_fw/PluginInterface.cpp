@@ -21,16 +21,17 @@ using namespace std;
 //
 //  CamInterface::constructor
 //
-CamInterface::CamInterface(char *libName) {	
+CamInterface::CamInterface(char *libName) {
     //   initialization
-    memset(supportedFunctions, 0, sizeof supportedFunctions);
+    memset(supportedFunctions, 0, sizeof(supportedFunctions));
+
     //
     BEntry appentry;
     BPath path;
     // get the path of the application
-    app_info info; 
-    be_app->GetAppInfo(&info); 
-    appentry.SetTo(&info.ref); 
+    app_info info;
+    be_app->GetAppInfo(&info);
+    appentry.SetTo(&info.ref);
     appentry.GetPath(&path);
     path.GetParent(&path);
     path.Append("plugins/");
@@ -51,7 +52,7 @@ CamInterface::~CamInterface() {
 
 //	Interface::getSymbols
 //
-bool 
+bool
 CamInterface::getSymbols(image_id pAddonId) {
     if (get_image_symbol(pAddonId, "get_BDCP_API_Revision", B_SYMBOL_TYPE_TEXT, (void **)&get_BDCP_API_Revision) == B_OK)
 	    supportedFunctions[fn_revision] = true;
@@ -105,7 +106,7 @@ CamInterface::getSymbols(image_id pAddonId) {
 	supportedFunctions[fn_imageHeight] = true;
     if (get_image_symbol(pAddonId, "getImageWidth", B_SYMBOL_TYPE_TEXT, (void **)&getImageWidth) == B_OK)
 	supportedFunctions[fn_imageWidth] = true;
-    if (get_image_symbol(pAddonId, "getDeviceType", B_SYMBOL_TYPE_TEXT, (void **)&getDeviceType) == B_OK) 
+    if (get_image_symbol(pAddonId, "getDeviceType", B_SYMBOL_TYPE_TEXT, (void **)&getDeviceType) == B_OK)
 	supportedFunctions[fn_deviceType] = true;
     return(true);
 }
@@ -119,7 +120,7 @@ CamInterface::hasFunction(pluginCaps function) {
 }
 //
 //		Interface: getRevision
-int 
+int
 CamInterface::getRevision() {
     if(supportedFunctions[fn_revision])
 	return (*get_BDCP_API_Revision)();
@@ -127,7 +128,7 @@ CamInterface::getRevision() {
 }
 //
 //		Interface: getCameraStrings
-vector<string>	
+vector<string>
 CamInterface::getCameraStrings() {
     vector<string> supportedCams;
     if (supportedFunctions[fn_supcams])
@@ -136,12 +137,12 @@ CamInterface::getCameraStrings() {
 }
 //
 //		Interface: openCamera
-bool 
+bool
 CamInterface::open() {
     status_t err = B_ERROR;
     if (supportedFunctions[fn_openCamera] == true)
 	err = (*openCamera)();
-	
+
     if (err != B_NO_ERROR) {
 	LogDebug("CAMINTF - Couldn't open the camera.");
 	return B_ERROR;
@@ -150,7 +151,7 @@ CamInterface::open() {
 }
 //
 //		Interface: closeCamera
-bool 
+bool
 CamInterface::close() {
     status_t err = B_ERROR;
     if (supportedFunctions[fn_closeCamera] == true)
@@ -161,10 +162,10 @@ CamInterface::close() {
 	return B_ERROR;
     }
     return B_OK;
-}		
+}
 //
 //		Interface: closeCamera
-version_info 
+version_info
 CamInterface::getVersion() {
     version_info pluginVersion;
     if (supportedFunctions[fn_revision])
@@ -173,18 +174,18 @@ CamInterface::getVersion() {
 }
 //
 //		Interface: BDCP_logError
-int 
+int
 CamInterface::getNumberOfItems() {
     int numberOfItems = 0;
     if (supportedFunctions[fn_numberOfPictures]) {
         if((*getNumberofPics)(numberOfItems) == B_NO_ERROR)
             return numberOfItems;
-    }	
+    }
     return 0;
 }
 //
 //		Interface: BDCP_logError
-bool 
+bool
 CamInterface::setCurrentItem(int index) {
     if(supportedFunctions[fn_numberOfPictures]) {
 	(*setCurrentPicture)(index);
@@ -194,7 +195,7 @@ CamInterface::setCurrentItem(int index) {
 }
 //
 //		Interface: Download picture
-bool 
+bool
 CamInterface::downloadItem(int index, BPath path, const char *name) {
     if (supportedFunctions[fn_downloadPicture]) {
 	LogDebug("CAMINTF - File name is %s.", name);
@@ -206,7 +207,7 @@ CamInterface::downloadItem(int index, BPath path, const char *name) {
 }
 //
 //		Interface: delete picture
-bool 
+bool
 CamInterface::deleteItem(int index) {
     if(supportedFunctions[fn_deletePicture]) {
 	setCurrentItem(index);
@@ -217,7 +218,7 @@ CamInterface::deleteItem(int index) {
 }
 //
 //  Interface: take picture
-bool 
+bool
 CamInterface::takeItem() {
     if (supportedFunctions[fn_takePicture]) {
 	(*takePicture)();
@@ -227,10 +228,10 @@ CamInterface::takeItem() {
 }
 //
 //		Interface: get Name
-char* 
+char*
 CamInterface::getName() {
     char * itemName;
-	
+
     if (supportedFunctions[fn_imageName]) {
 	(*getImageName)(itemName);
 	return itemName;
@@ -239,10 +240,10 @@ CamInterface::getName() {
 }
 //
 //  Interface: get Size
-int 
+int
 CamInterface::getSize() {
     int itemSize;
-	
+
     if(supportedFunctions[fn_imageSize]) {
 	(*getImageSize)(itemSize);
 	return itemSize;
@@ -251,10 +252,10 @@ CamInterface::getSize() {
 }
 //
 //  Interface: get Date
-char* 
+char*
 CamInterface::getDate() {
     char* itemDate;
-	
+
     if (supportedFunctions[fn_imageDate]) {
 	(*getImageDate)(itemDate);
 	return itemDate;
@@ -263,10 +264,10 @@ CamInterface::getDate() {
 }
 //
 //		Interface: get Thumbnail
-BBitmap* 
+BBitmap*
 CamInterface::getThumb() {
     BBitmap* itemThumb;
-	
+
     if (supportedFunctions[fn_thumbnail]) {
 	(*getThumbnail)(itemThumb);
 	return itemThumb;
@@ -275,10 +276,10 @@ CamInterface::getThumb() {
 }
 //
 //		Interface: get Height
-int 
+int
 CamInterface::getHeight() {
     int itemHeight;
-	
+
     if (supportedFunctions[fn_imageSize]) {
 	(*getImageHeight)(itemHeight);
 	return itemHeight;
@@ -287,10 +288,10 @@ CamInterface::getHeight() {
 }
 //
 //		Interface: get Width
-int 
+int
 CamInterface::getWidth() {
     int itemWidth;
-	
+
     if (supportedFunctions[fn_imageWidth]) {
 	(*getImageWidth)(itemWidth);
 	return itemWidth;
@@ -299,10 +300,10 @@ CamInterface::getWidth() {
 }
 //
 //		Interface: get the device type
-int 
+int
 CamInterface::getDevType() {
     int deviceType;
-	
+
     if (supportedFunctions[fn_deviceType]) {
 	(*getDeviceType)(deviceType);
 	return deviceType;
@@ -311,7 +312,7 @@ CamInterface::getDevType() {
 }
 //
 //		Interface: pass the core system loop the the plugin
-bool 
+bool
 CamInterface::setCoreSystemLoop(BLooper *core) {
     if (supportedFunctions[fn_messageTarget]) {
 	(*setMessageTarget)(core);
@@ -321,7 +322,7 @@ CamInterface::setCoreSystemLoop(BLooper *core) {
 }
 //
 //		Interface: camera Connection
-BWindow* 
+BWindow*
 CamInterface::pluginConfiguration(BPoint centerPoint) {
     if (supportedFunctions[fn_configurePlugin])
 		return (*configurePlugin)(centerPoint);
