@@ -91,7 +91,8 @@ BeDiGiCamApp::MessageReceived(BMessage* message) {
                     message->SendReply(&reply);
                 }
             } else if (GetDeviceType() == TYPE_USB) {
-                this->interface->setCoreSystemLoop(this);
+            	if (this->interface)
+                	this->interface->setCoreSystemLoop(this);
             }
             break;
         }
