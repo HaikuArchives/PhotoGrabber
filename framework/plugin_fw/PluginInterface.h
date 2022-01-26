@@ -45,7 +45,9 @@ enum pluginCaps {
 	fn_thumbnail,
 	fn_imageHeight,
 	fn_imageWidth,
-	fn_deviceType
+	fn_deviceType,
+
+	fns_count
 };
 
 typedef status_t (*level3Func)();
@@ -81,7 +83,7 @@ public:
 
 private:
     // Checks
-    bool                            supportedFunctions[17];
+    bool                            supportedFunctions[fns_count];
     // level 1
     status_t                        (*get_BDCP_API_Revision)();
     status_t                        (*getPluginVersion)(version_info&);

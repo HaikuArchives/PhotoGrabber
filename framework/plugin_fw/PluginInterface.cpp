@@ -112,7 +112,7 @@ CamInterface::getSymbols(image_id pAddonId) {
 
 bool
 CamInterface::hasFunction(pluginCaps function) {
-    if ((uint32)function <= 17) 
+    if ((uint32)function <= fns_count)
         return supportedFunctions[function];
     else
         return false;
