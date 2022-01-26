@@ -34,9 +34,9 @@ BeDiGiCamApp::~BeDiGiCamApp() {
 }
 
 
-// 
+//
 // 	BeDiGiCam::The application is running, time to startup the rest
-void 
+void
 BeDiGiCamApp::ReadyToRun() {
     // Create a camera object if a plugin has been chosen
     CreateGUI();
@@ -50,12 +50,12 @@ BeDiGiCamApp::ReadyToRun() {
         }
     }
 }
-// 	
+//
 //	BeDiGiCam::Messages to the application
-void 
+void
 BeDiGiCamApp::MessageReceived(BMessage* message) {
     switch (message->what) {
-        case CAM_CONNECTED: 
+        case CAM_CONNECTED:
             LogDebug("CORE - Camera connected.");
             mainWindow->PostMessage(message);
             if (GetDeviceType() == TYPE_USB) {
@@ -82,7 +82,7 @@ BeDiGiCamApp::MessageReceived(BMessage* message) {
                 BMessage reply;
                 BMessenger messenger(NULL, camera);
                 messenger.SendMessage(new BMessage(OPEN_DEVICE), &reply);
-                if (reply.what == OPEN_DEVICE) 
+                if (reply.what == OPEN_DEVICE)
                     reply.FindBool("open", &open);
                 if (open)
                     camera->PostMessage(cammessage);
@@ -96,7 +96,7 @@ BeDiGiCamApp::MessageReceived(BMessage* message) {
             }
             break;
         }
-        case CAM_DISCON: 
+        case CAM_DISCON:
             camera->PostMessage(new BMessage(CLOSE_DEVICE));
             camera->Stop();
             break;
@@ -117,12 +117,12 @@ BeDiGiCamApp::MessageReceived(BMessage* message) {
             // Get new Camera Interface
             camera->PostMessage(message);
             // Open the device
-            if (GetDeviceType() == TYPE_USB) 
+            if (GetDeviceType() == TYPE_USB)
                 camera->PostMessage(new BMessage(OPEN_DEVICE));
                 // Change the action menu items in the interface
             mainWindow->PostMessage(message);
             break;
-            
+
         case GET_CONFIGURATION: {
             BMessage reply;
             reply.AddPointer("settings", &pgsettings);
@@ -180,12 +180,12 @@ BeDiGiCamApp::MessageReceived(BMessage* message) {
             BApplication::MessageReceived(message);
     }
 }
-// 
+//
 //	BeDiGiCam:: MainWindow of the Application
 bool
 BeDiGiCamApp::CreateGUI() {
     LogDebug("CORE - Create GUI.");
-    BEntry appentry; 
+    BEntry appentry;
     BPath path;
     int32 devType = GetDeviceType();
     // get the path of the application
@@ -197,7 +197,7 @@ BeDiGiCamApp::CreateGUI() {
 }
 //
 //	BeDiGiCam:: Check the device type
-int 
+int
 BeDiGiCamApp::GetDeviceType() {
     LogDebug("CORE - Get device type.");
     int32 type = 0;
@@ -206,20 +206,20 @@ BeDiGiCamApp::GetDeviceType() {
     messenger.SendMessage(new BMessage(GET_DEVICE_TYPE),&reply);
     if(reply.what == GET_DEVICE_TYPE)
 	reply.FindInt32("type", &type);
-    return type;	
+    return type;
 }
 //
 //	BeDiGiCam:: Check the device type
-bool 
+bool
 BeDiGiCamApp::GetCameraStrings() {
     char *addonName;
     BEntry appentry;
     BPath path;
     image_id lAddonId;
     // get the path of the application
-    app_info info; 
-    GetAppInfo(&info); 
-    appentry.SetTo(&info.ref); 
+    app_info info;
+    GetAppInfo(&info);
+    appentry.SetTo(&info.ref);
     appentry.GetPath(&path);
     path.GetParent(&path);
     path.Append("plugins/");
@@ -260,7 +260,7 @@ BeDiGiCamApp::GetCameraStrings() {
 }
 //
 //	BeDiGiCam:: Check the device type
-bool 
+bool
 BeDiGiCamApp::GetPluginDetails(char *camerastring) {
     // save the plugin name
     multimap<const char*,string>::iterator i = pluginSupportedCams.begin();
@@ -283,7 +283,7 @@ bool BeDiGiCamApp::OpenPluginConfig(char *camerastring,BPoint *interfacePoint) {
     for (multimap<const char*, string>::iterator i = pluginSupportedCams.begin(); i != pluginSupportedCams.end(); i++) {
 	if(!strcmp((*i).second.c_str(),camerastring)) {
 	    interface = new CamInterface((char*)(*i).first);
-	    if (interface->hasFunction(fn_configurePlugin)) 
+	    if (interface->hasFunction(fn_configurePlugin))
 		if (pluginconfwindow = interface->pluginConfiguration(lPoint))
 		    pluginconfwindow->Show();
 	    return true;
@@ -293,7 +293,7 @@ bool BeDiGiCamApp::OpenPluginConfig(char *camerastring,BPoint *interfacePoint) {
 }
 //
 //	BeDiGiCam:: Check if there is a plugin configuration screen
-bool 
+bool
 BeDiGiCamApp::IsPluginConfigPresent(char *camerastring) {
     for (multimap<const char*, string>::iterator i = pluginSupportedCams.begin();
             i != pluginSupportedCams.end(); i++) {
