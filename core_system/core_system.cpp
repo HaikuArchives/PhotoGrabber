@@ -252,6 +252,7 @@ BeDiGiCamApp::GetCameraStrings() {
 			    i++;
 			}
 			delete(interface);
+			interface = NULL;
 	    } else
 		LogDebug("CORE - loading %s failed!",addonName);
 	}
@@ -270,6 +271,7 @@ BeDiGiCamApp::GetPluginDetails(char *camerastring) {
 	    interface = new CamInterface((char*)(*i).first);
 	    plugininfo = interface->getVersion();
 	    delete(interface);
+		interface = NULL;
 	    return true;
 	}
 	i++;
@@ -298,7 +300,8 @@ BeDiGiCamApp::IsPluginConfigPresent(char *camerastring) {
     for (multimap<const char*, string>::iterator i = pluginSupportedCams.begin();
             i != pluginSupportedCams.end(); i++) {
 	if (!strcmp((*i).second.c_str(), camerastring))
-	    return interface->hasFunction(fn_configurePlugin);
+		if (interface)
+			return interface->hasFunction(fn_configurePlugin);
     }
     return false;
 }
