@@ -215,6 +215,8 @@ status_t BeCam_MainWindow::DownloadItems(items_data *data) {
     data->window->ShowStatusDock(MODE_HIDDEN);
     selection.MakeEmpty(false);
     delete(data);
+
+    return 0;
 }
 //
 // MainWindow:: Remove the selected items
@@ -248,7 +250,6 @@ BeCam_MainWindow::RemoveItems(items_data *data) {
     BObjectList<PicItem> selection;
     selection.AddList(data->window->fGridView->Selected());
     
-    PicItem *selectedItem;
     for (listIndex i = 0; i < selection.CountItems(); i++) {
         PicItem* item = selection.ItemAt(i);
         // Send a message to the camera 
@@ -260,9 +261,9 @@ BeCam_MainWindow::RemoveItems(items_data *data) {
         BMessage reply;
         messenger.SendMessage(cam_message, &reply);
 	    delete cam_message;
-        if (reply.what == REM_ITEM_OK) 
-            data->window->fGridView->RemoveItem(selectedItem);
-        else {
+        if (reply.what == REM_ITEM_OK) {
+            data->window->fGridView->RemoveItem(item);
+        } else {
             status = B_ERROR;
             break;
         }

@@ -534,6 +534,7 @@ PicItem*
 GridView::SelectedItem(int32 index) {
     if (index >= 0 && index < fSelected.CountItems())
         return fSelected.ItemAt(index);
+    return NULL;
 }
 
 void
